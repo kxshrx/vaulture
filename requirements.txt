@@ -9,3 +9,8 @@ supabase
 stripe
 python-multipart
 email-validator
+streamlit>=1.28.0
+pandas>=1.5.0
+plotly>=5.15.0
+uuid
+pathlib
