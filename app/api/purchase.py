@@ -66,7 +66,12 @@ async def stripe_webhook(
     payload = await request.body()
     sig_header = request.headers.get('stripe-signature')
     
+    # Debug logging
+    logger.info(f"Webhook received - payload length: {len(payload)}")
+    logger.info(f"Webhook signature header present: {bool(sig_header)}")
+    
     if not sig_header:
+        logger.error("Missing stripe-signature header in webhook request")
         raise HTTPException(status_code=400, detail="Missing stripe-signature header")
     
     try:
@@ -75,6 +80,8 @@ async def stripe_webhook(
             payload=payload,
             sig_header=sig_header
         )
+        
+        logger.info(f"Webhook processed successfully: {result}")
         
         return WebhookEventResponse(
             message=result["message"],
@@ -122,6 +129,38 @@ def get_my_purchases(
         Purchase.payment_status == PaymentStatus.COMPLETED,
         Product.is_active == True
     ).order_by(Purchase.completed_at.desc()).all()
+    
+    return [
+        PurchaseWithProduct(
+            id=purchase.id,
+            product_id=purchase.product_id,
+            created_at=purchase.created_at,
+            completed_at=purchase.completed_at,
+            amount_paid=purchase.amount_paid,
+            payment_status=purchase.payment_status,
+            product_title=product.title,
+            product_description=product.description,
+            product_price=product.price,
+            product_category=product.category.value,
+            product_file_type=product.file_type,
+            product_image_url=product.image_url
+        )
+        for purchase, product in purchases
+    ]
+
+@router.get("/mypurchases/all", response_model=List[PurchaseWithProduct])
+def get_all_my_purchases(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get ALL user's purchases regardless of status (for debugging)"""
+    
+    purchases = db.query(Purchase, Product).join(
+        Product, Purchase.product_id == Product.id
+    ).filter(
+        Purchase.user_id == current_user.id,
+        Product.is_active == True
+    ).order_by(Purchase.created_at.desc()).all()
     
     return [
         PurchaseWithProduct(

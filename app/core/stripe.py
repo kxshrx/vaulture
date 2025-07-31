@@ -20,11 +20,15 @@ class StripeService:
     ) -> stripe.checkout.Session:
         """Create a Stripe checkout session for a product purchase"""
         
-        # Use default URLs if not provided
-        if not success_url:
+        # Use default URLs if not provided or if placeholder values are used
+        if not success_url or success_url in ["string", ""]:
             success_url = f"{settings.STRIPE_SUCCESS_URL}?session_id={{CHECKOUT_SESSION_ID}}"
-        if not cancel_url:
+        if not cancel_url or cancel_url in ["string", ""]:
             cancel_url = settings.STRIPE_CANCEL_URL
+        
+        # Debug logging
+        logger.info(f"Creating Stripe session with success_url: {success_url}")
+        logger.info(f"Creating Stripe session with cancel_url: {cancel_url}")
             
         try:
             session = stripe.checkout.Session.create(
