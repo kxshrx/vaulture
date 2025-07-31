@@ -41,6 +41,7 @@ Update the following variables in `.env`:
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_KEY`: Your Supabase service role key
 - `STRIPE_SECRET_KEY`: Your Stripe test secret key
+- `STRIPE_WEBHOOK_SECRET`: Your Stripe webhook signing secret
 
 ### 3. Supabase Setup
 
@@ -54,8 +55,25 @@ Update the following variables in `.env`:
 1. Go to [Stripe Dashboard](https://dashboard.stripe.com/test)
 2. Ensure you're in Test Mode
 3. Get your test secret key from the API keys section
+4. Set up a webhook endpoint:
+   - Go to Webhooks in your Stripe dashboard
+   - Add endpoint: `https://yourdomain.com/purchase/webhook`
+   - Select these events:
+     - `checkout.session.completed`
+     - `payment_intent.succeeded`
+     - `payment_intent.payment_failed`
+     - `charge.dispute.created`
+   - Copy the webhook signing secret
 
-### 5. Run the Application
+### 5. Test Stripe Integration
+
+Run the test script to verify your Stripe configuration:
+
+```bash
+python test_stripe.py
+```
+
+### 6. Run the Application
 
 ```bash
 uvicorn app.main:app --reload
@@ -83,8 +101,14 @@ The API will be available at `http://localhost:8000`
 - `GET /products` - Browse all products with search, filtering, sorting, and pagination
 - `GET /products/categories` - Get available categories with counts
 - `GET /products/category/{category}` - Get products by category
-- `POST /purchase/{product_id}` - Purchase a product
-- `GET /purchase/mypurchases` - View purchased items
+- `POST /purchase/{product_id}` - Create Stripe checkout session for product purchase
+- `GET /purchase/mypurchases` - View completed purchased items
+- `GET /purchase/stats` - Get purchase statistics
+- `GET /purchase/session/{session_id}` - Get purchase status by Stripe session ID
+
+### Payments & Webhooks
+
+- `POST /purchase/webhook` - Stripe webhook endpoint for payment confirmations
 
 ### Download (requires authentication + purchase)
 

@@ -4,7 +4,7 @@ from app.db.session import get_db
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.product import Product
-from app.models.purchase import Purchase
+from app.models.purchase import Purchase, PaymentStatus
 from app.services.storage_service import storage_service
 
 router = APIRouter()
@@ -25,16 +25,17 @@ def download_product(
     is_creator_owner = current_user.is_creator and product.creator_id == current_user.id
     
     if not is_creator_owner:
-        # If not the creator, check if user has purchased the product
+        # If not the creator, check if user has completed purchase of the product
         purchase = db.query(Purchase).filter(
             Purchase.user_id == current_user.id,
-            Purchase.product_id == product_id
+            Purchase.product_id == product_id,
+            Purchase.payment_status == PaymentStatus.COMPLETED
         ).first()
         
         if not purchase:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="You must purchase this product before downloading, or you don't have access rights"
+                detail="You must complete the purchase of this product before downloading"
             )
     
     # Generate signed URL (valid for 45 seconds)

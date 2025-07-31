@@ -1,86 +1,136 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.db.session import get_db
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.product import Product
-from app.models.purchase import Purchase
-from app.schemas.purchase import PurchaseResponse, PurchaseWithProduct, PurchaseRequest
-from app.services.product_service import get_product_by_id
-from app.core.stripe import create_checkout_session
+from app.models.purchase import Purchase, PaymentStatus
+from app.schemas.purchase import (
+    PurchaseResponse, 
+    PurchaseWithProduct, 
+    PurchaseRequest, 
+    CheckoutSessionResponse,
+    WebhookEventResponse,
+    PurchaseStatsResponse
+)
+from app.services.purchase_service import PurchaseService
+from app.services.webhook_service import StripeWebhookService
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
-@router.post("/{product_id}", response_model=dict)
-def purchase_product(
+@router.post("/{product_id}", response_model=CheckoutSessionResponse)
+def create_purchase_checkout(
     product_id: int,
-    purchase_data: PurchaseRequest = PurchaseRequest(),
+    purchase_data: PurchaseRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Create purchase (simulated for demo, can be extended with real Stripe integration)"""
-    # Validate product ID
-    if product_id <= 0:
-        raise HTTPException(status_code=400, detail="Invalid product ID")
+    """Create a Stripe checkout session for product purchase"""
     
-    # Get product
-    product = get_product_by_id(db, product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+    logger.info(f"Creating purchase checkout for product {product_id} by user {current_user.id}")
     
-    # Check if user is trying to buy their own product
-    if product.creator_id == current_user.id:
-        raise HTTPException(status_code=400, detail="Cannot purchase your own product")
+    try:
+        checkout_data = PurchaseService.create_checkout_session(
+            db=db,
+            product_id=product_id,
+            user_id=current_user.id,
+            success_url=purchase_data.success_url,
+            cancel_url=purchase_data.cancel_url
+        )
+        
+        return CheckoutSessionResponse(
+            checkout_url=checkout_data["checkout_url"],
+            session_id=checkout_data["session_id"],
+            expires_at=checkout_data["expires_at"]
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating checkout session: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail="Failed to create checkout session"
+        )
+
+@router.post("/webhook", response_model=WebhookEventResponse)
+async def stripe_webhook(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Handle Stripe webhook events"""
     
-    # Check if already purchased
-    existing_purchase = db.query(Purchase).filter(
-        Purchase.user_id == current_user.id,
-        Purchase.product_id == product_id
-    ).first()
+    payload = await request.body()
+    sig_header = request.headers.get('stripe-signature')
     
-    if existing_purchase:
-        raise HTTPException(status_code=400, detail="Product already purchased")
+    if not sig_header:
+        raise HTTPException(status_code=400, detail="Missing stripe-signature header")
     
-    # Validate price
-    if product.price <= 0:
-        raise HTTPException(status_code=400, detail="Product price is invalid")
+    try:
+        result = StripeWebhookService.handle_webhook_event(
+            db=db,
+            payload=payload,
+            sig_header=sig_header
+        )
+        
+        return WebhookEventResponse(
+            message=result["message"],
+            purchase_id=result.get("purchase_id"),
+            payment_status=result.get("payment_status")
+        )
+        
+    except ValueError as e:
+        logger.error(f"Webhook signature verification failed: {str(e)}")
+        raise HTTPException(status_code=400, detail="Invalid signature")
+    except Exception as e:
+        logger.error(f"Webhook processing error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Webhook processing failed")
+
+@router.get("/session/{session_id}", response_model=PurchaseResponse)
+def get_purchase_by_session(
+    session_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get purchase information by Stripe session ID"""
     
-    # For demo purposes, simulate successful payment and create purchase record
-    purchase = Purchase(
-        user_id=current_user.id,
-        product_id=product_id
-    )
-    db.add(purchase)
-    db.commit()
-    db.refresh(purchase)
+    purchase = PurchaseService.get_purchase_by_session(db, session_id)
     
-    return {
-        "message": "Purchase successful (simulated)",
-        "purchase_id": purchase.id,
-        "product_title": product.title,
-        "amount_paid": product.price,
-        "payment_method": purchase_data.payment_method
-    }
+    if not purchase:
+        raise HTTPException(status_code=404, detail="Purchase not found")
+    
+    # Ensure user can only access their own purchases
+    if purchase.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    return purchase
 
 @router.get("/mypurchases", response_model=List[PurchaseWithProduct])
 def get_my_purchases(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Buyer-only: list purchased items with enhanced product details"""
+    """Get user's completed purchases with product details"""
+    
     purchases = db.query(Purchase, Product).join(
         Product, Purchase.product_id == Product.id
     ).filter(
         Purchase.user_id == current_user.id,
+        Purchase.payment_status == PaymentStatus.COMPLETED,
         Product.is_active == True
-    ).order_by(Purchase.created_at.desc()).all()
+    ).order_by(Purchase.completed_at.desc()).all()
     
     return [
         PurchaseWithProduct(
             id=purchase.id,
             product_id=purchase.product_id,
             created_at=purchase.created_at,
+            completed_at=purchase.completed_at,
+            amount_paid=purchase.amount_paid,
+            payment_status=purchase.payment_status,
             product_title=product.title,
             product_description=product.description,
             product_price=product.price,
@@ -90,3 +140,70 @@ def get_my_purchases(
         )
         for purchase, product in purchases
     ]
+
+@router.get("/stats", response_model=PurchaseStatsResponse)
+def get_purchase_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get purchase statistics for the current user"""
+    
+    stats = PurchaseService.get_purchase_stats(db, current_user.id)
+    
+    return PurchaseStatsResponse(**stats)
+
+@router.post("/verify/{session_id}", response_model=PurchaseResponse)
+def verify_payment_status(
+    session_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Manually verify and update payment status by checking Stripe directly"""
+    
+    try:
+        # Get the purchase record
+        purchase = PurchaseService.get_purchase_by_session(db, session_id)
+        
+        if not purchase:
+            raise HTTPException(status_code=404, detail="Purchase not found")
+        
+        # Ensure user can only verify their own purchases
+        if purchase.user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # If already completed, return as is
+        if purchase.payment_status == PaymentStatus.COMPLETED:
+            return purchase
+        
+        # Check Stripe session status
+        from app.core.stripe import StripeService
+        
+        stripe_session = StripeService.get_session(session_id)
+        
+        if stripe_session.payment_status == "paid":
+            # Payment is complete, update our record
+            purchase = PurchaseService.complete_purchase(
+                db=db,
+                session_id=session_id,
+                payment_intent_id=stripe_session.payment_intent
+            )
+            logger.info(f"Manually verified and completed purchase {purchase.id}")
+        elif stripe_session.payment_status == "unpaid":
+            # Payment failed or expired
+            purchase = PurchaseService.fail_purchase(
+                db=db,
+                session_id=session_id,
+                reason="Payment not completed"
+            )
+            logger.info(f"Manually verified and marked purchase {purchase.id} as failed")
+        
+        return purchase
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error verifying payment status: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail="Failed to verify payment status"
+        )
