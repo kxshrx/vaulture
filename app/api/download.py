@@ -15,23 +15,27 @@ def download_product(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Requires login + purchase check"""
-    # Check if user has purchased this product
-    purchase = db.query(Purchase).filter(
-        Purchase.user_id == current_user.id,
-        Purchase.product_id == product_id
-    ).first()
-    
-    if not purchase:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You must purchase this product before downloading"
-        )
-    
-    # Get product details
+    """Download product - requires either purchase or ownership (creator)"""
+    # Get product details first
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Check user rights: either creator owns the product OR user has purchased it
+    is_creator_owner = current_user.is_creator and product.creator_id == current_user.id
+    
+    if not is_creator_owner:
+        # If not the creator, check if user has purchased the product
+        purchase = db.query(Purchase).filter(
+            Purchase.user_id == current_user.id,
+            Purchase.product_id == product_id
+        ).first()
+        
+        if not purchase:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You must purchase this product before downloading, or you don't have access rights"
+            )
     
     # Generate signed URL (valid for 45 seconds)
     signed_url = storage_service.get_signed_url(product.file_url, expires_in=45)
@@ -39,5 +43,6 @@ def download_product(
     return {
         "download_url": signed_url,
         "expires_in": 45,
-        "product_title": product.title
+        "product_title": product.title,
+        "access_type": "owner" if is_creator_owner else "purchased"
     }
