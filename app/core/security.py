@@ -61,9 +61,14 @@ def get_current_user(
     return user
 
 def require_creator(user: User = Depends(get_current_user)):
+    """Require user to be a creator for creator-only endpoints"""
     if not user.is_creator:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only creators allowed"
         )
     return user
+
+def allow_creator_purchases(user: User = Depends(get_current_user)):
+    """Allow both creators and buyers to make purchases - creators can buy from other creators"""
+    return user  # Any authenticated user can purchase
