@@ -33,11 +33,11 @@ def download_product(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Generate signed URL (valid for 60 seconds)
-    signed_url = storage_service.get_signed_url(product.file_url, expires_in=60)
+    # Generate signed URL (valid for 45 seconds)
+    signed_url = storage_service.get_signed_url(product.file_url, expires_in=45)
     
     return {
         "download_url": signed_url,
-        "expires_in": 60,
+        "expires_in": 45,
         "product_title": product.title
     }

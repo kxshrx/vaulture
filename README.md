@@ -74,19 +74,58 @@ The API will be available at `http://localhost:8000`
 
 ### Creator (requires creator role)
 
-- `POST /creator/upload` - Upload product with file
+- `POST /creator/upload` - Upload product with file and optional thumbnail
 - `GET /creator/products` - List your products
 - `GET /creator/stats` - View sales analytics
 
 ### Buyer
 
-- `GET /products` - Browse all products (public)
+- `GET /products` - Browse all products with search, filtering, sorting, and pagination
+- `GET /products/categories` - Get available categories with counts
+- `GET /products/category/{category}` - Get products by category
 - `POST /purchase/{product_id}` - Purchase a product
 - `GET /purchase/mypurchases` - View purchased items
 
 ### Download (requires authentication + purchase)
 
 - `GET /download/{product_id}` - Get secure download link
+
+## New Features
+
+### 🔍 Advanced Search & Filtering
+
+- **Text Search**: Search in titles, descriptions, tags, and creator names
+- **Category Filtering**: Filter by product categories (Digital Art, Photography, Music, etc.)
+- **Price Range**: Filter by minimum and maximum price
+- **Tag-based Search**: Search by comma-separated tags
+- **Creator Filtering**: Find products by specific creators
+
+### 📄 Pagination & Sorting
+
+- **Pagination**: Configurable page size (1-100 items per page)
+- **Sorting**: Sort by creation date, price, title, or category
+- **Sort Direction**: Ascending or descending order
+- **Navigation**: Previous/next page indicators
+
+### 🏷️ Product Categories
+
+- **Predefined Categories**: Digital Art, Photography, Music, Video, eBooks, Software, Templates, Courses, Fonts, Graphics, Other
+- **Category Stats**: View product count per category
+- **Category Browsing**: Browse products by category
+
+### 🖼️ Image Thumbnails
+
+- **Product Images**: Upload optional thumbnail images for products
+- **File Validation**: Automatic file type and size validation
+- **Multiple Formats**: Support for various image formats
+
+### ✅ Enhanced Validation
+
+- **Input Validation**: Comprehensive Pydantic validation for all inputs
+- **File Type Restrictions**: Configurable allowed file types via environment variables
+- **File Size Limits**: Configurable maximum file size limits
+- **Password Validation**: Strong password requirements with character and number requirements
+- **Price Validation**: Logical price limits and formatting
 
 ## Database Schema
 
