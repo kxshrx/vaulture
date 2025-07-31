@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from app.api import auth, creator, buyer, purchase, download, platform
+from app.api import auth, creator, buyer, purchase, download, platform, profile
 from app.db.base import engine, Base
 
 # Create database tables
@@ -30,6 +30,7 @@ app.mount("/files", StaticFiles(directory="uploads"), name="files")
 
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(profile.router, prefix="/profile", tags=["User Profile"])
 app.include_router(creator.router, prefix="/creator", tags=["Creator"])
 app.include_router(buyer.router, prefix="", tags=["Buyer"])
 app.include_router(purchase.router, prefix="/purchase", tags=["Purchase"])

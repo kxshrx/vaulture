@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, Text, JSON
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -10,6 +10,12 @@ class User(Base):
     hashed_password = Column(String)
     is_creator = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
+    
+    # Profile fields
+    display_name = Column(String(50))
+    bio = Column(Text)
+    website = Column(String(200))
+    social_links = Column(JSON)  # Store social media links as JSON
     
     products = relationship("Product", back_populates="creator")
     purchases = relationship("Purchase", back_populates="user")
