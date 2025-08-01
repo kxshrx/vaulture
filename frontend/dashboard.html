@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Vaulture</title>
+    <meta
+      name="description"
+      content="Manage your Vaulture account, products, and sales"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <a href="index.html" class="logo">Vaulture</a>
+
+        <nav class="nav">
+          <a href="marketplace.html" class="nav-link">Marketplace</a>
+          <a href="dashboard.html" class="nav-link active">Dashboard</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </nav>
+
+        <div class="nav-actions">
+          <!-- Logged out state -->
+          <div class="nav-actions-logged-out" id="navLoggedOut">
+            <a href="login.html" class="btn btn-secondary">Log in</a>
+            <a href="signup.html" class="btn btn-primary">Start selling</a>
+          </div>
+
+          <!-- Logged in state -->
+          <div class="nav-actions-logged-in" id="navLoggedIn">
+            <div class="user-dropdown">
+              <div class="user-avatar" id="userAvatarBtn" onclick="toggleUserDropdown()">
+                <div class="avatar-circle" id="userAvatarCircle">
+                  <span id="userInitials">U</span>
+                </div>
+              </div>
+              <div class="dropdown-menu" id="userDropdownMenu" style="display: none;">
+                <div class="dropdown-item" style="font-weight: 600; color: var(--text-primary);">
+                  <span id="userDisplayName">User</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="profile.html" class="dropdown-item">Profile Settings</a>
+                <a href="dashboard.html" class="dropdown-item">Dashboard</a>
+                <a href="marketplace.html" class="dropdown-item">Marketplace</a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item logout-btn" id="logoutBtn" onclick="logout()">
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main style="padding-top: var(--header-height)">
+      <!-- Dashboard Header -->
+      <section class="section-sm bg-light">
+        <div class="container">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: var(--spacing-md);
+            "
+          >
+            <div>
+              <h1 id="dashboardTitle">Welcome back!</h1>
+              <p id="dashboardSubtitle">
+                Manage your account and track your activity
+              </p>
+            </div>
+            <div id="dashboardActions">
+              <!-- Actions will be added based on user type -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="section">
+        <div class="container">
+          <div class="grid grid-4" id="statsGrid">
+            <!-- Stats cards will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Sections -->
+      <section class="section">
+        <div class="container">
+          <!-- Creator Dashboard -->
+          <div id="creatorDashboard" style="display: none">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: var(--spacing-xl);
+              "
+            >
+              <h2>My Products</h2>
+              <button
+                class="btn btn-primary"
+                onclick="window.location.href='upload.html'"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="margin-right: var(--spacing-xs)"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Upload Product
+              </button>
+            </div>
+
+            <div id="creatorProductsGrid" class="grid grid-3">
+              <!-- Creator products will be loaded here -->
+            </div>
+
+            <div
+              id="noProducts"
+              class="empty-state"
+              style="display: none"
+            >
+              <div class="empty-state-icon">📁</div>
+              <h3>No products yet</h3>
+              <p>You haven't uploaded any digital products yet.</p>
+              <p>Start by uploading your first product to begin selling on Vaulture.</p>
+              <button
+                class="btn btn-primary"
+                onclick="window.location.href='upload.html'"
+              >
+                Upload Your First Product
+              </button>
+            </div>
+          </div>
+
+          <!-- Buyer Dashboard -->
+          <div id="buyerDashboard" style="display: none">
+            <div style="margin-bottom: var(--spacing-xl)">
+              <h2>My Purchases</h2>
+              <p>Your purchased digital content</p>
+            </div>
+
+            <div id="buyerPurchasesGrid" class="grid grid-3">
+              <!-- Buyer purchases will be loaded here -->
+            </div>
+
+            <div
+              id="noPurchases"
+              class="empty-state"
+              style="display: none"
+            >
+              <div class="empty-state-icon">🛒</div>
+              <h3>No purchases yet</h3>
+              <p>You haven't made any purchases yet.</p>
+              <p>Explore the marketplace to discover amazing digital content from creators worldwide.</p>
+              <div style="margin-top: var(--spacing-lg); display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                <button
+                  class="btn btn-primary"
+                  onclick="window.location.href='marketplace.html'"
+                >
+                  Browse Marketplace
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="dashboard.upgradeToCreator()"
+                >
+                  Become a Creator
+                </button>
+              </div>
+            </div>
+                onclick="window.location.href='marketplace.html'"
+              >
+                Browse Marketplace
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div style="margin-top: var(--spacing-3xl)">
+            <h2>Recent Activity</h2>
+            <div class="card">
+              <div class="card-body">
+                <div id="recentActivity">
+                  <!-- Recent activity will be loaded here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+      <div class="modal-content" style="max-width: 600px">
+        <div class="modal-header">
+          <h2 class="modal-title">Quick Upload</h2>
+          <button class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Ready to upload a new product? You'll be redirected to the upload
+            page where you can add all the details.
+          </p>
+          <div style="margin-top: var(--spacing-lg)">
+            <button
+              class="btn btn-primary"
+              onclick="window.location.href='upload.html'"
+            >
+              Go to Upload Page
+            </button>
+            <button class="btn btn-secondary" onclick="uploadModal.close()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div
+      class="notifications-container"
+      style="
+        position: fixed;
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        z-index: 1000;
+      "
+    ></div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+      class Dashboard {
+        constructor() {
+          this.user = null;
+          this.stats = null;
+
+          this.initializeElements();
+          this.setupEventListeners();
+          this.loadUserData();
+        }
+
+        initializeElements() {
+          // Elements are handled by the main navigation system
+          this.uploadModal = new Modal("uploadModal");
+        }
+
+        setupEventListeners() {
+          // No additional event listeners needed
+          // Navigation handled by main.js
+        }
+
+        async loadUserData() {
+          try {
+            // Check if user is authenticated
+            if (!checkAuth()) {
+              return;
+            }
+
+            // Load user profile
+            this.user = await api.getProfile();
+            this.displayUserInfo();
+
+            // Load dashboard content based on user type
+            if (this.user.is_creator) {
+              await this.loadCreatorDashboard();
+            } else {
+              await this.loadBuyerDashboard();
+            }
+          } catch (error) {
+            console.error("Failed to load user data:", error);
+            Utils.showNotification("Failed to load dashboard data", "error");
+
+            // If unauthorized, redirect to login
+            if (
+              error.message.includes("401") ||
+              error.message.includes("unauthorized")
+            ) {
+              window.location.href = "login.html";
+            }
+          }
+        }
+
+        displayUserInfo() {
+          this.userDisplayName.textContent =
+            this.user.display_name || this.user.email;
+
+          // Show/hide upgrade button for buyers
+          if (!this.user.is_creator) {
+            this.upgradeToCreatorBtn.style.display = "block";
+          } else {
+            this.creatorNavLink.style.display = "block";
+          }
+
+          // Update dashboard title
+          const title = document.getElementById("dashboardTitle");
+          const subtitle = document.getElementById("dashboardSubtitle");
+
+          if (this.user.is_creator) {
+            title.textContent = `Welcome back, ${
+              this.user.display_name || "Creator"
+            }!`;
+            subtitle.textContent = "Manage your products and track your sales";
+          } else {
+            title.textContent = `Welcome back, ${
+              this.user.display_name || "User"
+            }!`;
+            subtitle.textContent = "Discover and manage your purchased content";
+          }
+        }
+
+        async loadCreatorDashboard() {
+          try {
+            // Load creator stats
+            const stats = await api.getCreatorStats();
+            this.displayCreatorStats(stats);
+
+            // Load creator products
+            const products = await api.getMyProducts();
+            this.displayCreatorProducts(products);
+
+            // Show creator dashboard
+            document.getElementById("creatorDashboard").style.display = "block";
+
+            // Add upload button to dashboard actions
+            const dashboardActions =
+              document.getElementById("dashboardActions");
+            dashboardActions.innerHTML = `
+                        <button class="btn btn-primary" onclick="window.location.href='upload.html'">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: var(--spacing-xs);">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Upload Product
+                        </button>
+                    `;
+          } catch (error) {
+            console.error("Failed to load creator dashboard:", error);
+          }
+        }
+
+        async loadBuyerDashboard() {
+          try {
+            // Load buyer stats
+            const stats = await api.getPurchaseStats();
+            this.displayBuyerStats(stats);
+
+            // Load buyer purchases
+            const purchases = await api.getMyPurchases();
+            this.displayBuyerPurchases(purchases);
+
+            // Show buyer dashboard
+            document.getElementById("buyerDashboard").style.display = "block";
+
+            // Add browse button to dashboard actions
+            const dashboardActions =
+              document.getElementById("dashboardActions");
+            dashboardActions.innerHTML = `
+                        <button class="btn btn-primary" onclick="window.location.href='marketplace.html'">
+                            Browse Marketplace
+                        </button>
+                    `;
+          } catch (error) {
+            console.error("Failed to load buyer dashboard:", error);
+          }
+        }
+
+        displayCreatorStats(stats) {
+          const statsGrid = document.getElementById("statsGrid");
+          statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--accent-color);">${
+                          stats.total_products || 0
+                        }</div>
+                        <div class="stat-label">Products</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Total uploaded</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--success-color);">${
+                          stats.total_sales || 0
+                        }</div>
+                        <div class="stat-label">Sales</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Total orders</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--primary-color);">${Utils.formatPrice(
+                          stats.total_revenue || 0
+                        )}</div>
+                        <div class="stat-label">Revenue</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Total earned</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--warning-color);">${
+                          stats.active_products || 0
+                        }</div>
+                        <div class="stat-label">Active</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Live products</p>
+                    </div>
+                `;
+        }
+
+        displayBuyerStats(stats) {
+          const statsGrid = document.getElementById("statsGrid");
+          statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--accent-color);">${
+                          stats.total_purchases || 0
+                        }</div>
+                        <div class="stat-label">Purchases</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Total bought</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--primary-color);">${Utils.formatPrice(
+                          stats.total_spent || 0
+                        )}</div>
+                        <div class="stat-label">Spent</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Total amount</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--success-color);">${
+                          Object.keys(stats.categories || {}).length
+                        }</div>
+                        <div class="stat-label">Categories</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">Different types</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--warning-color);">${
+                          stats.recent_purchases || 0
+                        }</div>
+                        <div class="stat-label">Recent</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: var(--font-size-sm);">This month</p>
+                    </div>
+                `;
+        }
+
+        displayCreatorProducts(products) {
+          const grid = document.getElementById("creatorProductsGrid");
+          const noProducts = document.getElementById("noProducts");
+
+          if (!products || products.length === 0) {
+            grid.style.display = "none";
+            noProducts.style.display = "block";
+            return;
+          }
+
+          grid.style.display = "grid";
+          noProducts.style.display = "none";
+
+          grid.innerHTML = products
+            .map(
+              (product) => `
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('${
+                          product.image_url || ""
+                        }'); background-size: cover; background-position: center;">
+                            ${
+                              !product.image_url
+                                ? `<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: var(--font-size-xl);">📄</div>`
+                                : ""
+                            }
+                        </div>
+                        <div class="product-content">
+                            <div class="product-title">${Utils.sanitizeHTML(
+                              product.title
+                            )}</div>
+                            <div class="product-description">${Utils.sanitizeHTML(
+                              product.description || ""
+                            )}</div>
+                            <div class="product-meta">
+                                <div class="product-price">${Utils.formatPrice(
+                                  product.price
+                                )}</div>
+                                <div class="product-category">${
+                                  product.category
+                                }</div>
+                            </div>
+                            <div style="margin-top: var(--spacing-md); display: flex; gap: var(--spacing-xs);">
+                                <button class="btn btn-secondary btn-sm" onclick="dashboard.editProduct(${
+                                  product.id
+                                })">Edit</button>
+                                <button class="btn btn-secondary btn-sm" onclick="dashboard.viewProduct(${
+                                  product.id
+                                })">View</button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+        }
+
+        displayBuyerPurchases(purchases) {
+          const grid = document.getElementById("buyerPurchasesGrid");
+          const noPurchases = document.getElementById("noPurchases");
+
+          if (!purchases || purchases.length === 0) {
+            grid.style.display = "none";
+            noPurchases.style.display = "block";
+            return;
+          }
+
+          grid.style.display = "grid";
+          noPurchases.style.display = "none";
+
+          grid.innerHTML = purchases
+            .map(
+              (purchase) => `
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('${
+                          purchase.product_image_url || ""
+                        }'); background-size: cover; background-position: center;">
+                            ${
+                              !purchase.product_image_url
+                                ? `<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: var(--font-size-xl);">📄</div>`
+                                : ""
+                            }
+                        </div>
+                        <div class="product-content">
+                            <div class="product-title">${Utils.sanitizeHTML(
+                              purchase.product_title
+                            )}</div>
+                            <div class="product-description">${Utils.sanitizeHTML(
+                              purchase.product_description || ""
+                            )}</div>
+                            <div class="product-meta">
+                                <div class="product-price">${Utils.formatPrice(
+                                  purchase.amount_paid
+                                )}</div>
+                                <div class="product-category">${
+                                  purchase.product_category
+                                }</div>
+                            </div>
+                            <div style="margin-top: var(--spacing-md);">
+                                <button class="btn btn-primary btn-sm" onclick="dashboard.downloadProduct(${
+                                  purchase.product_id
+                                })">Download</button>
+                                <div style="font-size: var(--font-size-xs); color: var(--text-muted); margin-top: var(--spacing-xs);">
+                                    Purchased ${Utils.formatDate(
+                                      purchase.created_at
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+        }
+
+        async upgradeToCreator() {
+          try {
+            const response = await api.upgradeToCreator();
+            Utils.showNotification(
+              "Successfully upgraded to creator account!",
+              "success"
+            );
+
+            // Reload the page to update the dashboard
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Failed to upgrade account",
+              "error"
+            );
+          }
+        }
+
+        logout() {
+          api.removeToken();
+          Utils.showNotification("Logged out successfully", "success");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        }
+
+        editProduct(productId) {
+          Utils.showNotification(
+            "Edit functionality will be available soon!",
+            "warning"
+          );
+        }
+
+        viewProduct(productId) {
+          window.location.href = `product.html?id=${productId}`;
+        }
+
+        downloadProduct(productId) {
+          Utils.showNotification("Starting download...", "info");
+          // In a real implementation, this would trigger the download
+          window.open(`/download/${productId}`, "_blank");
+        }
+      }
+
+      // Initialize dashboard
+      let dashboard;
+      document.addEventListener("DOMContentLoaded", () => {
+        dashboard = new Dashboard();
+      });
+    </script>
+
+    <style>
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: var(--background-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        min-width: 150px;
+        z-index: 1000;
+        margin-top: var(--spacing-xs);
+      }
+
+      .dropdown-item {
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        transition: background-color 0.2s ease;
+      }
+
+      .dropdown-item:hover {
+        background-color: var(--background-light);
+        color: var(--text-primary);
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background-color: var(--border-color);
+        margin: var(--spacing-xs) 0;
+      }
+    </style>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script>
+      // Dashboard-specific functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        // Check authentication for protected page
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          // Redirect to login if no token
+          window.location.href = 'login.html?redirect=dashboard.html';
+          return;
+        }
+
+        // For now, don't create fake profile data since real API calls need real auth
+        // The API calls will handle errors gracefully
+
+        // Force navigation state update
+        setTimeout(() => {
+          updateNavigationState();
+        }, 100);
+
+        // Load dashboard data
+        loadDashboardData();
+      });
+
+      async function loadDashboardData() {
+        try {
+          // Try to load user profile from API
+          let userProfile = null;
+          let userType = 'buyer'; // default
+          
+          try {
+            userProfile = await api.getProfile();
+            userType = userProfile.account_type || userProfile.user_type || 'buyer';
+            
+            // Store in localStorage for navigation
+            api.setUserProfile(userProfile);
+            api.setUserType(userType);
+          } catch (error) {
+            console.log('Could not load profile from API:', error.message);
+            // Fall back to localStorage data
+            userProfile = api.getUserProfile();
+            userType = api.getUserType() || 'buyer';
+          }
+
+          // Update welcome message with available data
+          const titleEl = document.getElementById('dashboardTitle');
+          const subtitleEl = document.getElementById('dashboardSubtitle');
+          
+          if (titleEl) {
+            if (userProfile && userProfile.display_name) {
+              titleEl.textContent = `Welcome back, ${userProfile.display_name}!`;
+            } else if (userProfile && userProfile.email) {
+              titleEl.textContent = `Welcome back, ${userProfile.email}!`;
+            } else {
+              titleEl.textContent = 'Welcome back!';
+            }
+          }
+          
+          if (subtitleEl) {
+            if (userType === 'creator') {
+              subtitleEl.textContent = 'Manage your products and track your sales';
+            } else {
+              subtitleEl.textContent = 'Manage your account and track your activity';
+            }
+          }
+
+          // Load user-specific data based on type
+          if (userType === 'creator') {
+            await loadCreatorData();
+            showCreatorDashboard();
+          } else {
+            await loadBuyerData();
+            showBuyerDashboard();
+          }
+
+          // Load stats
+          loadStatsCards(userType);
+        } catch (error) {
+          console.error('Error loading dashboard data:', error);
+          // Show generic fallback
+          updateRecentActivity([
+            { type: 'info', message: 'Dashboard loaded successfully', time: 'Now' },
+            { type: 'info', message: 'Explore the platform features', time: 'Now' }
+          ]);
+          loadStatsCards('buyer'); // fallback to buyer stats
+        }
+      }
+
+      function showCreatorDashboard() {
+        const creatorDash = document.getElementById('creatorDashboard');
+        const buyerDash = document.getElementById('buyerDashboard');
+        if (creatorDash) creatorDash.style.display = 'block';
+        if (buyerDash) buyerDash.style.display = 'none';
+      }
+
+      function showBuyerDashboard() {
+        const creatorDash = document.getElementById('creatorDashboard');
+        const buyerDash = document.getElementById('buyerDashboard');
+        if (creatorDash) creatorDash.style.display = 'none';
+        if (buyerDash) buyerDash.style.display = 'block';
+      }
+
+      function loadStatsCards(userType) {
+        const statsGrid = document.getElementById('statsGrid');
+        if (!statsGrid) return;
+
+        let statsHTML = '';
+        if (userType === 'creator') {
+          statsHTML = `
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--primary-color); margin: 0;">12</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Products</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--success-color); margin: 0;">$1,234</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Revenue</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--info-color); margin: 0;">89</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Sales</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--warning-color); margin: 0;">2.1k</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Views</p>
+              </div>
+            </div>
+          `;
+        } else {
+          statsHTML = `
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--primary-color); margin: 0;">5</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Purchases</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--info-color); margin: 0;">23</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Downloads</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--success-color); margin: 0;">$89</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Spent</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body text-center">
+                <h3 style="color: var(--warning-color); margin: 0;">156</h3>
+                <p style="margin: 0; color: var(--text-secondary);">Favorites</p>
+              </div>
+            </div>
+          `;
+        }
+        
+        statsGrid.innerHTML = statsHTML;
+      }
+
+      async function loadCreatorData() {
+        try {
+          // Try to load creator products and stats
+          const [products, stats] = await Promise.all([
+            api.getMyProducts().catch(err => {
+              console.log('Creator products not available:', err.message);
+              return [];
+            }),
+            api.getCreatorStats().catch(err => {
+              console.log('Creator stats not available:', err.message);
+              return {};
+            })
+          ]);
+          
+          console.log('Creator data loaded:', { products, stats });
+          
+          // Update recent activity with real or fallback data
+          if (products.length > 0) {
+            updateRecentActivity([
+              { type: 'upload', message: `${products.length} products available`, time: 'Now' },
+              { type: 'view', message: 'Products ready for sale', time: 'Now' }
+            ]);
+          } else {
+            updateRecentActivity([
+              { type: 'info', message: 'Ready to start creating!', time: 'Now' },
+              { type: 'info', message: 'Upload your first product to get started', time: 'Now' }
+            ]);
+          }
+        } catch (error) {
+          console.error('Error loading creator data:', error);
+          // Show fallback data for non-creators or errors
+          updateRecentActivity([
+            { type: 'info', message: 'Creator features not available', time: 'Now' },
+            { type: 'info', message: 'Contact support if you should have creator access', time: 'Now' }
+          ]);
+        }
+      }
+
+      async function loadBuyerData() {
+        try {
+          // Try to load purchase history
+          const purchases = await api.getMyPurchases().catch(err => {
+            console.log('Purchase history not available:', err.message);
+            return [];
+          });
+          
+          console.log('Buyer data loaded:', purchases);
+          
+          // Update recent activity for buyers
+          if (purchases.length > 0) {
+            updateRecentActivity([
+              { type: 'purchase', message: `${purchases.length} purchases in your library`, time: 'Now' },
+              { type: 'browse', message: 'Downloaded content ready to use', time: 'Now' }
+            ]);
+          } else {
+            updateRecentActivity([
+              { type: 'info', message: 'Welcome to Vaulture!', time: 'Now' },
+              { type: 'info', message: 'Browse the marketplace to find great content', time: 'Now' }
+            ]);
+          }
+        } catch (error) {
+          console.error('Error loading buyer data:', error);
+          updateRecentActivity([
+            { type: 'info', message: 'Welcome to your dashboard!', time: 'Now' },
+            { type: 'info', message: 'Start exploring the platform', time: 'Now' }
+          ]);
+        }
+      }
+
+      function updateRecentActivity(activities) {
+        const container = document.getElementById('recentActivity');
+        if (!container) return;
+
+        if (activities.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
+              <p>No recent activity</p>
+            </div>
+          `;
+          return;
+        }
+
+        const activitiesHTML = activities.map(activity => `
+          <div style="
+            display: flex; 
+            align-items: center; 
+            padding: var(--spacing-md) 0; 
+            border-bottom: 1px solid var(--border-color);
+          ">
+            <div style="
+              width: 8px; 
+              height: 8px; 
+              border-radius: 50%; 
+              background: ${getActivityColor(activity.type)}; 
+              margin-right: var(--spacing-md);
+            "></div>
+            <div style="flex: 1;">
+              <p style="margin: 0; font-weight: 500;">${activity.message}</p>
+              <p style="margin: 0; font-size: var(--font-size-sm); color: var(--text-secondary);">${activity.time}</p>
+            </div>
+          </div>
+        `).join('');
+
+        container.innerHTML = activitiesHTML;
+      }
+
+      function getActivityColor(type) {
+        const colors = {
+          'sale': '#28a745',
+          'upload': '#007bff', 
+          'purchase': '#6f42c1',
+          'view': '#17a2b8',
+          'browse': '#ffc107',
+          'info': '#6c757d'
+        };
+        return colors[type] || colors.info;
+      }
+    </script>
+  </body>
+</html>

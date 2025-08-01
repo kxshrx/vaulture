@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up - Vaulture</title>
+    <meta
+      name="description"
+      content="Create your Vaulture account and start selling digital content"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header" style="position: fixed; top: 0; z-index: 1000">
+      <div class="header-content">
+        <a href="index.html" class="logo">Vaulture</a>
+
+        <nav class="nav">
+          <a href="marketplace.html" class="nav-link">Marketplace</a>
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="profile.html" class="nav-link">Profile</a>
+        </nav>
+
+        <div class="nav-actions">
+          <!-- Signup page shows login option -->
+          <div class="nav-actions-logged-out" id="navLoggedOut">
+            <a href="login.html" class="btn btn-secondary">Log in</a>
+          </div>
+
+          <!-- If somehow logged in, show avatar -->
+          <div class="nav-actions-logged-in" id="navLoggedIn">
+            <div
+              class="user-avatar"
+              onclick="window.location.href='profile.html'"
+            >
+              <div class="avatar-circle">
+                <span id="navAvatarInitials">U</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="signup-main">
+      <div class="signup-container">
+        <!-- Left Column - Account Type Selection -->
+        <div class="signup-left">
+          <div class="signup-left-content">
+            <div class="signup-header">
+              <h1>Create your account</h1>
+              <p>Choose how you want to join Vaulture and start your journey</p>
+            </div>
+
+            <div class="account-type-selection">
+              <h3>What brings you here?</h3>
+
+              <button
+                type="button"
+                id="buyerBtn"
+                class="account-type-option active"
+                data-type="buyer"
+              >
+                <div class="account-type-icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path
+                      d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="account-type-content">
+                  <h4>I'm a Buyer</h4>
+                  <p>Discover and purchase amazing digital content</p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                id="creatorBtn"
+                class="account-type-option"
+                data-type="creator"
+              >
+                <div class="account-type-icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="account-type-content">
+                  <h4>I'm a Creator</h4>
+                  <p>Sell digital content and build your audience</p>
+                </div>
+              </button>
+            </div>
+
+            <div class="signup-features">
+              <div class="feature-item">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                </svg>
+                <span>Secure payments</span>
+              </div>
+              <div class="feature-item">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
+                  <circle cx="12" cy="16" r="1"></circle>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Privacy protected</span>
+              </div>
+              <div class="feature-item">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M14 9V5a3 3 0 0 0-6 0v4"></path>
+                  <rect x="2" y="9" width="20" height="12" rx="2" ry="2"></rect>
+                </svg>
+                <span>24/7 support</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Form -->
+        <div class="signup-right">
+          <div class="signup-right-content">
+            <!-- Signup Form -->
+            <form id="signupForm" class="form">
+              <input
+                type="hidden"
+                id="accountType"
+                name="accountType"
+                value="buyer"
+              />
+
+              <!-- Common fields for both buyers and creators -->
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  placeholder="Enter your email"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+
+              <!-- Display Name - required for all users -->
+              <div class="form-group">
+                <label for="displayName" class="form-label">
+                  <span id="displayNameLabel">Name</span>
+                </label>
+                <input
+                  type="text"
+                  id="displayName"
+                  name="displayName"
+                  class="form-input"
+                  placeholder="Your name"
+                  required
+                  autocomplete="name"
+                />
+                <div class="form-help" id="displayNameHelp">
+                  How you'd like to be addressed
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div style="position: relative">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-input"
+                    placeholder="Create a password"
+                    required
+                    autocomplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    id="togglePassword"
+                    style="
+                      position: absolute;
+                      right: var(--spacing-md);
+                      top: 50%;
+                      transform: translateY(-50%);
+                      background: none;
+                      border: none;
+                      cursor: pointer;
+                      color: var(--text-muted);
+                    "
+                    aria-label="Toggle password visibility"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <div class="form-help">
+                  Must be at least 8 characters with letters and numbers
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label"
+                  >Confirm Password</label
+                >
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  class="form-input"
+                  placeholder="Confirm your password"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <!-- Creator-specific fields (hidden by default) -->
+              <div
+                id="creatorFields"
+                style="display: none; opacity: 0; transform: translateY(-10px)"
+              >
+                <div class="form-group">
+                  <label for="bio" class="form-label">Bio (Optional)</label>
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    class="form-input form-textarea"
+                    placeholder="Tell people about yourself and what you create"
+                    rows="3"
+                  ></textarea>
+                  <div class="form-help">
+                    This will appear on your creator profile
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="website" class="form-label"
+                    >Website (Optional)</label
+                  >
+                  <input
+                    type="url"
+                    id="website"
+                    name="website"
+                    class="form-input"
+                    placeholder="https://yourwebsite.com"
+                    autocomplete="url"
+                  />
+                  <div class="form-help">Link to your portfolio or website</div>
+                </div>
+              </div>
+
+              <!-- Terms and Privacy -->
+              <div style="margin-bottom: var(--spacing-lg)">
+                <label
+                  style="
+                    display: flex;
+                    align-items: flex-start;
+                    gap: var(--spacing-xs);
+                    font-size: var(--font-size-sm);
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    required
+                    style="margin-top: 2px"
+                  />
+                  <span>
+                    I agree to the
+                    <a href="terms.html" target="_blank">Terms of Service</a>
+                    and
+                    <a href="privacy.html" target="_blank">Privacy Policy</a>
+                  </span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full">
+                Create Account
+              </button>
+            </form>
+
+            <!-- Social Signup -->
+            <div style="margin: var(--spacing-xl) 0">
+              <div
+                style="
+                  position: relative;
+                  text-align: center;
+                  margin: var(--spacing-lg) 0;
+                "
+              >
+                <hr
+                  style="
+                    border: none;
+                    border-top: 1px solid var(--border-color);
+                  "
+                />
+                <span
+                  style="
+                    position: absolute;
+                    top: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--background-white);
+                    padding: 0 var(--spacing-md);
+                    color: var(--text-muted);
+                    font-size: var(--font-size-sm);
+                  "
+                  >or</span
+                >
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--spacing-md);
+                "
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-full social-btn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    />
+                  </svg>
+                  Continue with Google
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-full social-btn"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="#1877F2"
+                  >
+                    <path
+                      d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                    />
+                  </svg>
+                  Continue with Facebook
+                </button>
+              </div>
+            </div>
+
+            <!-- Login link -->
+            <div class="text-center">
+              <p style="color: var(--text-secondary)">
+                Already have an account?
+                <a
+                  href="login.html"
+                  style="color: var(--text-primary); font-weight: 500"
+                  >Log in</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Notifications Container -->
+    <div
+      class="notifications-container"
+      style="
+        position: fixed;
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        z-index: 1000;
+      "
+    ></div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("signupForm");
+        const formHandler = new FormHandler(form);
+        const creatorBtn = document.getElementById("creatorBtn");
+        const buyerBtn = document.getElementById("buyerBtn");
+        const accountTypeInput = document.getElementById("accountType");
+        const creatorFields = document.getElementById("creatorFields");
+        const displayNameInput = document.getElementById("displayName");
+        const displayNameLabel = document.getElementById("displayNameLabel");
+        const displayNameHelp = document.getElementById("displayNameHelp");
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+
+        // Account type selection
+        function selectAccountType(type) {
+          accountTypeInput.value = type;
+
+          if (type === "creator") {
+            creatorBtn.classList.add("active");
+            buyerBtn.classList.remove("active");
+
+            // Smooth transition for showing creator fields
+            creatorFields.style.display = "block";
+            requestAnimationFrame(() => {
+              creatorFields.style.opacity = "1";
+              creatorFields.style.transform = "translateY(0)";
+            });
+
+            displayNameLabel.textContent = "Display Name";
+            displayNameHelp.textContent = "This will be shown on your products";
+          } else {
+            buyerBtn.classList.add("active");
+            creatorBtn.classList.remove("active");
+
+            // Smooth transition for hiding creator fields
+            creatorFields.style.opacity = "0";
+            creatorFields.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+              if (creatorFields.style.opacity === "0") {
+                creatorFields.style.display = "none";
+              }
+            }, 300);
+
+            displayNameLabel.textContent = "Name";
+            displayNameHelp.textContent = "How you'd like to be addressed";
+          }
+        }
+
+        // Set initial state to buyer
+        selectAccountType("buyer");
+
+        creatorBtn.addEventListener("click", () =>
+          selectAccountType("creator")
+        );
+        buyerBtn.addEventListener("click", () => selectAccountType("buyer"));
+
+        // Password visibility toggle
+        togglePassword.addEventListener("click", () => {
+          const type =
+            passwordInput.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordInput.setAttribute("type", type);
+
+          // Update icon
+          const icon = togglePassword.querySelector("svg");
+          if (type === "text") {
+            icon.innerHTML = `
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    `;
+          } else {
+            icon.innerHTML = `
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    `;
+          }
+        });
+
+        // Password confirmation validation
+        confirmPasswordInput.addEventListener("input", () => {
+          const password = passwordInput.value;
+          const confirmPassword = confirmPasswordInput.value;
+
+          if (confirmPassword && password !== confirmPassword) {
+            formHandler.showFieldErrors(confirmPasswordInput, [
+              "Passwords do not match",
+            ]);
+          } else {
+            formHandler.showFieldErrors(confirmPasswordInput, []);
+          }
+        });
+
+        // Form submission
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          if (!formHandler.validate()) {
+            return;
+          }
+
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const formData = formHandler.getData();
+
+          // Additional validation
+          if (formData.password !== formData.confirmPassword) {
+            Utils.showNotification("Passwords do not match", "error");
+            return;
+          }
+
+          if (!formData.terms) {
+            Utils.showNotification(
+              "Please accept the terms and conditions",
+              "error"
+            );
+            return;
+          }
+
+          try {
+            Utils.showLoading(submitBtn);
+
+            const userData = {
+              email: formData.email,
+              password: formData.password,
+              display_name: formData.displayName || null,
+              bio: formData.bio || null,
+              website: formData.website || null,
+            };
+
+            let response;
+            if (formData.accountType === "creator") {
+              response = await api.registerCreator(userData);
+            } else {
+              response = await api.registerBuyer(userData);
+            }
+
+            // Store the account type for future use
+            if (response.access_token) {
+              api.setUserType(formData.accountType);
+              if (response.user) {
+                api.setUserProfile(response.user);
+              }
+            }
+
+            Utils.showNotification(
+              "Account created successfully! Redirecting to login...",
+              "success"
+            );
+
+            // Redirect to login page
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 2000);
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Registration failed. Please try again.",
+              "error"
+            );
+          } finally {
+            Utils.hideLoading(submitBtn);
+          }
+        });
+
+        // Social signup handlers
+        document.querySelectorAll(".social-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            Utils.showNotification(
+              "Social signup will be available soon!",
+              "warning"
+            );
+          });
+        });
+      });
+    </script>
+
+    <style>
+      .account-type-btn {
+        background: var(--background-white);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-lg);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+
+      .account-type-btn:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .account-type-btn.active {
+        border-color: var(--accent-color);
+        background-color: rgba(255, 144, 232, 0.1);
+      }
+
+      .account-type-btn h3 {
+        margin: var(--spacing-xs) 0;
+        font-size: var(--font-size-base);
+      }
+
+      .account-type-btn p {
+        margin: 0;
+      }
+
+      #creatorFields {
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      #creatorFields.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,203 @@
+Creators Platform API
+ 1.0.0 
+OAS 3.1
+/openapi.json
+Digital Content Platform with Secure File Delivery
+
+
+Authorize
+Authentication
+
+
+POST
+/auth/register/creator
+Register Creator
+
+
+POST
+/auth/register/buyer
+Register Buyer
+
+
+POST
+/auth/login
+Login
+
+
+POST
+/auth/upgrade-to-creator
+Upgrade To Creator
+
+
+User Profile
+
+
+GET
+/profile/me
+Get My Profile
+
+
+
+PUT
+/profile/me
+Update My Profile
+
+
+
+DELETE
+/profile/me
+Delete My Account
+
+
+
+POST
+/profile/me/change-password
+Change My Password
+
+
+
+GET
+/profile/search/users
+Search User Profiles
+
+Creator
+
+
+POST
+/creator/upload
+Upload Product
+
+
+
+GET
+/creator/products
+Get My Products
+
+
+
+GET
+/creator/stats
+Get Creator Statistics
+
+
+Buyer
+
+
+GET
+/products
+Get Products
+
+
+GET
+/products/categories
+Get Categories
+
+
+GET
+/products/category/{category}
+Get Products By Category Endpoint
+
+Purchase
+
+
+POST
+/purchase/{product_id}
+Create Purchase Checkout
+
+
+
+POST
+/purchase/webhook
+Stripe Webhook
+
+
+GET
+/purchase/session/{session_id}
+Get Purchase By Session
+
+
+
+GET
+/purchase/mypurchases
+Get My Purchases
+
+
+
+GET
+/purchase/mypurchases/all
+Get All My Purchases
+
+
+
+GET
+/purchase/stats
+Get Purchase Stats
+
+
+
+POST
+/purchase/verify/{session_id}
+Verify Payment Status
+
+
+Download
+
+
+GET
+/download/{product_id}
+Download Product
+
+
+Platform
+
+
+GET
+/platform/popular
+Get Popular Products Endpoint
+
+
+GET
+/platform/recent
+Get Recent Products Endpoint
+
+
+GET
+/platform/categories/stats
+Get Category Statistics
+
+default
+
+
+GET
+/
+Read Root
+
+
+GET
+/health
+Health Check
+
+
+Schemas
+Body_upload_product_creator_upload_postExpand allobject
+CheckoutSessionResponseExpand allobject
+HTTPValidationErrorExpand allobject
+LoginSchemaExpand allobject
+PasswordChangeRequestExpand allobject
+PaymentMethodTypeExpand allstring
+PaymentStatusExpand allstring
+ProductCategoryExpand allstring
+ProductListResponseExpand allobject
+ProductResponseExpand allobject
+ProductSearchResponseExpand allobject
+PurchaseRequestExpand allobject
+PurchaseResponseExpand allobject
+PurchaseStatsResponseExpand allobject
+PurchaseWithProductExpand allobject
+RegisterSchemaExpand allobject
+TokenSchemaExpand allobject
+UserProfileResponseExpand allobject
+UserProfileUpdateExpand allobject
+UserResponseExpand allobject
+ValidationErrorExpand allobject
+WebhookEventResponseExpand allobject

@@ -76,7 +76,7 @@ Thumbs.db
 
 # Uploads directory (for local development)
 uploads/
-
+references_uiux/
 # Logs
 *.log
 
@@ -84,3 +84,4 @@ uploads/
 *.tmp
 *.temp
 .cache/
+                                                        

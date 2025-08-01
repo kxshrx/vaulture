@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vaulture - Digital Content Platform</title>
+    <meta
+      name="description"
+      content="Sell your digital content, earn your first dollar online with Vaulture"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <a href="index.html" class="logo">Vaulture</a>
+
+        <nav class="nav">
+          <a href="marketplace.html" class="nav-link">Marketplace</a>
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="#about" class="nav-link">About</a>
+        </nav>
+
+        <div class="nav-actions">
+          <!-- Logged out state -->
+          <div class="nav-actions-logged-out" id="navLoggedOut">
+            <a href="login.html" class="btn btn-secondary">Log in</a>
+            <a href="signup.html" class="btn btn-primary">Start selling</a>
+          </div>
+
+          <!-- Logged in state -->
+          <div class="nav-actions-logged-in" id="navLoggedIn">
+            <div class="user-dropdown">
+              <div
+                class="user-avatar"
+                id="userAvatarBtn"
+                onclick="toggleUserDropdown()"
+              >
+                <div class="avatar-circle" id="userAvatarCircle">
+                  <span id="userInitials">U</span>
+                </div>
+              </div>
+              <div
+                class="dropdown-menu"
+                id="userDropdownMenu"
+                style="display: none"
+              >
+                <div
+                  class="dropdown-item"
+                  style="font-weight: 600; color: var(--text-primary)"
+                >
+                  <span id="userDisplayName">User</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="profile.html" class="dropdown-item"
+                  >Profile Settings</a
+                >
+                <a href="dashboard.html" class="dropdown-item">Dashboard</a>
+                <a href="marketplace.html" class="dropdown-item">Marketplace</a>
+                <div class="dropdown-divider"></div>
+                <button
+                  class="dropdown-item logout-btn"
+                  id="logoutBtn"
+                  onclick="logout()"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section
+        class="section"
+        style="padding-top: calc(var(--header-height) + var(--spacing-3xl))"
+      >
+        <div class="container text-center">
+          <h1 class="fade-in">
+            Sell your digital content,<br />earn your first dollar online
+          </h1>
+          <p
+            class="slide-up"
+            style="
+              font-size: var(--font-size-lg);
+              max-width: 600px;
+              margin: 0 auto var(--spacing-xl);
+            "
+          >
+            Upload any digital file and start selling instantly. No
+            restrictions, no complexity. Just simple, effective content
+            monetization.
+          </p>
+          <div class="slide-up">
+            <a href="signup.html" class="btn btn-primary btn-lg"
+              >Start selling today</a
+            >
+            <a
+              href="marketplace.html"
+              class="btn btn-secondary btn-lg"
+              style="margin-left: var(--spacing-md)"
+              >Browse content</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section id="features" class="section bg-light">
+        <div class="container">
+          <div class="text-center" style="margin-bottom: var(--spacing-3xl)">
+            <h2>Everything you need to sell digital content</h2>
+            <p>Simple tools for creators, secure experience for buyers</p>
+          </div>
+
+          <div class="grid grid-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  📁
+                </div>
+                <h3>Upload Anything</h3>
+                <p>
+                  No file type restrictions. Upload documents, images, videos,
+                  audio, archives, or any digital content you create.
+                </p>
+              </div>
+            </div>
+
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  💳
+                </div>
+                <h3>Secure Payments</h3>
+                <p>
+                  Integrated with Stripe for secure payment processing. Get paid
+                  instantly with automatic payouts.
+                </p>
+              </div>
+            </div>
+
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  📊
+                </div>
+                <h3>Analytics & Insights</h3>
+                <p>
+                  Track your sales, revenue, and customer behavior with detailed
+                  analytics and reporting.
+                </p>
+              </div>
+            </div>
+
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  🔒
+                </div>
+                <h3>Secure Delivery</h3>
+                <p>
+                  Files are securely delivered to buyers only after successful
+                  payment verification.
+                </p>
+              </div>
+            </div>
+
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  🎨
+                </div>
+                <h3>Custom Branding</h3>
+                <p>
+                  Customize your creator profile with bio, website links, and
+                  social media connections.
+                </p>
+              </div>
+            </div>
+
+            <div class="card text-center">
+              <div class="card-body">
+                <div
+                  style="
+                    font-size: var(--font-size-2xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  🚀
+                </div>
+                <h3>Easy Setup</h3>
+                <p>
+                  Get started in minutes. Upload your first product and start
+                  selling immediately.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Section -->
+      <section id="pricing" class="section bg-light">
+        <div class="container">
+          <div class="text-center" style="margin-bottom: var(--spacing-3xl)">
+            <h2>Simple, transparent pricing</h2>
+            <p>
+              Only pay when you make a sale. No monthly fees, no hidden costs.
+            </p>
+          </div>
+
+          <div class="grid grid-2" style="max-width: 800px; margin: 0 auto">
+            <div class="card">
+              <div class="card-header text-center">
+                <h3>For Buyers</h3>
+              </div>
+              <div class="card-body text-center">
+                <div
+                  style="
+                    font-size: var(--font-size-3xl);
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  Free
+                </div>
+                <p>
+                  Browse and purchase digital content with no additional fees
+                </p>
+                <ul style="text-align: left; margin: var(--spacing-lg) 0">
+                  <li>✓ Secure payments</li>
+                  <li>✓ Instant downloads</li>
+                  <li>✓ Purchase history</li>
+                  <li>✓ Customer support</li>
+                </ul>
+                <a href="signup.html" class="btn btn-secondary"
+                  >Sign up as buyer</a
+                >
+              </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--accent-color)">
+              <div
+                class="card-header text-center"
+                style="background-color: var(--accent-color)"
+              >
+                <h3>For Creators</h3>
+              </div>
+              <div class="card-body text-center">
+                <div
+                  style="
+                    font-size: var(--font-size-3xl);
+                    font-weight: 700;
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  5%
+                </div>
+                <p>Simple commission on each sale. No monthly fees.</p>
+                <ul style="text-align: left; margin: var(--spacing-lg) 0">
+                  <li>✓ Unlimited uploads</li>
+                  <li>✓ Analytics dashboard</li>
+                  <li>✓ Custom branding</li>
+                  <li>✓ Automatic payouts</li>
+                </ul>
+                <a href="signup.html" class="btn btn-primary">Start selling</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="section">
+        <div class="container">
+          <div
+            class="grid grid-2"
+            style="align-items: center; gap: var(--spacing-3xl)"
+          >
+            <div>
+              <h2>Why choose Vaulture?</h2>
+              <p>
+                We believe in empowering creators to monetize their digital
+                content without restrictions or complexity. Whether you're a
+                designer, developer, educator, or artist, Vaulture provides the
+                tools you need to turn your expertise into income.
+              </p>
+
+              <div style="margin: var(--spacing-xl) 0">
+                <div style="margin-bottom: var(--spacing-md)">
+                  <strong>🎯 Creator-focused:</strong> Built specifically for
+                  digital content creators
+                </div>
+                <div style="margin-bottom: var(--spacing-md)">
+                  <strong>🔓 No restrictions:</strong> Upload any type of
+                  digital file
+                </div>
+                <div style="margin-bottom: var(--spacing-md)">
+                  <strong>⚡ Instant setup:</strong> Start selling in minutes,
+                  not hours
+                </div>
+                <div style="margin-bottom: var(--spacing-md)">
+                  <strong>💰 Fair pricing:</strong> Keep 95% of your revenue
+                </div>
+              </div>
+
+              <a href="signup.html" class="btn btn-primary"
+                >Get started today</a
+              >
+            </div>
+
+            <div
+              style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                height: 400px;
+                border-radius: var(--radius-lg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: var(--font-size-xl);
+              "
+            >
+              <div class="text-center">
+                <div
+                  style="
+                    font-size: var(--font-size-3xl);
+                    margin-bottom: var(--spacing-md);
+                  "
+                >
+                  🚀
+                </div>
+                <div>Start your creator journey</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="section bg-light">
+        <div class="container text-center">
+          <h2>Ready to start selling?</h2>
+          <p
+            style="
+              font-size: var(--font-size-lg);
+              margin-bottom: var(--spacing-xl);
+            "
+          >
+            Join thousands of creators already earning with Vaulture
+          </p>
+          <a href="signup.html" class="btn btn-primary btn-lg"
+            >Create your account</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      style="
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+        padding: var(--spacing-2xl) 0;
+      "
+    >
+      <div class="container">
+        <div class="grid grid-4">
+          <div>
+            <h4
+              style="
+                color: var(--secondary-color);
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              Vaulture
+            </h4>
+            <p style="color: #cccccc">
+              The simple way to sell digital content online.
+            </p>
+          </div>
+
+          <div>
+            <h5
+              style="
+                color: var(--secondary-color);
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              Platform
+            </h5>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+              "
+            >
+              <a href="marketplace.html" style="color: #cccccc">Marketplace</a>
+              <a href="pricing.html" style="color: #cccccc">Pricing</a>
+              <a href="features.html" style="color: #cccccc">Features</a>
+            </div>
+          </div>
+
+          <div>
+            <h5
+              style="
+                color: var(--secondary-color);
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              Support
+            </h5>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+              "
+            >
+              <a href="help.html" style="color: #cccccc">Help Center</a>
+              <a href="contact.html" style="color: #cccccc">Contact Us</a>
+              <a href="terms.html" style="color: #cccccc">Terms</a>
+              <a href="privacy.html" style="color: #cccccc">Privacy</a>
+            </div>
+          </div>
+
+          <div>
+            <h5
+              style="
+                color: var(--secondary-color);
+                margin-bottom: var(--spacing-md);
+              "
+            >
+              Account
+            </h5>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+              "
+            >
+              <a href="login.html" style="color: #cccccc">Log in</a>
+              <a href="signup.html" style="color: #cccccc">Sign up</a>
+              <a href="dashboard.html" style="color: #cccccc">Dashboard</a>
+            </div>
+          </div>
+        </div>
+
+        <hr
+          style="
+            border: none;
+            border-top: 1px solid #333;
+            margin: var(--spacing-xl) 0;
+          "
+        />
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+          "
+        >
+          <div style="color: #cccccc">
+            © 2025 Vaulture. All rights reserved.
+          </div>
+          <div style="display: flex; gap: var(--spacing-md)">
+            <a href="#" style="color: #cccccc">Twitter</a>
+            <a href="#" style="color: #cccccc">GitHub</a>
+            <a href="#" style="color: #cccccc">Discord</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Notifications Container -->
+    <div
+      class="notifications-container"
+      style="
+        position: fixed;
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        z-index: 1000;
+      "
+    ></div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", () => {
+        // Update navigation state on page load
+        updateNavigationState();
+      });
+    </script>
+  </body>
+</html>

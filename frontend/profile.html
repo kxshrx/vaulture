@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Vaulture</title>
+    <meta
+      name="description"
+      content="Manage your Vaulture profile and account settings"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <a href="index.html" class="logo">Vaulture</a>
+
+        <nav class="nav">
+          <a href="marketplace.html" class="nav-link">Marketplace</a>
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="profile.html" class="nav-link active">Profile</a>
+        </nav>
+
+        <div class="nav-actions">
+          <!-- Profile navigation state managed by JavaScript -->
+          <div class="nav-actions-logged-out" id="navLoggedOut">
+            <a href="login.html" class="btn btn-secondary">Log in</a>
+            <a href="signup.html" class="btn btn-primary">Sign up</a>
+          </div>
+
+          <div class="nav-actions-logged-in" id="navLoggedIn">
+            <div
+              class="user-avatar"
+              onclick="window.location.href='profile.html'"
+            >
+              <div class="avatar-circle">
+                <span id="navAvatarInitials">U</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main style="padding-top: var(--header-height)">
+      <!-- Header Section -->
+      <section class="section-sm bg-light">
+        <div class="container">
+          <div class="text-center">
+            <h1>Profile Settings</h1>
+            <p>Manage your account information and preferences</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Content -->
+      <section class="section">
+        <div class="container">
+          <div style="max-width: 800px; margin: 0 auto">
+            <!-- Profile Overview -->
+            <div class="card" style="margin-bottom: var(--spacing-xl)">
+              <div class="card-header">
+                <h3>Account Overview</h3>
+              </div>
+              <div class="card-body">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-lg);
+                    margin-bottom: var(--spacing-lg);
+                  "
+                >
+                  <div
+                    style="
+                      width: 80px;
+                      height: 80px;
+                      background: linear-gradient(
+                        135deg,
+                        #667eea 0%,
+                        #764ba2 100%
+                      );
+                      border-radius: 50%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      color: white;
+                      font-size: var(--font-size-xl);
+                      font-weight: 600;
+                    "
+                  >
+                    <span id="avatarInitials">?</span>
+                  </div>
+                  <div style="flex: 1">
+                    <h4 id="profileDisplayName">Loading...</h4>
+                    <p
+                      id="profileEmail"
+                      style="color: var(--text-secondary); margin: 0"
+                    ></p>
+                    <div
+                      id="profileBadge"
+                      style="margin-top: var(--spacing-xs)"
+                    ></div>
+                  </div>
+                  <div id="profileStats">
+                    <!-- Stats will be loaded here -->
+                  </div>
+                </div>
+
+                <div id="upgradeSection" style="display: none">
+                  <div class="alert alert-warning">
+                    <strong>Ready to start selling?</strong> Upgrade to a
+                    creator account to upload and sell your digital content.
+                    <div style="margin-top: var(--spacing-md)">
+                      <button class="btn btn-accent" id="upgradeBtn">
+                        Become a Creator
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="card" style="margin-bottom: var(--spacing-xl)">
+              <div class="card-header">
+                <h3>Edit Profile</h3>
+              </div>
+              <div class="card-body">
+                <form id="profileForm" class="form">
+                  <div class="form-group">
+                    <label for="displayName" class="form-label"
+                      >Display Name</label
+                    >
+                    <input
+                      type="text"
+                      id="displayName"
+                      name="displayName"
+                      class="form-input"
+                      placeholder="Your display name"
+                      maxlength="100"
+                    />
+                    <div class="form-help">
+                      This name will be shown on your products and public
+                      profile
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="bio" class="form-label">Bio</label>
+                    <textarea
+                      id="bio"
+                      name="bio"
+                      class="form-input form-textarea"
+                      placeholder="Tell people about yourself and what you create..."
+                      rows="4"
+                      maxlength="500"
+                    ></textarea>
+                    <div class="form-help">
+                      Describe yourself and your work (shown on your public
+                      profile)
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="website" class="form-label">Website</label>
+                    <input
+                      type="url"
+                      id="website"
+                      name="website"
+                      class="form-input"
+                      placeholder="https://yourwebsite.com"
+                      maxlength="200"
+                    />
+                    <div class="form-help">
+                      Your personal or business website
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Social Links</label>
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: var(--spacing-md);
+                      "
+                    >
+                      <div>
+                        <input
+                          type="url"
+                          id="twitter"
+                          name="twitter"
+                          class="form-input"
+                          placeholder="Twitter profile URL"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="url"
+                          id="instagram"
+                          name="instagram"
+                          class="form-input"
+                          placeholder="Instagram profile URL"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="url"
+                          id="linkedin"
+                          name="linkedin"
+                          class="form-input"
+                          placeholder="LinkedIn profile URL"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="url"
+                          id="github"
+                          name="github"
+                          class="form-input"
+                          placeholder="GitHub profile URL"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-help">
+                      Add links to your social media profiles
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">
+                    Save Profile Changes
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card" style="margin-bottom: var(--spacing-xl)">
+              <div class="card-header">
+                <h3>Change Password</h3>
+              </div>
+              <div class="card-body">
+                <form id="passwordForm" class="form">
+                  <div class="form-group">
+                    <label for="currentPassword" class="form-label"
+                      >Current Password</label
+                    >
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      name="currentPassword"
+                      class="form-input"
+                      placeholder="Enter your current password"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="newPassword" class="form-label"
+                      >New Password</label
+                    >
+                    <input
+                      type="password"
+                      id="newPassword"
+                      name="newPassword"
+                      class="form-input"
+                      placeholder="Enter your new password"
+                      required
+                    />
+                    <div class="form-help">
+                      Must be at least 8 characters with letters and numbers
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="confirmNewPassword" class="form-label"
+                      >Confirm New Password</label
+                    >
+                    <input
+                      type="password"
+                      id="confirmNewPassword"
+                      name="confirmNewPassword"
+                      class="form-input"
+                      placeholder="Confirm your new password"
+                      required
+                    />
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">
+                    Change Password
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Account Actions</h3>
+              </div>
+              <div class="card-body">
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-md);
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      padding: var(--spacing-md);
+                      border: 1px solid var(--border-color);
+                      border-radius: var(--radius-md);
+                    "
+                  >
+                    <div>
+                      <strong>Download Your Data</strong>
+                      <p
+                        style="
+                          margin: 0;
+                          color: var(--text-secondary);
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        Get a copy of your account data and content
+                      </p>
+                    </div>
+                    <button class="btn btn-secondary" id="downloadDataBtn">
+                      Download
+                    </button>
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      padding: var(--spacing-md);
+                      border: 1px solid var(--error-color);
+                      border-radius: var(--radius-md);
+                      background-color: #fef2f2;
+                    "
+                  >
+                    <div>
+                      <strong style="color: var(--error-color)"
+                        >Delete Account</strong
+                      >
+                      <p
+                        style="
+                          margin: 0;
+                          color: var(--text-secondary);
+                          font-size: var(--font-size-sm);
+                        "
+                      >
+                        Permanently delete your account and all data
+                      </p>
+                    </div>
+                    <button class="btn btn-danger" id="deleteAccountBtn">
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content" style="max-width: 400px">
+        <div class="modal-header">
+          <h2 class="modal-title" id="confirmTitle">Confirm Action</h2>
+          <button class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmMessage">Are you sure you want to proceed?</p>
+          <div
+            style="
+              margin-top: var(--spacing-lg);
+              display: flex;
+              gap: var(--spacing-md);
+              justify-content: flex-end;
+            "
+          >
+            <button class="btn btn-secondary" onclick="confirmModal.close()">
+              Cancel
+            </button>
+            <button class="btn btn-primary" id="confirmActionBtn">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div
+      class="notifications-container"
+      style="
+        position: fixed;
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        z-index: 1000;
+      "
+    ></div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+      class ProfileManager {
+        constructor() {
+          this.user = null;
+
+          this.initializeElements();
+          this.setupEventListeners();
+          this.loadProfile();
+        }
+
+        initializeElements() {
+          this.profileForm = document.getElementById("profileForm");
+          this.passwordForm = document.getElementById("passwordForm");
+          this.profileFormHandler = new FormHandler(this.profileForm);
+          this.passwordFormHandler = new FormHandler(this.passwordForm);
+
+          this.confirmModal = new Modal("confirmModal");
+          this.upgradeBtn = document.getElementById("upgradeBtn");
+          this.downloadDataBtn = document.getElementById("downloadDataBtn");
+          this.deleteAccountBtn = document.getElementById("deleteAccountBtn");
+        }
+
+        setupEventListeners() {
+          // Profile form submission
+          this.profileForm.addEventListener("submit", (e) =>
+            this.handleProfileUpdate(e)
+          );
+
+          // Password form submission
+          this.passwordForm.addEventListener("submit", (e) =>
+            this.handlePasswordChange(e)
+          );
+
+          // Password confirmation validation
+          const confirmNewPassword =
+            document.getElementById("confirmNewPassword");
+          confirmNewPassword.addEventListener("input", () => {
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = confirmNewPassword.value;
+
+            if (confirmPassword && newPassword !== confirmPassword) {
+              this.passwordFormHandler.showFieldErrors(confirmNewPassword, [
+                "Passwords do not match",
+              ]);
+            } else {
+              this.passwordFormHandler.showFieldErrors(confirmNewPassword, []);
+            }
+          });
+
+          // Account actions
+          this.upgradeBtn.addEventListener("click", () =>
+            this.upgradeToCreator()
+          );
+          this.downloadDataBtn.addEventListener("click", () =>
+            this.downloadData()
+          );
+          this.deleteAccountBtn.addEventListener("click", () =>
+            this.confirmDeleteAccount()
+          );
+        }
+
+        async loadProfile() {
+          try {
+            if (!checkAuth()) {
+              return;
+            }
+
+            this.user = await api.getProfile();
+            this.displayProfile();
+            this.populateForm();
+          } catch (error) {
+            console.error("Failed to load profile:", error);
+            Utils.showNotification("Failed to load profile data", "error");
+
+            if (
+              error.message.includes("401") ||
+              error.message.includes("unauthorized")
+            ) {
+              window.location.href = "login.html";
+            }
+          }
+        }
+
+        displayProfile() {
+          // Display name and email
+          document.getElementById("profileDisplayName").textContent =
+            this.user.display_name || "No display name set";
+          document.getElementById("profileEmail").textContent = this.user.email;
+
+          // Avatar initials
+          const initials = this.getInitials(
+            this.user.display_name || this.user.email
+          );
+          document.getElementById("avatarInitials").textContent = initials;
+
+          // Account type badge
+          const badge = document.getElementById("profileBadge");
+          if (this.user.is_creator) {
+            badge.innerHTML =
+              '<span style="background-color: var(--accent-color); color: white; padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm); font-size: var(--font-size-xs); text-transform: uppercase; font-weight: 600;">Creator</span>';
+          } else {
+            badge.innerHTML =
+              '<span style="background-color: var(--text-muted); color: white; padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm); font-size: var(--font-size-xs); text-transform: uppercase; font-weight: 600;">Buyer</span>';
+          }
+
+          // Stats
+          this.displayStats();
+
+          // Show upgrade section for buyers
+          if (!this.user.is_creator) {
+            document.getElementById("upgradeSection").style.display = "block";
+          }
+        }
+
+        displayStats() {
+          const statsDiv = document.getElementById("profileStats");
+
+          if (this.user.is_creator) {
+            statsDiv.innerHTML = `
+                        <div style="text-align: right;">
+                            <div style="font-size: var(--font-size-lg); font-weight: 600;">${
+                              this.user.total_products || 0
+                            }</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-muted);">Products</div>
+                        </div>
+                    `;
+          } else {
+            statsDiv.innerHTML = `
+                        <div style="text-align: right;">
+                            <div style="font-size: var(--font-size-lg); font-weight: 600;">${
+                              this.user.total_purchases || 0
+                            }</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-muted);">Purchases</div>
+                        </div>
+                    `;
+          }
+        }
+
+        populateForm() {
+          // Fill profile form with current data
+          document.getElementById("displayName").value =
+            this.user.display_name || "";
+          document.getElementById("bio").value = this.user.bio || "";
+          document.getElementById("website").value = this.user.website || "";
+
+          // Social links
+          const socialLinks = this.user.social_links || {};
+          document.getElementById("twitter").value = socialLinks.twitter || "";
+          document.getElementById("instagram").value =
+            socialLinks.instagram || "";
+          document.getElementById("linkedin").value =
+            socialLinks.linkedin || "";
+          document.getElementById("github").value = socialLinks.github || "";
+        }
+
+        getInitials(name) {
+          if (!name) return "?";
+          return name
+            .split(" ")
+            .map((word) => word[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2);
+        }
+
+        async handleProfileUpdate(e) {
+          e.preventDefault();
+
+          if (!this.profileFormHandler.validate()) {
+            return;
+          }
+
+          const submitBtn = this.profileForm.querySelector(
+            'button[type="submit"]'
+          );
+          const formData = this.profileFormHandler.getData();
+
+          try {
+            Utils.showLoading(submitBtn);
+
+            // Prepare social links
+            const socialLinks = {};
+            if (formData.twitter) socialLinks.twitter = formData.twitter;
+            if (formData.instagram) socialLinks.instagram = formData.instagram;
+            if (formData.linkedin) socialLinks.linkedin = formData.linkedin;
+            if (formData.github) socialLinks.github = formData.github;
+
+            const updateData = {
+              display_name: formData.displayName || null,
+              bio: formData.bio || null,
+              website: formData.website || null,
+              social_links:
+                Object.keys(socialLinks).length > 0 ? socialLinks : null,
+            };
+
+            await api.updateProfile(updateData);
+            Utils.showNotification("Profile updated successfully!", "success");
+
+            // Reload profile data
+            await this.loadProfile();
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Failed to update profile",
+              "error"
+            );
+          } finally {
+            Utils.hideLoading(submitBtn);
+          }
+        }
+
+        async handlePasswordChange(e) {
+          e.preventDefault();
+
+          if (!this.passwordFormHandler.validate()) {
+            return;
+          }
+
+          const submitBtn = this.passwordForm.querySelector(
+            'button[type="submit"]'
+          );
+          const formData = this.passwordFormHandler.getData();
+
+          // Check password confirmation
+          if (formData.newPassword !== formData.confirmNewPassword) {
+            Utils.showNotification("Passwords do not match", "error");
+            return;
+          }
+
+          try {
+            Utils.showLoading(submitBtn);
+
+            await api.changePassword({
+              current_password: formData.currentPassword,
+              new_password: formData.newPassword,
+              confirm_password: formData.confirmNewPassword,
+            });
+
+            Utils.showNotification("Password changed successfully!", "success");
+            this.passwordFormHandler.reset();
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Failed to change password",
+              "error"
+            );
+          } finally {
+            Utils.hideLoading(submitBtn);
+          }
+        }
+
+        async upgradeToCreator() {
+          try {
+            const response = await api.upgradeToCreator();
+            Utils.showNotification(
+              "Successfully upgraded to creator account!",
+              "success"
+            );
+
+            // Reload the page to update the profile
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Failed to upgrade account",
+              "error"
+            );
+          }
+        }
+
+        downloadData() {
+          Utils.showNotification(
+            "Data download will be available soon!",
+            "warning"
+          );
+        }
+
+        confirmDeleteAccount() {
+          document.getElementById("confirmTitle").textContent =
+            "Delete Account";
+          document.getElementById("confirmMessage").innerHTML = `
+                    <strong>This action cannot be undone.</strong><br>
+                    This will permanently delete your account, all your products, and all associated data.
+                    <br><br>
+                    Type your email address to confirm: <strong>${this.user.email}</strong>
+                    <input type="email" id="deleteConfirmEmail" class="form-input" style="margin-top: var(--spacing-md);" placeholder="Enter your email">
+                `;
+
+          const confirmBtn = document.getElementById("confirmActionBtn");
+          confirmBtn.textContent = "Delete Account";
+          confirmBtn.className = "btn";
+          confirmBtn.style.backgroundColor = "var(--error-color)";
+          confirmBtn.style.color = "white";
+
+          confirmBtn.onclick = () => this.deleteAccount();
+          this.confirmModal.open();
+        }
+
+        async deleteAccount() {
+          const emailInput = document.getElementById("deleteConfirmEmail");
+          if (!emailInput || emailInput.value !== this.user.email) {
+            Utils.showNotification(
+              "Please enter your email address to confirm",
+              "error"
+            );
+            return;
+          }
+
+          try {
+            // In a real implementation, this would call the delete account API
+            Utils.showNotification(
+              "Account deletion requested. Please contact support to complete this process.",
+              "warning"
+            );
+            this.confirmModal.close();
+          } catch (error) {
+            Utils.showNotification(
+              error.message || "Failed to delete account",
+              "error"
+            );
+          }
+        }
+      }
+
+      // Initialize profile manager
+      let profileManager;
+      document.addEventListener("DOMContentLoaded", () => {
+        profileManager = new ProfileManager();
+      });
+    </script>
+  </body>
+</html>
