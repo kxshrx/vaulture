@@ -215,36 +215,70 @@
           this.categoryFilter = document.getElementById("categoryFilter");
           this.priceFilter = document.getElementById("priceFilter");
           this.sortFilter = document.getElementById("sortFilter");
-          this.clearFiltersBtn = document.getElementById("clearFilters");
+          this.clearFiltersBtn = document.getElementById("clearFilters"); // This might not exist
           this.productsGrid = document.getElementById("productsGrid");
           this.loadingState = document.getElementById("loadingState");
           this.emptyState = document.getElementById("emptyState");
           this.pagination = document.getElementById("pagination");
-          this.productModal = new Modal("productModal");
+
+          // Initialize modal if Modal class is available
+          try {
+            this.productModal = new Modal("productModal");
+          } catch (error) {
+            console.warn("Could not initialize product modal:", error);
+            this.productModal = null;
+          }
+
+          console.log("Marketplace elements initialized:", {
+            searchInput: !!this.searchInput,
+            categoryFilter: !!this.categoryFilter,
+            priceFilter: !!this.priceFilter,
+            sortFilter: !!this.sortFilter,
+            clearFiltersBtn: !!this.clearFiltersBtn,
+            productsGrid: !!this.productsGrid,
+            loadingState: !!this.loadingState,
+            emptyState: !!this.emptyState,
+            pagination: !!this.pagination,
+            productModal: !!this.productModal,
+          });
         }
 
         setupEventListeners() {
           // Search input with debounce
-          this.searchInput.addEventListener(
-            "input",
-            Utils.debounce(() => this.handleSearch(), 500)
-          );
+          if (this.searchInput) {
+            this.searchInput.addEventListener(
+              "input",
+              Utils.debounce(() => this.handleSearch(), 500)
+            );
+          }
 
           // Filter changes
-          this.categoryFilter.addEventListener("change", () =>
-            this.handleFilterChange()
-          );
-          this.priceFilter.addEventListener("change", () =>
-            this.handleFilterChange()
-          );
-          this.sortFilter.addEventListener("change", () =>
-            this.handleSortChange()
-          );
+          if (this.categoryFilter) {
+            this.categoryFilter.addEventListener("change", () =>
+              this.handleFilterChange()
+            );
+          }
 
-          // Clear filters
-          this.clearFiltersBtn.addEventListener("click", () =>
-            this.clearFilters()
-          );
+          if (this.priceFilter) {
+            this.priceFilter.addEventListener("change", () =>
+              this.handleFilterChange()
+            );
+          }
+
+          if (this.sortFilter) {
+            this.sortFilter.addEventListener("change", () =>
+              this.handleSortChange()
+            );
+          }
+
+          // Clear filters - only if button exists
+          if (this.clearFiltersBtn) {
+            this.clearFiltersBtn.addEventListener("click", () =>
+              this.clearFilters()
+            );
+          }
+
+          console.log("Event listeners set up successfully");
         }
 
         handleSearch() {
@@ -279,10 +313,12 @@
         }
 
         clearFilters() {
-          this.searchInput.value = "";
-          this.categoryFilter.value = "";
-          this.priceFilter.value = "";
-          this.sortFilter.value = "created_at:desc";
+          console.log("Clearing filters...");
+          // Reset all filter inputs - check if they exist first
+          if (this.searchInput) this.searchInput.value = "";
+          if (this.categoryFilter) this.categoryFilter.value = "";
+          if (this.priceFilter) this.priceFilter.value = "";
+          if (this.sortFilter) this.sortFilter.value = "created_at:desc";
 
           this.searchQuery = "";
           this.filters = {};
@@ -291,6 +327,7 @@
           this.currentPage = 1;
 
           this.loadProducts();
+          console.log("Filters cleared and products reloaded");
         }
 
         async loadProducts() {
@@ -309,13 +346,16 @@
               params.query = this.searchQuery;
             }
 
+            console.log("Loading products with params:", params);
             const response = await api.getProducts(params);
+            console.log("API response:", response);
+
             this.renderProducts(response);
             this.renderPagination(response);
           } catch (error) {
             console.error("Failed to load products:", error);
             Utils.showNotification(
-              "Failed to load products. Please try again.",
+              `Failed to load products: ${error.message}. Please try again.`,
               "error"
             );
             this.showEmptyState();
@@ -342,7 +382,14 @@
         }
 
         renderProducts(response) {
-          if (!response.products || response.products.length === 0) {
+          console.log("Rendering products:", response);
+
+          if (
+            !response ||
+            !response.products ||
+            response.products.length === 0
+          ) {
+            console.log("No products found in response");
             this.showEmptyState();
             return;
           }
@@ -350,31 +397,30 @@
           this.productsGrid.style.display = "grid";
           this.emptyState.style.display = "none";
 
-          // Filter out any sample/filler products and only show real products
-          const realProducts = response.products.filter(
-            (product) =>
-              product.title &&
-              product.price !== undefined &&
-              product.creator_name &&
-              !product.title.toLowerCase().includes("sample") &&
-              !product.title.toLowerCase().includes("example") &&
-              !product.title.toLowerCase().includes("test")
-          );
+          // Show ALL products from the database - don't filter out any products
+          const products = response.products;
+          console.log("Products to render:", products);
 
-          if (realProducts.length === 0) {
+          if (products.length === 0) {
+            console.log("All products were filtered out");
             this.showEmptyState();
             return;
           }
 
-          this.productsGrid.innerHTML = realProducts
-            .map(
-              (product) => `
+          this.productsGrid.innerHTML = products
+            .map((product) => {
+              // Handle image URL - check if it's a full URL or just a filename
+              let imageUrl = product.image_url || "";
+              if (imageUrl && !imageUrl.startsWith("http")) {
+                // If it's just a filename, construct the full URL to the uploads directory
+                imageUrl = `${api.getApiBaseUrl()}/uploads/${imageUrl}`;
+              }
+
+              return `
                     <div class="product-card" onclick="marketplace.showProductModal(${
                       product.id
                     })">
-                        <div class="product-image" style="background-image: url('${
-                          product.image_url || ""
-                        }'); background-size: cover; background-position: center;">
+                        <div class="product-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
                             ${
                               !product.image_url
                                 ? `<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: var(--font-size-xl);">${this.getFileTypeIcon(
@@ -385,27 +431,29 @@
                         </div>
                         <div class="product-content">
                             <div class="product-title">${Utils.sanitizeHTML(
-                              product.title
+                              product.title || "Untitled Product"
                             )}</div>
                             <div class="product-description">${Utils.sanitizeHTML(
                               product.description || "No description available"
                             )}</div>
                             <div class="product-meta">
                                 <div class="product-price">${Utils.formatPrice(
-                                  product.price
+                                  product.price || 0
                                 )}</div>
                                 <div class="product-category">${
                                   product.category || "General"
                                 }</div>
                             </div>
                             <div class="product-creator">by ${Utils.sanitizeHTML(
-                              product.creator_name
+                              product.creator_name || "Unknown Creator"
                             )}</div>
                         </div>
                     </div>
-                `
-            )
+                `;
+            })
             .join("");
+
+          console.log("Products rendered successfully");
         }
 
         renderPagination(response) {
@@ -548,7 +596,38 @@
       // Initialize marketplace
       let marketplace;
       document.addEventListener("DOMContentLoaded", () => {
-        marketplace = new Marketplace();
+        console.log("Marketplace page loaded, initializing...");
+        try {
+          marketplace = new Marketplace();
+          console.log("Marketplace initialized successfully");
+        } catch (error) {
+          console.error("Failed to initialize marketplace:", error);
+          Utils.showNotification(
+            "Failed to initialize marketplace. Please refresh the page.",
+            "error"
+          );
+
+          // Show error state
+          const productsGrid = document.getElementById("productsGrid");
+          const emptyState = document.getElementById("emptyState");
+          if (productsGrid) productsGrid.style.display = "none";
+          if (emptyState) {
+            emptyState.style.display = "block";
+            emptyState.innerHTML = `
+              <div class="empty-state-icon">⚠️</div>
+              <h3>Marketplace Initialization Error</h3>
+              <p>Unable to load the marketplace. This might be due to:</p>
+              <ul style="text-align: left; margin: var(--spacing-lg) 0;">
+                <li>API server is not running</li>
+                <li>Network connectivity issues</li>
+                <li>JavaScript initialization problems</li>
+              </ul>
+              <button class="btn btn-primary" onclick="window.location.reload()">
+                Refresh Page
+              </button>
+            `;
+          }
+        }
       });
     </script>
   </body>

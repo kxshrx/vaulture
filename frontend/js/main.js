@@ -54,11 +54,28 @@ class VaultureAPI {
   // Set user type
   setUserType(userType) {
     localStorage.setItem("userType", userType);
+    
+    // Update role-based interface when user type changes
+    if (typeof updateRoleBasedInterface === "function") {
+      updateRoleBasedInterface();
+    }
   }
 
   // Get user type
   getUserType() {
     return localStorage.getItem("userType");
+  }
+
+  // Check if user is creator
+  isCreator() {
+    const profile = this.getUserProfile();
+    return profile && profile.is_creator === true;
+  }
+
+  // Check if user is buyer only
+  isBuyerOnly() {
+    const profile = this.getUserProfile();
+    return profile && profile.is_creator === false;
   }
 
   // Set user profile
@@ -68,6 +85,11 @@ class VaultureAPI {
     // Update navigation state when profile changes
     if (typeof updateNavigationState === "function") {
       updateNavigationState();
+    }
+    
+    // Update role-based interface when profile changes
+    if (typeof updateRoleBasedInterface === "function") {
+      updateRoleBasedInterface();
     }
   }
 
@@ -217,7 +239,18 @@ class VaultureAPI {
   // Product methods
   async getProducts(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/products?${queryString}`);
+    const endpoint = `/products?${queryString}`;
+    console.log("Making API request to:", `${this.baseURL}${endpoint}`);
+    console.log("Request params:", params);
+
+    try {
+      const response = await this.request(endpoint);
+      console.log("Products API response:", response);
+      return response;
+    } catch (error) {
+      console.error("Products API error:", error);
+      throw error;
+    }
   }
 
   async getProductCategories() {
@@ -1245,23 +1278,8 @@ function initializeSignupPage() {
 function initializeUploadPage() {
   console.log("Initializing upload page");
 
-  // Check if user is logged in and is a creator
-  const token = localStorage.getItem("authToken");
-  const userType = localStorage.getItem("userType");
-
-  if (!token) {
-    Utils.showNotification("Please log in to upload products", "warning");
-    setTimeout(() => {
-      window.location.href = "login.html?redirect=upload.html";
-    }, 2000);
-    return;
-  }
-
-  if (userType !== "creator") {
-    Utils.showNotification("Only creators can upload products", "error");
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 2000);
+  // Use role-based access control
+  if (!requireCreatorAccess()) {
     return;
   }
 
@@ -1305,6 +1323,140 @@ function initializeUploadPage() {
       },
     });
   }
+}
+
+// Role-based interface management
+function updateRoleBasedInterface() {
+  const userProfile = api.getUserProfile();
+  
+  if (!userProfile) {
+    showPublicInterface();
+    return;
+  }
+
+  if (userProfile.is_creator) {
+    showCreatorInterface();
+  } else {
+    showBuyerInterface();
+  }
+}
+
+function showPublicInterface() {
+  // Show public navigation elements
+  hideElement("creatorNavItems");
+  hideElement("buyerNavItems");
+  hideElement("creatorDashboardSection");
+  hideElement("buyerDashboardSection");
+  
+  // Show public CTA buttons
+  showElement("publicCTAButtons");
+}
+
+function showCreatorInterface() {
+  console.log("Showing creator interface");
+  
+  // Navigation elements
+  showElement("creatorNavItems");
+  hideElement("buyerOnlyNavItems");
+  
+  // Dashboard sections
+  showElement("creatorDashboardSection");
+  showElement("buyerDashboardSection"); // Creators can also be buyers
+  
+  // Show creator-specific buttons and features
+  const uploadButtons = document.querySelectorAll(".creator-upload-btn");
+  uploadButtons.forEach(btn => {
+    btn.style.display = "inline-block";
+    btn.disabled = false;
+  });
+  
+  // Show creator menu items
+  const creatorMenuItems = document.querySelectorAll(".creator-menu-item");
+  creatorMenuItems.forEach(item => item.style.display = "block");
+  
+  // Update navigation labels for creators
+  updateNavigationForCreators();
+}
+
+function showBuyerInterface() {
+  console.log("Showing buyer interface");
+  
+  // Navigation elements
+  hideElement("creatorNavItems");
+  showElement("buyerNavItems");
+  
+  // Dashboard sections
+  hideElement("creatorDashboardSection");
+  showElement("buyerDashboardSection");
+  
+  // Hide creator-specific buttons
+  const uploadButtons = document.querySelectorAll(".creator-upload-btn");
+  uploadButtons.forEach(btn => {
+    btn.style.display = "none";
+    btn.disabled = true;
+  });
+  
+  // Hide creator menu items
+  const creatorMenuItems = document.querySelectorAll(".creator-menu-item");
+  creatorMenuItems.forEach(item => item.style.display = "none");
+  
+  // Show upgrade to creator option
+  showElement("upgradeToCreatorPrompt");
+}
+
+function updateNavigationForCreators() {
+  // Update dashboard link text for creators
+  const dashboardLinks = document.querySelectorAll('a[href="dashboard.html"]');
+  dashboardLinks.forEach(link => {
+    if (link.textContent.trim() === "Dashboard") {
+      link.textContent = "Creator Dashboard";
+    }
+  });
+}
+
+function hideElement(id) {
+  const element = document.getElementById(id);
+  if (element) {
+    element.style.display = "none";
+  }
+}
+
+function showElement(id) {
+  const element = document.getElementById(id);
+  if (element) {
+    element.style.display = "block";
+  }
+}
+
+// Page access control
+function requireCreatorAccess() {
+  const userProfile = api.getUserProfile();
+  
+  if (!userProfile) {
+    Utils.showNotification("Please log in to access this page", "warning");
+    window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.pathname);
+    return false;
+  }
+  
+  if (!userProfile.is_creator) {
+    Utils.showNotification("Creator access required. Upgrade your account to access this feature.", "error");
+    window.location.href = "dashboard.html";
+    return false;
+  }
+  
+  return true;
+}
+
+function requireAuthentication() {
+  const token = localStorage.getItem("authToken");
+  
+  if (!token) {
+    Utils.showNotification("Please log in to access this page", "warning");
+    window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.pathname);
+    return false;
+  }
+  
+  return true;
 }
 
 function initializeDashboardPage() {
