@@ -26,6 +26,7 @@ export default function Home() {
             size="large"
             sx={{ mr: 2, mb: 2 }}
             startIcon={<ShoppingCart />}
+            href="/auth/register"
           >
             Browse Products
           </Button>
@@ -34,6 +35,7 @@ export default function Home() {
             size="large"
             sx={{ mb: 2 }}
             startIcon={<Upload />}
+            href="/auth/register"
           >
             Start Selling
           </Button>
@@ -105,7 +107,7 @@ export default function Home() {
         className="shadow-material"
       >
         <Typography variant="h4" textAlign="center" gutterBottom>
-          Phase 1: Setup Complete ✅
+          Phase 2: Authentication Complete ✅
         </Typography>
         <Box
           sx={{
@@ -118,24 +120,24 @@ export default function Home() {
         >
           <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 45%" } }}>
             <Typography variant="body1" gutterBottom>
-              ✅ Next.js 14 with App Router
+              ✅ Login & Registration System
             </Typography>
             <Typography variant="body1" gutterBottom>
-              ✅ Material-UI v7 Theme Applied
+              ✅ Role-Based Authentication
             </Typography>
             <Typography variant="body1" gutterBottom>
-              ✅ Tailwind CSS Integration
+              ✅ Creator Upgrade Flow
             </Typography>
           </Box>
           <Box sx={{ flex: { xs: "1 1 100%", sm: "1 1 45%" } }}>
             <Typography variant="body1" gutterBottom>
-              ✅ React Query Setup
+              ✅ Protected Routes
             </Typography>
             <Typography variant="body1" gutterBottom>
-              ✅ Zustand Auth Store
+              ✅ JWT Token Management
             </Typography>
             <Typography variant="body1" gutterBottom>
-              ✅ API Client Configuration
+              ✅ Navigation & User Menu
             </Typography>
           </Box>
         </Box>
