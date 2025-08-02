@@ -84,4 +84,7 @@ references_uiux/
 *.tmp
 *.temp
 .cache/
-                                                        
+
+
+node_modules/   
+frontend/                                     

@@ -43,7 +43,7 @@ def upload_product(
         price=price,
         category=category,
         tags=tags,
-        creator_name=current_user.email  # Use user's email as creator name
+        creator_name=current_user.display_name or current_user.email  # Use display name if available, fallback to email
     )
     
     # Create product with file uploads (no type restrictions!)
