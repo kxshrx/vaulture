@@ -156,7 +156,7 @@ export default function BuyerDashboard() {
             <StatsCard
               title="Total Purchases"
               value={stats.totalPurchases}
-              icon={<Package className="w-6 h-6 text-blue-600" />}
+              icon={<Package className="w-6 h-6 text-primary-600" />}
             />
             <StatsCard
               title="Total Spent"
@@ -181,7 +181,7 @@ export default function BuyerDashboard() {
 
           {/* Upgrade to Creator CTA */}
           {user?.role === "buyer" && (
-            <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <Card className="mb-8 bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>

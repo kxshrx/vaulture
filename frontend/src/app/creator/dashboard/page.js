@@ -163,7 +163,7 @@ export default function CreatorDashboard() {
             <StatsCard
               title="Total Products"
               value={stats.totalProducts}
-              icon={<Package className="w-6 h-6 text-blue-600" />}
+              icon={<Package className="w-6 h-6 text-primary-600" />}
               trend="up"
               trendValue="2"
             />
@@ -194,7 +194,7 @@ export default function CreatorDashboard() {
             <Link href="/creator/upload">
               <Card hover className="cursor-pointer">
                 <CardContent className="p-6 text-center">
-                  <Plus className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                  <Plus className="w-8 h-8 text-primary-600 mx-auto mb-2" />
                   <h3 className="font-semibold text-gray-900">
                     Upload New Product
                   </h3>

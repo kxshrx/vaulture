@@ -8,18 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Gumroad-inspired monochrome with pink accents
+        // Custom blue-purple gradient theme
         primary: {
-          50: "#fdf2f8",
-          100: "#fce7f3",
-          200: "#fbcfe8",
-          300: "#f9a8d4",
-          400: "#f472b6",
-          500: "#ec4899", // Gumroad pink
-          600: "#db2777",
-          700: "#be185d",
-          800: "#9d174d",
-          900: "#831843",
+          50: "#f0f2fe",
+          100: "#e8ecfc",
+          200: "#d4dcf9",
+          300: "#c0c9ee", // Lightest shade
+          400: "#a2aadb", // Medium shade
+          500: "#898ac4", // Darkest shade
+          600: "#7a7bb8",
+          700: "#6b6ca9",
+          800: "#5c5d9a",
+          900: "#4d4e8b",
         },
         gray: {
           50: "#ffffff",
