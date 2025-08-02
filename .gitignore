@@ -1,4 +1,6 @@
-# Python
+# ================================
+# Python Backend
+# ================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -10,7 +12,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -44,8 +45,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Environments
+# Python environments
 .env
+.env.*
 .venv
 env/
 venv/
@@ -53,70 +55,110 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDE
+# ================================
+# Frontend (Next.js/React)
+# ================================
+# Dependencies
+node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Next.js build output
+.next/
+out/
+/build
+
+# Testing
+/coverage
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ================================
+# Database & Storage
+# ================================
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+creators_platform.db
+
+# Uploads directory (user uploaded files)
+uploads/
+!uploads/.gitkeep
+
+# ================================
+# Documentation & Reference Files
+# ================================
+# Reference and documentation files
+*.txt
+frontend_docs/
+references_uiux/
+backend.txt
+frontend_outline.txt
+refernce_gumroad.html
+refernce_gumroad_files/
+
+# ================================
+# IDE & Editor
+# ================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-workspace
+*.sublime-project
 
-# OS
+# ================================
+# Operating System
+# ================================
+# macOS
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
+
+# Windows
 ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Linux
+*~
 
-# Uploads directory (for local development)
-uploads/
-references_uiux/
-# Logs
+# ================================
+# Deployment & Cloud
+# ================================
+.vercel/
+.netlify/
+
+# ================================
+# Logs & Temporary Files
+# ================================
 *.log
-
-# Temporary files
 *.tmp
 *.temp
 .cache/
 
-
-node_modules/   
-# digital-marketplace/                                     
-
-
-# Node modules
-node_modules/
-
-# Next.js build output
-.next/
-out/
-
-# Dependency directories
-digital-marketplace/node_modules/
-
-# Local env files
-digital-marketplace/.env
-digital-marketplace/.env.*.local
-digital-marketplace/.env.local
-digital-marketplace/.next/
-digital-marketplace/out/
-
-# Logs
-digital-marketplace/npm-debug.log*
-digital-marketplace/yarn-debug.log*
-digital-marketplace/yarn-error.log*
-digital-marketplace/pnpm-debug.log*
-
-digital-marketplace folder)
-digital-marketplace/.vscode/
-digital-marketplace/.idea/
-
-# Vercel/Netlify
-.vercel/
-.netlify/
+# ================================
+# Security & Sensitive Data
+# ================================
+# API keys, secrets, and config files
+config.local.*
+secrets.json
+.secrets/

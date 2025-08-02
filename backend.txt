@@ -43,23 +43,67 @@ Handles user registration, login, and account upgrades.
 
 *   **`POST /auth/register/creator`**
     *   **Description**: Registers a new user as a **creator**.
-    *   **Request Body**: `RegisterSchema` (`email`, `password`, `display_name`, `bio`, `website`, `social_links`).
-    *   **Response**: `UserResponse` with user details.
+    *   **Request Body**: `RegisterSchema`
+        ```json
+        {
+          "email": "user@example.com",
+          "password": "password123",
+          "display_name": "CreatorName",
+          "bio": "This is my bio.",
+          "website": "https://example.com",
+          "social_links": {
+            "twitter": "https://twitter.com/username"
+          }
+        }
+        ```
+    *   **Response**: `UserResponse`
+        ```json
+        {
+          "id": 1,
+          "email": "user@example.com",
+          "is_creator": true,
+          "display_name": "CreatorName",
+          "bio": "This is my bio.",
+          "website": "https://example.com",
+          "social_links": {
+            "twitter": "https://twitter.com/username"
+          },
+          "created_at": "2025-08-02T12:00:00Z",
+          "total_products": 0,
+          "total_sales": 0,
+          "total_revenue": 0.0,
+          "total_purchases": 0,
+          "member_since": "2025-08-02T12:00:00Z"
+        }
+        ```
 
 *   **`POST /auth/register/buyer`**
     *   **Description**: Registers a new user as a **buyer**.
-    *   **Request Body**: `RegisterSchema` (same as creator).
-    *   **Response**: `UserResponse` with user details.
+    *   **Request Body**: `RegisterSchema` (same as creator registration).
+    *   **Response**: `UserResponse` (with `"is_creator": false`).
 
 *   **`POST /auth/login`**
-    *   **Description**: Authenticates a user (both creators and buyers) and returns a JWT access token.
-    *   **Request Body**: `LoginSchema` (`email`, `password`).
-    *   **Response**: `TokenSchema` (`access_token`, `token_type`).
+    *   **Description**: Authenticates a user and returns a JWT access token.
+    *   **Request Body**: `LoginSchema`
+        ```json
+        {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+        ```
+    *   **Response**: `TokenSchema`
+        ```json
+        {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "token_type": "bearer",
+          "expires_in": 1800
+        }
+        ```
 
 *   **`POST /auth/upgrade-to-creator`**
     *   **Description**: Upgrades an existing buyer account to a creator account.
     *   **Authentication**: Requires a valid JWT for the buyer.
-    *   **Response**: `UserResponse` with updated user details.
+    *   **Response**: `UserResponse` with updated user details (`"is_creator": true`).
 
 ---
 
@@ -68,107 +112,289 @@ Handles user registration, login, and account upgrades.
 Manages user profiles. All endpoints here require authentication.
 
 *   **`GET /profile/me`**
-    *   **Description**: Retrieves the complete profile of the currently logged-in user, including private information and statistics.
-    *   **Response**: `UserProfileResponse` (includes stats like total products, sales, revenue, etc.).
+    *   **Description**: Retrieves the complete profile of the currently logged-in user.
+    *   **Response**: `UserProfileResponse`
+        ```json
+        {
+          "id": 1,
+          "email": "user@example.com",
+          "is_creator": true,
+          "display_name": "CreatorName",
+          "bio": "This is my bio.",
+          "website": "https://example.com",
+          "social_links": {
+            "twitter": "https://twitter.com/username"
+          },
+          "total_products": 5,
+          "total_sales": 10,
+          "total_revenue": 150.50,
+          "total_purchases": 2,
+          "member_since": "2025-08-02T12:00:00Z"
+        }
+        ```
 
 *   **`PUT /profile/me`**
     *   **Description**: Updates the profile of the currently logged-in user.
-    *   **Request Body**: `UserProfileUpdate` (`display_name`, `bio`, `website`, `social_links`).
+    *   **Request Body**: `UserProfileUpdate`
+        ```json
+        {
+          "display_name": "NewDisplayName",
+          "bio": "Updated bio.",
+          "website": "https://new-website.com",
+          "social_links": {
+            "linkedin": "https://linkedin.com/in/username"
+          }
+        }
+        ```
     *   **Response**: `UserProfileResponse` with the updated profile.
 
 *   **`POST /profile/me/change-password`**
     *   **Description**: Changes the password for the current user.
-    *   **Request Body**: `PasswordChangeRequest` (`current_password`, `new_password`, `confirm_password`).
-    *   **Response**: A success message.
+    *   **Request Body**: `PasswordChangeRequest`
+        ```json
+        {
+          "current_password": "password123",
+          "new_password": "newPassword456",
+          "confirm_password": "newPassword456"
+        }
+        ```
+    *   **Response**:
+        ```json
+        {
+          "message": "Password updated successfully"
+        }
+        ```
 
 *   **`GET /profile/search/users`**
-    *   **Description**: Searches for users by their display name or email. Returns public profiles only.
+    *   **Description**: Searches for users by display name or email.
     *   **Query Parameters**: `query`, `user_type` ('creator' or 'buyer'), `limit`.
     *   **Response**: A list of `PublicProfileResponse`.
+        ```json
+        [
+          {
+            "id": 2,
+            "display_name": "AnotherCreator",
+            "bio": "Bio of another creator.",
+            "website": null,
+            "social_links": {},
+            "is_creator": true,
+            "total_products": 3,
+            "member_since": "2025-07-20T10:00:00Z"
+          }
+        ]
+        ```
 
 *   **`DELETE /profile/me`**
-    *   **Description**: **Permanently deletes** the current user's account. This is a soft delete for products to maintain purchase history.
-    *   **Response**: A success message.
+    *   **Description**: **Permanently deletes** the current user's account.
+    *   **Response**:
+        ```json
+        {
+          "message": "Account deleted successfully"
+        }
+        ```
 
 ---
 
 ### 2.3. Creator (`/creator`)
 
-Endpoints for creators to manage their products and view their stats. All endpoints require the user to be a creator.
+Endpoints for creators to manage their products. Requires creator privileges.
 
 *   **`POST /creator/upload`**
-    *   **Description**: Uploads a new digital product. This is a multipart form data request.
-    *   **Form Data**: `title`, `description`, `price`, `category`, `tags`, `file` (the product file), `image` (optional cover image).
-    *   **Response**: `ProductResponse` with details of the created product.
+    *   **Description**: Uploads a new digital product.
+    *   **Request Body**: `multipart/form-data`
+        *   `title`: "My Awesome Product"
+        *   `description`: "A description of my product."
+        *   `price`: 19.99
+        *   `category`: "E_BOOKS"
+        *   `tags`: "fastapi,python,ebook"
+        *   `file`: (file data)
+        *   `image`: (optional image file data)
+    *   **Response**: `ProductResponse`
+        ```json
+        {
+          "id": 1,
+          "creator_id": 1,
+          "creator_name": "CreatorName",
+          "title": "My Awesome Product",
+          "description": "A description of my product.",
+          "price": 19.99,
+          "category": "E_BOOKS",
+          "tags": "fastapi,python,ebook",
+          "file_url": "https://<supabase-url>/.../product.zip",
+          "image_url": "https://<supabase-url>/.../cover.png",
+          "file_size": 1048576,
+          "file_type": "application/zip",
+          "is_active": true,
+          "created_at": "2025-08-02T14:30:00Z"
+        }
+        ```
 
 *   **`GET /creator/products`**
     *   **Description**: Lists all products uploaded by the current creator.
     *   **Response**: A list of `ProductResponse`.
 
 *   **`GET /creator/stats`**
-    *   **Description**: Retrieves detailed statistics for the creator (total sales, earnings, per-product breakdown).
-    *   **Response**: Creator statistics object.
+    *   **Description**: Retrieves detailed statistics for the creator.
+    *   **Response**:
+        ```json
+        {
+          "total_products": 5,
+          "total_sales": 10,
+          "total_revenue": 150.50,
+          "products": [
+            {
+              "product_id": 1,
+              "title": "My Awesome Product",
+              "sales": 5,
+              "revenue": 99.95
+            }
+          ]
+        }
+        ```
 
 ---
 
 ### 2.4. Products (Public Browsing)
 
-Endpoints for browsing and searching for products. These are public and do not require authentication.
+Endpoints for browsing and searching for products.
 
 *   **`GET /products`**
-    *   **Description**: A powerful search endpoint to find products with filtering, sorting, and pagination.
+    *   **Description**: Search for products with filtering, sorting, and pagination.
     *   **Query Parameters**: `query`, `category`, `min_price`, `max_price`, `creator_name`, `tags`, `page`, `page_size`, `sort_by`, `sort_order`.
-    *   **Response**: `ProductSearchResponse` which includes a list of products and pagination details.
+    *   **Response**: `ProductSearchResponse`
+        ```json
+        {
+          "products": [
+            {
+              "id": 1,
+              "creator_name": "CreatorName",
+              "title": "My Awesome Product",
+              "description": "A description...",
+              "price": 19.99,
+              "category": "E_BOOKS",
+              "tags": "fastapi,python",
+              "image_url": "https://...",
+              "file_type": "application/zip",
+              "created_at": "2025-08-02T14:30:00Z"
+            }
+          ],
+          "total": 1,
+          "page": 1,
+          "page_size": 10,
+          "total_pages": 1,
+          "has_next": false,
+          "has_prev": false
+        }
+        ```
 
 *   **`GET /products/categories`**
-    *   **Description**: Gets a list of all available product categories along with the number of products in each.
-    *   **Response**: A list of category stats.
+    *   **Description**: Gets all available product categories with product counts.
+    *   **Response**:
+        ```json
+        [
+          {
+            "category": "E_BOOKS",
+            "product_count": 5
+          },
+          {
+            "category": "VIDEO",
+            "product_count": 2
+          }
+        ]
+        ```
 
 *   **`GET /products/category/{category}`**
-    *   **Description**: Retrieves products belonging to a specific category.
-    *   **Path Parameter**: `category` (enum value from `ProductCategory`).
-    *   **Query Parameters**: `page`, `page_size`.
+    *   **Description**: Retrieves products filtered by a specific category.
     *   **Response**: `ProductSearchResponse`.
 
 ---
 
 ### 2.5. Purchase (`/purchase`)
 
-Handles the product purchasing workflow using Stripe.
+Handles the product purchasing workflow.
 
 *   **`POST /purchase/{product_id}`**
-    *   **Description**: Initiates a purchase by creating a Stripe Checkout session.
-    *   **Authentication**: Requires a logged-in user.
-    *   **Path Parameter**: `product_id`.
-    *   **Request Body**: `PurchaseRequest` (`success_url`, `cancel_url`).
-    *   **Response**: `CheckoutSessionResponse` (`checkout_url`, `session_id`, `expires_at`). The frontend should redirect the user to the `checkout_url`.
+    *   **Description**: Creates a Stripe Checkout session for a product.
+    *   **Request Body**: `PurchaseRequest`
+        ```json
+        {
+          "success_url": "https://your-frontend.com/purchase/success",
+          "cancel_url": "https://your-frontend.com/purchase/canceled"
+        }
+        ```
+    *   **Response**: `CheckoutSessionResponse`
+        ```json
+        {
+          "checkout_url": "https://checkout.stripe.com/...",
+          "session_id": "cs_test_...",
+          "expires_at": 1672531200
+        }
+        ```
 
 *   **`POST /purchase/webhook`**
-    *   **Description**: A webhook endpoint for Stripe to send events (e.g., `checkout.session.completed`). This is handled by the backend to confirm purchases. **The frontend does not interact with this directly.**
+    *   **Description**: Webhook for Stripe to send events. **Not for frontend use.**
 
 *   **`GET /purchase/session/{session_id}`**
-    *   **Description**: Retrieves purchase information using the Stripe session ID.
-    *   **Authentication**: Requires the user who made the purchase.
-    *   **Response**: `PurchaseResponse`.
+    *   **Description**: Gets purchase information by Stripe session ID.
+    *   **Response**: `PurchaseResponse`
+        ```json
+        {
+          "id": 1,
+          "user_id": 1,
+          "product_id": 1,
+          "stripe_payment_intent_id": "pi_...",
+          "stripe_session_id": "cs_test_...",
+          "amount_paid": 19.99,
+          "currency": "usd",
+          "payment_status": "completed",
+          "created_at": "2025-08-02T18:00:00Z",
+          "completed_at": "2025-08-02T18:01:00Z"
+        }
+        ```
 
 *   **`GET /purchase/mypurchases`**
     *   **Description**: Gets a list of all **completed** purchases for the current user.
-    *   **Authentication**: Requires a logged-in user.
     *   **Response**: A list of `PurchaseWithProduct`.
+        ```json
+        [
+          {
+            "id": 1,
+            "product_id": 1,
+            "created_at": "2025-08-02T18:00:00Z",
+            "completed_at": "2025-08-02T18:01:00Z",
+            "amount_paid": 19.99,
+            "payment_status": "completed",
+            "product_title": "My Awesome Product",
+            "product_description": "A description...",
+            "product_price": 19.99,
+            "product_category": "E_BOOKS",
+            "product_file_type": "application/zip",
+            "product_image_url": "https://..."
+          }
+        ]
+        ```
 
 *   **`GET /purchase/mypurchases/all`**
-    *   **Description**: Gets ALL of the current user's purchases, regardless of payment status (e.g., PENDING, FAILED). Useful for viewing complete purchase history.
-    *   **Authentication**: Requires a logged-in user.
+    *   **Description**: Gets ALL of the current user's purchases, regardless of payment status.
     *   **Response**: A list of `PurchaseWithProduct`.
 
 *   **`GET /purchase/stats`**
-    *   **Description**: Retrieves purchase statistics for the current user (total spent, number of purchases).
-    *   **Authentication**: Requires a logged-in user.
-    *   **Response**: `PurchaseStatsResponse`.
+    *   **Description**: Retrieves purchase statistics for the current user.
+    *   **Response**: `PurchaseStatsResponse`
+        ```json
+        {
+          "total_purchases": 5,
+          "total_spent": 99.50,
+          "categories": {
+            "E_BOOKS": 3,
+            "VIDEO": 2
+          },
+          "recent_purchases": 1
+        }
+        ```
 
 *   **`POST /purchase/verify/{session_id}`**
-    *   **Description**: Manually verifies the payment status of a purchase by checking with Stripe directly. Useful for cases where the webhook might be delayed.
-    *   **Authentication**: Requires the user who made the purchase.
+    *   **Description**: Manually verifies and updates payment status.
     *   **Response**: `PurchaseResponse`.
 
 ---
@@ -179,9 +405,15 @@ Provides secure access to purchased products.
 
 *   **`GET /download/{product_id}`**
     *   **Description**: Generates a temporary, signed URL to download a product.
-    *   **Authentication**: Requires the user to have either purchased the product or be the creator who owns it.
-    *   **Path Parameter**: `product_id`.
-    *   **Response**: An object containing the `download_url`, `expires_in` (in seconds), `product_title`, and `access_type`.
+    *   **Response**:
+        ```json
+        {
+          "download_url": "https://<supabase-url>/.../product.zip?token=...",
+          "expires_in": 45,
+          "product_title": "My Awesome Product",
+          "access_type": "purchased"
+        }
+        ```
 
 ---
 
@@ -190,18 +422,25 @@ Provides secure access to purchased products.
 Public endpoints for platform-wide statistics.
 
 *   **`GET /platform/popular`**
-    *   **Description**: Gets the most popular products based on the number of sales.
-    *   **Query Parameter**: `limit` (default is 10).
-    *   **Response**: A list of popular products.
+    *   **Description**: Gets the most popular products by sales.
+    *   **Response**: A list of `ProductListResponse`.
 
 *   **`GET /platform/recent`**
     *   **Description**: Gets the most recently added products.
-    *   **Query Parameter**: `limit` (default is 10).
-    *   **Response**: A list of recent products.
+    *   **Response**: A list of `ProductListResponse`.
 
 *   **`GET /platform/categories/stats`**
-    *   **Description**: Gets statistics for each product category (e.g., number of products, total sales).
-    *   **Response**: A list of category statistics.
+    *   **Description**: Gets statistics by product category.
+    *   **Response**:
+        ```json
+        [
+          {
+            "category": "E_BOOKS",
+            "total_products": 10,
+            "total_sales": 50
+          }
+        ]
+        ```
 
 ---
 
