@@ -87,4 +87,36 @@ references_uiux/
 
 
 node_modules/   
-frontend/                                     
+# digital-marketplace/                                     
+
+
+# Node modules
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Dependency directories
+digital-marketplace/node_modules/
+
+# Local env files
+digital-marketplace/.env
+digital-marketplace/.env.*.local
+digital-marketplace/.env.local
+digital-marketplace/.next/
+digital-marketplace/out/
+
+# Logs
+digital-marketplace/npm-debug.log*
+digital-marketplace/yarn-debug.log*
+digital-marketplace/yarn-error.log*
+digital-marketplace/pnpm-debug.log*
+
+digital-marketplace folder)
+digital-marketplace/.vscode/
+digital-marketplace/.idea/
+
+# Vercel/Netlify
+.vercel/
+.netlify/
