@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -11,6 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -35,8 +38,10 @@ export default function LoginPage() {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        // Redirect based on user role
-        if (result.user.role === "creator") {
+        // Redirect to the original page or default based on user role
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        } else if (result.user.role === "creator") {
           window.location.href = "/creator/dashboard";
         } else {
           window.location.href = "/dashboard";

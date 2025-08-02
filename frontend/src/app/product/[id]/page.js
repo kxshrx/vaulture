@@ -1,19 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
+import { useAuth } from "@/contexts/AuthContext";
 import { User, Star, Download, Shield, Clock } from "lucide-react";
 
 export default function ProductPage() {
   const params = useParams();
-  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,14 +118,10 @@ export default function ProductPage() {
     setLoading(false);
   }, [params.id]);
 
-  const handleLogout = () => {
-    setUser(null);
-  };
-
   const handlePurchase = () => {
-    if (!user) {
-      // Show auth modal or redirect to login
-      alert("Please sign in to purchase");
+    if (!isAuthenticated()) {
+      // Redirect to login with return URL
+      router.push(`/auth/login?redirect=/product/${params.id}`);
       return;
     }
 
@@ -134,7 +132,7 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <PageContainer user={user} onLogout={handleLogout}>
+      <PageContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -164,7 +162,7 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <PageContainer user={user} onLogout={handleLogout}>
+      <PageContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Product Not Found
@@ -173,7 +171,7 @@ export default function ProductPage() {
             The product you're looking for doesn't exist.
           </p>
           <Link href="/products">
-            <Button variant="primary">Browse Products</Button>
+            <Button variant="pink">Browse Products</Button>
           </Link>
         </div>
       </PageContainer>
@@ -181,7 +179,7 @@ export default function ProductPage() {
   }
 
   return (
-    <PageContainer user={user} onLogout={handleLogout}>
+    <PageContainer>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="mb-8">
@@ -220,7 +218,7 @@ export default function ProductPage() {
                     onClick={() => setSelectedImage(index)}
                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
                       selectedImage === index
-                        ? "border-blue-500"
+                        ? "border-primary-500"
                         : "border-gray-200"
                     }`}
                   >
@@ -254,7 +252,7 @@ export default function ProductPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {product.title}
             </h1>
-            <div className="text-3xl font-bold text-blue-600 mb-6">
+            <div className="text-3xl font-bold text-primary-500 mb-6">
               ${product.price}
             </div>
 
@@ -269,15 +267,15 @@ export default function ProductPage() {
             </div>
 
             {/* Security Features */}
-            <Card className="mb-6 bg-blue-50 border-blue-200">
+            <Card className="mb-6 bg-primary-50 border-primary-200">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <Shield className="w-6 h-6 text-blue-600" />
+                  <Shield className="w-6 h-6 text-primary-600" />
                   <div>
-                    <h3 className="font-semibold text-blue-900">
+                    <h3 className="font-semibold text-primary-900">
                       Secure 45-Second Download
                     </h3>
-                    <p className="text-sm text-blue-700">
+                    <p className="text-sm text-primary-700">
                       Your download link expires in 45 seconds for maximum
                       security
                     </p>
@@ -288,9 +286,9 @@ export default function ProductPage() {
 
             {/* Purchase Button */}
             <div className="mb-8">
-              {user ? (
+              {isAuthenticated() ? (
                 <Button
-                  variant="primary"
+                  variant="pink"
                   size="large"
                   onClick={handlePurchase}
                   className="w-full"
@@ -300,7 +298,7 @@ export default function ProductPage() {
               ) : (
                 <div className="space-y-3">
                   <Button
-                    variant="primary"
+                    variant="pink"
                     size="large"
                     onClick={handlePurchase}
                     className="w-full"
@@ -359,7 +357,7 @@ export default function ProductPage() {
                 Product Description
               </h2>
               <div
-                className="prose prose-blue max-w-none"
+                className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-a:text-primary-600 prose-strong:text-gray-900"
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </CardContent>
@@ -385,9 +383,7 @@ export default function ProductPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((relatedProduct) => (
-              <div key={relatedProduct.id}>
-                <ProductGrid products={[relatedProduct]} />
-              </div>
+              <ProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}
           </div>
         </div>
