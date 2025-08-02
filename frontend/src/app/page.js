@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { SearchBar } from "@/components/forms/SearchBar";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { ProductCard } from "@/components/product/ProductCard";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="bg-white py-24 md:py-32">
+      <section className="bg-white py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-black mb-8 leading-tight">
             Sell & buy digital products{" "}
@@ -148,11 +148,7 @@ export default function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link href="/auth/signup">
-              <Button
-                variant="primary"
-                size="large"
-                className="text-lg px-8 py-4"
-              >
+              <Button variant="pink" size="large" className="text-lg px-8 py-4">
                 Start Selling
               </Button>
             </Link>
@@ -211,10 +207,10 @@ export default function Home() {
           </div>
 
           {/* Horizontal scrollable product cards */}
-          <div className="flex space-x-6 overflow-x-auto pb-4">
+          <div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
             {mockTrendingProducts.map((product) => (
               <div key={product.id} className="flex-none w-72">
-                <ProductGrid products={[product]} />
+                <ProductCard product={product} />
               </div>
             ))}
           </div>
@@ -267,7 +263,11 @@ export default function Home() {
             </Link>
           </div>
 
-          <ProductGrid products={filteredProducts} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </section>
 
         {/* Call to Action Section */}
