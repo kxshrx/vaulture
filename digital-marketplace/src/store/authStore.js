@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import Cookies from 'js-cookie';
+import { create } from "zustand";
+import Cookies from "js-cookie";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -7,12 +7,12 @@ export const useAuthStore = create((set, get) => ({
   isLoading: false,
 
   login: (userData, token) => {
-    Cookies.set('access_token', token, { expires: 7 });
+    Cookies.set("access_token", token, { expires: 7 });
     set({ user: userData, isLoggedIn: true });
   },
 
   logout: () => {
-    Cookies.remove('access_token');
+    Cookies.remove("access_token");
     set({ user: null, isLoggedIn: false });
   },
 
