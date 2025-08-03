@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import { PREDEFINED_CATEGORIES, creatorApi, mapToBackendCategory } from "@/lib/api";
 import {
   Upload,
   X,
@@ -36,21 +37,6 @@ export default function ProductUpload() {
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-
-  const categories = [
-    "Digital Art",
-    "Courses",
-    "Templates",
-    "Ebooks",
-    "Software",
-    "Music",
-    "Videos",
-    "Photos",
-    "Graphics",
-    "Fonts",
-    "Presets",
-    "Other",
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -128,23 +114,52 @@ export default function ProductUpload() {
     setLoading(true);
 
     try {
-      // Simulate upload progress
-      for (let i = 0; i <= 100; i += 10) {
-        setUploadProgress(i);
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      // Debug logging
+      console.log("Current user:", user);
+      console.log("Auth token:", localStorage.getItem("vaulture_token"));
+      
+      // Prepare upload data
+      const uploadData = {
+        title: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        category: mapToBackendCategory(formData.category),
+        tags: formData.tags,
+        file: formData.productFile, // Main product file
+      };
+
+      // Add first image as preview image if available
+      if (formData.images.length > 0) {
+        uploadData.image = formData.images[0];
       }
 
-      // TODO: Implement actual API call
-      console.log("Uploading product:", { ...formData, isDraft });
+      console.log("Upload data:", uploadData);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Simulate upload progress
+      setUploadProgress(20);
+      
+      // Call the API
+      const result = await creatorApi.uploadFile(uploadData);
+      
+      setUploadProgress(100);
+
+      console.log("Product uploaded successfully:", result);
 
       // Redirect to products management
       router.push("/creator/products");
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
+      
+      let errorMessage = "Unknown error";
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.data && error.data.detail) {
+        errorMessage = error.data.detail;
+      } else if (typeof error.data === 'string') {
+        errorMessage = error.data;
+      }
+      
+      alert("Upload failed. Please try again: " + errorMessage);
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -211,7 +226,7 @@ export default function ProductUpload() {
                     `}
                     >
                       <option value="">Select a category</option>
-                      {categories.map((category) => (
+                      {PREDEFINED_CATEGORIES.map((category) => (
                         <option key={category} value={category}>
                           {category}
                         </option>

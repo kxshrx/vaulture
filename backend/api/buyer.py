@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from backend.db.session import get_db
 from backend.models.product import ProductCategory
-from backend.schemas.product import ProductSearchParams, ProductSearchResponse
-from backend.services.product_service import search_products, get_product_categories, get_products_by_category
+from backend.schemas.product import ProductSearchParams, ProductSearchResponse, ProductResponse
+from backend.services.product_service import search_products, get_product_categories, get_products_by_category, get_product_by_id
 
 router = APIRouter()
 
@@ -41,6 +41,17 @@ def get_products(
 def get_categories(db: Session = Depends(get_db)):
     """Get all available product categories with product counts"""
     return get_product_categories(db)
+
+@router.get("/products/{product_id}", response_model=ProductResponse)
+def get_product(
+    product_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get a specific product by ID"""
+    product = get_product_by_id(db, product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
 @router.get("/products/category/{category}", response_model=ProductSearchResponse)
 def get_products_by_category_endpoint(

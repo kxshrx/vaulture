@@ -30,8 +30,11 @@ def create_user(db: Session, user_data: RegisterSchema, is_creator: bool = False
     db.commit()
     db.refresh(user)
     
-    # Add computed fields for response
-    user_response = {
+    # Create access token for the new user
+    access_token = create_access_token(data={"sub": str(user.id), "is_creator": user.is_creator})
+    
+    # Return token and user data like the login endpoint
+    user_data = {
         "id": user.id,
         "email": user.email,
         "is_creator": user.is_creator,
@@ -39,15 +42,15 @@ def create_user(db: Session, user_data: RegisterSchema, is_creator: bool = False
         "bio": user.bio,
         "website": user.website,
         "social_links": user.social_links,
-        "created_at": user.created_at.isoformat() if user.created_at else None,
-        "total_products": 0,
-        "total_sales": 0,
-        "total_revenue": 0.0,
-        "total_purchases": 0,
-        "member_since": user.created_at.isoformat() if user.created_at else None
+        "member_since": user.created_at
     }
     
-    return user_response
+    return {
+        "access_token": access_token,
+        "token_type": "bearer", 
+        "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        "user": user_data
+    }
 
 def authenticate_user(db: Session, email: str, password: str):
     """Authenticate user and return JWT token with expiration info"""
@@ -59,8 +62,34 @@ def authenticate_user(db: Session, email: str, password: str):
         )
     
     access_token = create_access_token(data={"sub": str(user.id), "is_creator": user.is_creator})
+    
+    # Add user info to response
+    user_data = {
+        "id": user.id,
+        "email": user.email,
+        "is_creator": user.is_creator,
+        "display_name": user.display_name,
+        "bio": user.bio,
+        "website": user.website,
+        "social_links": user.social_links,
+        "member_since": user.created_at
+    }
+    
     return {
         "access_token": access_token, 
         "token_type": "bearer",
-        "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60  # Convert to seconds
+        "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,  # Convert to seconds
+        "user": user_data
     }
+
+def refresh_access_token(refresh_token: str):
+    """Generate new access token from refresh token (simplified implementation)"""
+    # In a real implementation, you would:
+    # 1. Validate the refresh token
+    # 2. Extract user info from it
+    # 3. Generate a new access token
+    # For now, we'll raise an exception as this is not implemented
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Refresh token functionality not implemented yet"
+    )

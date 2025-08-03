@@ -8,114 +8,98 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-
-// Mock data - replace with API calls
-const mockTrendingProducts = [
-  {
-    id: 1,
-    title: "Digital Art Collection Vol. 1",
-    price: 29.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 1, name: "ArtistPro" },
-    category: "Digital Art",
-    purchaseCount: 142,
-  },
-  {
-    id: 2,
-    title: "Web Development Course",
-    price: 99.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 2, name: "CodeMaster" },
-    category: "Courses",
-    purchaseCount: 89,
-  },
-  {
-    id: 3,
-    title: "UI/UX Templates Pack",
-    price: 49.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 3, name: "DesignStudio" },
-    category: "Templates",
-    purchaseCount: 234,
-  },
-  {
-    id: 4,
-    title: "Photography Presets",
-    price: 19.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 4, name: "PhotoPro" },
-    category: "Photos",
-    purchaseCount: 67,
-  },
-];
-
-const mockNewProducts = [
-  {
-    id: 5,
-    title: "3D Modeling Course",
-    price: 79.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 5, name: "3DExpert" },
-    category: "Courses",
-    purchaseCount: 23,
-  },
-  {
-    id: 6,
-    title: "Logo Design Templates",
-    price: 39.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 6, name: "BrandMaker" },
-    category: "Templates",
-    purchaseCount: 12,
-  },
-  {
-    id: 7,
-    title: "Stock Music Pack",
-    price: 24.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 7, name: "MusicPro" },
-    category: "Music",
-    purchaseCount: 45,
-  },
-  {
-    id: 8,
-    title: "Business Plan Template",
-    price: 15.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 8, name: "BizTemplate" },
-    category: "Templates",
-    purchaseCount: 8,
-  },
-];
-
-const categories = [
-  "All",
-  "Digital Art",
-  "Courses",
-  "Templates",
-  "Ebooks",
-  "Software",
-  "Music",
-  "Videos",
-  "Photos",
-];
+import {
+  buyerApi,
+  getImageUrl,
+  formatCreatorName,
+  mapToStandardCategory,
+  PREDEFINED_CATEGORIES,
+} from "@/lib/api";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [filteredProducts, setFilteredProducts] = useState(mockNewProducts);
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   useEffect(() => {
     // Filter products by category
     if (selectedCategory === "All") {
-      setFilteredProducts(mockNewProducts);
+      setFilteredProducts(newProducts);
     } else {
       setFilteredProducts(
-        mockNewProducts.filter(
-          (product) => product.category === selectedCategory
-        )
+        newProducts.filter((product) => product.category === selectedCategory)
       );
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, newProducts]);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+
+      // Load popular products (sorted by created_at desc, limited)
+      const popularResponse = await buyerApi.getProducts({
+        page: 1,
+        page_size: 4,
+        sort_by: "created_at",
+        sort_order: "desc",
+      });
+
+      // Load new products (same as popular for now, could be different criteria)
+      const newResponse = await buyerApi.getProducts({
+        page: 1,
+        page_size: 8,
+        sort_by: "created_at",
+        sort_order: "desc",
+      });
+
+      // Transform popular products
+      const transformedPopular = popularResponse.products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: getImageUrl(product.image_url),
+        creator: {
+          id: product.creator_id,
+          name: formatCreatorName(product.creator_name),
+        },
+        category: mapToStandardCategory(product.category),
+        purchaseCount: 0, // Backend doesn't track this yet
+      }));
+
+      // Transform new products
+      const transformedNew = newResponse.products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: getImageUrl(product.image_url),
+        creator: {
+          id: product.creator_id,
+          name: formatCreatorName(product.creator_name),
+        },
+        category: mapToStandardCategory(product.category),
+        purchaseCount: 0, // Backend doesn't track this yet
+      }));
+
+      // Use predefined categories instead of fetching from backend
+      const categoryNames = ["All", ...PREDEFINED_CATEGORIES];
+
+      setPopularProducts(transformedPopular);
+      setNewProducts(transformedNew);
+      setCategories(categoryNames);
+    } catch (error) {
+      console.error("Failed to load homepage data:", error);
+      // Keep empty arrays as fallback
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearch = (query) => {
     window.location.href = `/products?search=${encodeURIComponent(query)}`;
@@ -224,11 +208,28 @@ export default function Home() {
 
           {/* Horizontal scrollable product cards */}
           <div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
-            {mockTrendingProducts.map((product) => (
-              <div key={product.id} className="flex-none w-72">
-                <ProductCard product={product} />
+            {loading ? (
+              // Loading skeletons
+              [...Array(4)].map((_, index) => (
+                <div key={index} className="flex-none w-72">
+                  <div className="animate-pulse">
+                    <div className="bg-gray-200 aspect-video rounded-xl mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))
+            ) : popularProducts.length > 0 ? (
+              popularProducts.map((product) => (
+                <div key={product.id} className="flex-none w-72">
+                  <ProductCard product={product} />
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No products available at the moment.
               </div>
-            ))}
+            )}
           </div>
         </section>
 
@@ -238,16 +239,23 @@ export default function Home() {
             Browse by Category
           </h3>
           <div className="flex flex-wrap gap-3 overflow-x-auto pb-2">
-            {categories.map((category) => (
-              <Chip
-                key={category}
-                active={selectedCategory === category}
-                onClick={() => setSelectedCategory(category)}
-                variant="category"
-              >
-                {category}
-              </Chip>
-            ))}
+            {loading
+              ? // Loading skeletons for categories
+                [...Array(5)].map((_, index) => (
+                  <div key={index} className="animate-pulse">
+                    <div className="h-8 bg-gray-200 rounded-full px-4 py-2 w-20"></div>
+                  </div>
+                ))
+              : categories.map((category) => (
+                  <Chip
+                    key={category}
+                    active={selectedCategory === category}
+                    onClick={() => setSelectedCategory(category)}
+                    variant="category"
+                  >
+                    {category}
+                  </Chip>
+                ))}
           </div>
         </section>
 
@@ -280,9 +288,27 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              // Loading skeletons
+              [...Array(8)].map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="bg-gray-200 aspect-video rounded-xl mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                </div>
+              ))
+            ) : filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500 col-span-full">
+                {selectedCategory === "All"
+                  ? "No products available at the moment."
+                  : `No products found in "${selectedCategory}" category.`}
+              </div>
+            )}
           </div>
         </section>
 

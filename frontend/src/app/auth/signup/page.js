@@ -15,11 +15,11 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    name: "",
+    display_name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "buyer",
+    is_creator: false,
   });
 
   const handleInputChange = (e) => {
@@ -30,10 +30,10 @@ export default function SignupPage() {
     }));
   };
 
-  const handleRoleSelect = (role) => {
+  const handleRoleSelect = (is_creator) => {
     setFormData((prev) => ({
       ...prev,
-      role,
+      is_creator,
     }));
   };
 
@@ -56,11 +56,14 @@ export default function SignupPage() {
     }
 
     try {
-      const result = await signup(formData);
+      // Remove confirmPassword and prepare data for backend
+      const { confirmPassword, ...signupData } = formData;
+
+      const result = await signup(signupData);
 
       if (result.success) {
         // Redirect based on user role
-        if (result.user.role === "creator") {
+        if (result.user.is_creator) {
           window.location.href = "/creator/dashboard";
         } else {
           window.location.href = "/dashboard";
@@ -112,8 +115,8 @@ export default function SignupPage() {
                   </label>
                   <div className="flex space-x-3">
                     <Chip
-                      active={formData.role === "buyer"}
-                      onClick={() => handleRoleSelect("buyer")}
+                      active={formData.is_creator === false}
+                      onClick={() => handleRoleSelect(false)}
                       variant="category"
                       size="large"
                       className="flex-1 justify-center"
@@ -121,8 +124,8 @@ export default function SignupPage() {
                       Buy Products
                     </Chip>
                     <Chip
-                      active={formData.role === "creator"}
-                      onClick={() => handleRoleSelect("creator")}
+                      active={formData.is_creator === true}
+                      onClick={() => handleRoleSelect(true)}
                       variant="category"
                       size="large"
                       className="flex-1 justify-center"
@@ -133,11 +136,11 @@ export default function SignupPage() {
                 </div>
 
                 <Input
-                  name="name"
+                  name="display_name"
                   type="text"
-                  label="Full name"
-                  placeholder="Enter your full name"
-                  value={formData.name}
+                  label="Display name"
+                  placeholder="Enter your display name"
+                  value={formData.display_name}
                   onChange={handleInputChange}
                   required
                 />

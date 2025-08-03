@@ -46,24 +46,23 @@ export default function ProfilePage() {
 
   // Profile form state
   const [profileData, setProfileData] = useState({
-    name: user?.name || "",
+    display_name: user?.display_name || "",
     email: user?.email || "",
-    bio: "",
-    website: "",
-    location: "",
-    socialLinks: {
-      twitter: "",
-      instagram: "",
-      linkedin: "",
-      github: "",
+    bio: user?.bio || "",
+    website: user?.website || "",
+    social_links: {
+      twitter: user?.social_links?.twitter || "",
+      instagram: user?.social_links?.instagram || "",
+      linkedin: user?.social_links?.linkedin || "",
+      github: user?.social_links?.github || "",
     },
   });
 
   // Password form state
   const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+    current_password: "",
+    new_password: "",
+    confirm_password: "",
   });
 
   const [showPasswords, setShowPasswords] = useState({
@@ -76,16 +75,15 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       setProfileData({
-        name: user.name || "",
+        display_name: user.display_name || "",
         email: user.email || "",
         bio: user.bio || "",
         website: user.website || "",
-        location: user.location || "",
-        socialLinks: {
-          twitter: user.socialLinks?.twitter || "",
-          instagram: user.socialLinks?.instagram || "",
-          linkedin: user.socialLinks?.linkedin || "",
-          github: user.socialLinks?.github || "",
+        social_links: {
+          twitter: user.social_links?.twitter || "",
+          instagram: user.social_links?.instagram || "",
+          linkedin: user.social_links?.linkedin || "",
+          github: user.social_links?.github || "",
         },
       });
     }
@@ -98,7 +96,10 @@ export default function ProfilePage() {
     setMessage("");
 
     try {
-      const result = await updateProfile(profileData);
+      // Remove email from the data since it can't be updated
+      const { email, ...updateData } = profileData;
+
+      const result = await updateProfile(updateData);
 
       if (result.success) {
         setMessage("Profile updated successfully!");
@@ -124,13 +125,13 @@ export default function ProfilePage() {
     setMessage("");
 
     // Validation
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    if (passwordData.new_password !== passwordData.confirm_password) {
       setError("New passwords do not match");
       setIsLoading(false);
       return;
     }
 
-    if (passwordData.newPassword.length < 8) {
+    if (passwordData.new_password.length < 8) {
       setError("New password must be at least 8 characters long");
       setIsLoading(false);
       return;
@@ -142,9 +143,9 @@ export default function ProfilePage() {
       if (result.success) {
         setMessage("Password changed successfully!");
         setPasswordData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
+          current_password: "",
+          new_password: "",
+          confirm_password: "",
         });
       } else {
         setError(result.error || "Failed to change password");
@@ -214,12 +215,14 @@ export default function ProfilePage() {
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
                     <span className="text-white font-bold text-xl">
-                      {user?.name?.charAt(0) || "U"}
+                      {user?.display_name?.charAt(0) ||
+                        user?.email?.charAt(0) ||
+                        "U"}
                     </span>
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-gray-900">
-                      {user?.name || "Account Settings"}
+                      {user?.display_name || "Account Settings"}
                     </h1>
                     <p className="text-gray-600 text-lg">
                       Secure your account and customize your marketplace
@@ -234,8 +237,7 @@ export default function ProfilePage() {
                   </span>
                   <span className="flex items-center">
                     <User className="w-4 h-4 mr-1" />
-                    {user?.role?.charAt(0).toUpperCase() +
-                      user?.role?.slice(1) || "Buyer"}
+                    {user?.is_creator ? "Creator" : "Buyer"}
                   </span>
                 </div>
               </div>
@@ -288,7 +290,7 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Upgrade to Creator CTA (only for buyers) */}
-                {user?.role === "buyer" && (
+                {!user?.is_creator && (
                   <Card className="mt-6 bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 border-primary-300 shadow-lg">
                     <CardContent className="p-6">
                       <div className="text-center">
@@ -349,19 +351,18 @@ export default function ProfilePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
                             <label className="block text-sm font-semibold text-gray-700">
-                              Full Name
+                              Display Name
                             </label>
                             <input
                               type="text"
-                              value={profileData.name}
+                              value={profileData.display_name}
                               onChange={(e) =>
                                 setProfileData({
                                   ...profileData,
-                                  name: e.target.value,
+                                  display_name: e.target.value,
                                 })
                               }
-                              required
-                              placeholder="Enter your full name"
+                              placeholder="Enter your display name"
                               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                             />
                           </div>
@@ -373,15 +374,9 @@ export default function ProfilePage() {
                             <input
                               type="email"
                               value={profileData.email}
-                              onChange={(e) =>
-                                setProfileData({
-                                  ...profileData,
-                                  email: e.target.value,
-                                })
-                              }
-                              required
+                              disabled
                               placeholder="Enter your email"
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed"
                             />
                           </div>
                         </div>
@@ -432,24 +427,6 @@ export default function ProfilePage() {
                               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                             />
                           </div>
-
-                          <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-gray-700">
-                              Location
-                            </label>
-                            <input
-                              type="text"
-                              value={profileData.location}
-                              onChange={(e) =>
-                                setProfileData({
-                                  ...profileData,
-                                  location: e.target.value,
-                                })
-                              }
-                              placeholder="City, Country"
-                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                            />
-                          </div>
                         </div>
 
                         {/* Social Links */}
@@ -469,12 +446,12 @@ export default function ProfilePage() {
                               <input
                                 type="text"
                                 placeholder="@username"
-                                value={profileData.socialLinks.twitter}
+                                value={profileData.social_links.twitter}
                                 onChange={(e) =>
                                   setProfileData({
                                     ...profileData,
-                                    socialLinks: {
-                                      ...profileData.socialLinks,
+                                    social_links: {
+                                      ...profileData.social_links,
                                       twitter: e.target.value,
                                     },
                                   })
@@ -490,12 +467,12 @@ export default function ProfilePage() {
                               <input
                                 type="text"
                                 placeholder="@username"
-                                value={profileData.socialLinks.instagram}
+                                value={profileData.social_links.instagram}
                                 onChange={(e) =>
                                   setProfileData({
                                     ...profileData,
-                                    socialLinks: {
-                                      ...profileData.socialLinks,
+                                    social_links: {
+                                      ...profileData.social_links,
                                       instagram: e.target.value,
                                     },
                                   })
@@ -511,12 +488,12 @@ export default function ProfilePage() {
                               <input
                                 type="text"
                                 placeholder="linkedin.com/in/username"
-                                value={profileData.socialLinks.linkedin}
+                                value={profileData.social_links.linkedin}
                                 onChange={(e) =>
                                   setProfileData({
                                     ...profileData,
-                                    socialLinks: {
-                                      ...profileData.socialLinks,
+                                    social_links: {
+                                      ...profileData.social_links,
                                       linkedin: e.target.value,
                                     },
                                   })
@@ -532,12 +509,12 @@ export default function ProfilePage() {
                               <input
                                 type="text"
                                 placeholder="github.com/username"
-                                value={profileData.socialLinks.github}
+                                value={profileData.social_links.github}
                                 onChange={(e) =>
                                   setProfileData({
                                     ...profileData,
-                                    socialLinks: {
-                                      ...profileData.socialLinks,
+                                    social_links: {
+                                      ...profileData.social_links,
                                       github: e.target.value,
                                     },
                                   })
@@ -592,11 +569,11 @@ export default function ProfilePage() {
                           </label>
                           <input
                             type={showPasswords.current ? "text" : "password"}
-                            value={passwordData.currentPassword}
+                            value={passwordData.current_password}
                             onChange={(e) =>
                               setPasswordData({
                                 ...passwordData,
-                                currentPassword: e.target.value,
+                                current_password: e.target.value,
                               })
                             }
                             required
@@ -627,11 +604,11 @@ export default function ProfilePage() {
                           </label>
                           <input
                             type={showPasswords.new ? "text" : "password"}
-                            value={passwordData.newPassword}
+                            value={passwordData.new_password}
                             onChange={(e) =>
                               setPasswordData({
                                 ...passwordData,
-                                newPassword: e.target.value,
+                                new_password: e.target.value,
                               })
                             }
                             required
@@ -662,11 +639,11 @@ export default function ProfilePage() {
                           </label>
                           <input
                             type={showPasswords.confirm ? "text" : "password"}
-                            value={passwordData.confirmPassword}
+                            value={passwordData.confirm_password}
                             onChange={(e) =>
                               setPasswordData({
                                 ...passwordData,
-                                confirmPassword: e.target.value,
+                                confirm_password: e.target.value,
                               })
                             }
                             required
@@ -775,13 +752,12 @@ export default function ProfilePage() {
                               <div className="flex items-center space-x-2">
                                 <span
                                   className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                                    user?.role === "creator"
+                                    user?.is_creator
                                       ? "bg-primary-100 text-primary-800"
                                       : "bg-gray-100 text-gray-800"
                                   }`}
                                 >
-                                  {user?.role?.charAt(0).toUpperCase() +
-                                    user?.role?.slice(1) || "Buyer"}
+                                  {user?.is_creator ? "Creator" : "Buyer"}
                                 </span>
                               </div>
                               <p className="text-sm text-green-600 mt-1">
@@ -848,7 +824,7 @@ export default function ProfilePage() {
                     </Card>
 
                     {/* Statistics Card (for creators) */}
-                    {user?.role === "creator" && (
+                    {user?.is_creator && (
                       <Card className="shadow-sm border-gray-200 bg-gradient-to-br from-primary-50 to-primary-100">
                         <CardContent className="p-8">
                           <h3 className="text-lg font-bold text-gray-900 mb-6">

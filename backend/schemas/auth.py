@@ -53,6 +53,11 @@ class TokenSchema(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: int = Field(..., description="Token expiration time in seconds")
+    refresh_token: Optional[str] = None
+    user: Optional[dict] = None  # User data included in auth responses
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str = Field(..., description="Refresh token to generate new access token")
 
 class UserResponse(BaseModel):
     id: int

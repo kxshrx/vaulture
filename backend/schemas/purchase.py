@@ -52,6 +52,8 @@ class PurchaseWithProduct(BaseModel):
     product_category: str
     product_file_type: Optional[str]
     product_image_url: Optional[str]
+    creator_name: str
+    creator_id: int
     
     class Config:
         from_attributes = True

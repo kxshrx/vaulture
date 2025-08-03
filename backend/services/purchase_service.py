@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List
 from backend.models.purchase import Purchase, PaymentStatus
 from backend.models.product import Product
@@ -192,7 +192,7 @@ class PurchaseService:
         
         # Recent purchases (last 30 days)
         thirty_days_ago = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-        thirty_days_ago = thirty_days_ago.replace(day=thirty_days_ago.day - 30)
+        thirty_days_ago = thirty_days_ago - timedelta(days=30)
         
         recent_purchases = db.query(Purchase).filter(
             Purchase.user_id == user_id,

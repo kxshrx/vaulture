@@ -6,198 +6,106 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { ProductFilters } from "@/components/product/ProductFilters";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/Button";
-
-// Mock data - replace with API calls
-const mockProducts = [
-  {
-    id: 1,
-    title: "Digital Art Collection Vol. 1",
-    price: 29.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 1, name: "ArtistPro" },
-    category: "Digital Art",
-    purchaseCount: 142,
-    type: "Digital Art",
-  },
-  {
-    id: 2,
-    title: "Web Development Course",
-    price: 99.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 2, name: "CodeMaster" },
-    category: "Courses",
-    purchaseCount: 89,
-    type: "Courses",
-  },
-  {
-    id: 3,
-    title: "UI/UX Templates Pack",
-    price: 49.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 3, name: "DesignStudio" },
-    category: "Templates",
-    purchaseCount: 234,
-    type: "Templates",
-  },
-  {
-    id: 4,
-    title: "Photography Presets",
-    price: 19.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 4, name: "PhotoPro" },
-    category: "Photos",
-    purchaseCount: 67,
-    type: "Photos",
-  },
-  {
-    id: 5,
-    title: "3D Modeling Course",
-    price: 79.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 5, name: "3DExpert" },
-    category: "Courses",
-    purchaseCount: 23,
-    type: "Courses",
-  },
-  {
-    id: 6,
-    title: "Logo Design Templates",
-    price: 39.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 6, name: "BrandMaker" },
-    category: "Templates",
-    purchaseCount: 12,
-    type: "Templates",
-  },
-  {
-    id: 7,
-    title: "Stock Music Pack",
-    price: 24.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 7, name: "MusicPro" },
-    category: "Music",
-    purchaseCount: 45,
-    type: "Music",
-  },
-  {
-    id: 8,
-    title: "Business Plan Template",
-    price: 15.99,
-    image: "/api/placeholder/400/300",
-    creator: { id: 8, name: "BizTemplate" },
-    category: "Templates",
-    purchaseCount: 8,
-    type: "Templates",
-  },
-];
-
-const categories = [
-  "Digital Art",
-  "Courses",
-  "Templates",
-  "Ebooks",
-  "Software",
-  "Music",
-  "Videos",
-  "Photos",
-];
+import {
+  buyerApi,
+  getImageUrl,
+  formatCreatorName,
+  mapToStandardCategory,
+  PREDEFINED_CATEGORIES,
+} from "@/lib/api";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [user, setUser] = useState(null);
-  const [products, setProducts] = useState(mockProducts);
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
-  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
   const productsPerPage = 12;
 
   useEffect(() => {
     // Initialize filters from URL parameters
     const initialFilters = {};
     if (searchParams.get("search"))
-      initialFilters.search = searchParams.get("search");
+      initialFilters.query = searchParams.get("search");
     if (searchParams.get("category"))
       initialFilters.category = searchParams.get("category");
     if (searchParams.get("sort"))
-      initialFilters.sort = searchParams.get("sort");
+      initialFilters.sort_by = searchParams.get("sort");
 
     setFilters(initialFilters);
-    applyFilters(initialFilters);
+    loadProducts(initialFilters);
+    loadCategories();
   }, [searchParams]);
 
-  const applyFilters = (newFilters) => {
-    let filtered = [...mockProducts];
+  const loadProducts = async (filterParams = {}) => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        page_size: productsPerPage,
+        ...filterParams,
+      };
 
-    // Search filter
-    if (newFilters.search) {
-      filtered = filtered.filter(
-        (product) =>
-          product.title
-            .toLowerCase()
-            .includes(newFilters.search.toLowerCase()) ||
-          product.creator.name
-            .toLowerCase()
-            .includes(newFilters.search.toLowerCase())
-      );
-    }
+      const response = await buyerApi.getProducts(params);
 
-    // Category filter
-    if (newFilters.category) {
-      filtered = filtered.filter(
-        (product) => product.category === newFilters.category
-      );
-    }
+      // Transform backend data to match frontend expectations
+      const transformedProducts = response.products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: getImageUrl(product.image_url),
+        creator: {
+          id: product.creator_id,
+          name: formatCreatorName(product.creator_name),
+        },
+        category: mapToStandardCategory(product.category),
+        purchaseCount: 0, // Backend doesn't track this yet
+        type: product.category,
+        description: product.description,
+        fileType: product.file_type,
+        fileSize: product.file_size,
+        tags: product.tags ? product.tags.split(",") : [],
+        created_at: product.created_at,
+      }));
 
-    // Type filter
-    if (newFilters.type) {
-      filtered = filtered.filter((product) => product.type === newFilters.type);
+      setProducts(transformedProducts);
+      setTotalPages(response.total_pages);
+      setTotalProducts(response.total);
+      setCurrentPage(response.page);
+    } catch (error) {
+      console.error("Failed to load products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Price range filter
-    if (newFilters.priceMin) {
-      filtered = filtered.filter(
-        (product) => product.price >= parseFloat(newFilters.priceMin)
-      );
+  const loadCategories = async () => {
+    try {
+      // Use predefined categories instead of fetching from backend
+      setCategories(PREDEFINED_CATEGORIES);
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+      // Fallback to predefined categories
+      setCategories(PREDEFINED_CATEGORIES);
     }
-    if (newFilters.priceMax) {
-      filtered = filtered.filter(
-        (product) => product.price <= parseFloat(newFilters.priceMax)
-      );
-    }
-
-    // Sort
-    const sortBy = newFilters.sort || "newest";
-    switch (sortBy) {
-      case "oldest":
-        filtered.sort((a, b) => a.id - b.id);
-        break;
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "popular":
-        filtered.sort((a, b) => b.purchaseCount - a.purchaseCount);
-        break;
-      default: // newest
-        filtered.sort((a, b) => b.id - a.id);
-    }
-
-    setFilteredProducts(filtered);
-    setCurrentPage(1);
   };
 
   const handleSearch = (query) => {
-    const newFilters = { ...filters, search: query };
+    const newFilters = { ...filters, query };
     setFilters(newFilters);
-    applyFilters(newFilters);
+    setCurrentPage(1);
+    loadProducts(newFilters);
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    applyFilters(newFilters);
+    setCurrentPage(1);
+    loadProducts(newFilters);
   };
 
   const handleLogout = () => {
@@ -205,14 +113,9 @@ export default function ProductsPage() {
     // TODO: Implement logout logic
   };
 
-  // Pagination
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    loadProducts({ ...filters, page });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -235,11 +138,11 @@ export default function ProductsPage() {
           onFilterChange={handleFilterChange}
           categories={categories}
           filters={filters}
-          resultsCount={filteredProducts.length}
+          resultsCount={totalProducts}
         />
 
         {/* Products Grid */}
-        <ProductGrid products={currentProducts} loading={loading} />
+        <ProductGrid products={products} loading={loading} />
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -289,8 +192,14 @@ export default function ProductsPage() {
 
         {/* Results Summary */}
         <div className="mt-8 text-center text-gray-600">
-          Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}{" "}
-          of {filteredProducts.length} products
+          {loading
+            ? "Loading products..."
+            : totalProducts > 0
+            ? `Showing ${(currentPage - 1) * productsPerPage + 1}-${Math.min(
+                currentPage * productsPerPage,
+                totalProducts
+              )} of ${totalProducts} products`
+            : "No products found"}
         </div>
       </div>
     </PageContainer>

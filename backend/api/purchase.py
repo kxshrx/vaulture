@@ -122,8 +122,10 @@ def get_my_purchases(
 ):
     """Get user's completed purchases with product details"""
     
-    purchases = db.query(Purchase, Product).join(
+    purchases = db.query(Purchase, Product, User).join(
         Product, Purchase.product_id == Product.id
+    ).join(
+        User, Product.creator_id == User.id
     ).filter(
         Purchase.user_id == current_user.id,
         Purchase.payment_status == PaymentStatus.COMPLETED,
@@ -143,9 +145,11 @@ def get_my_purchases(
             product_price=product.price,
             product_category=product.category.value,
             product_file_type=product.file_type,
-            product_image_url=product.image_url
+            product_image_url=product.image_url,
+            creator_name=creator.display_name or creator.email.split('@')[0],
+            creator_id=creator.id
         )
-        for purchase, product in purchases
+        for purchase, product, creator in purchases
     ]
 
 @router.get("/mypurchases/all", response_model=List[PurchaseWithProduct])
@@ -155,8 +159,10 @@ def get_all_my_purchases(
 ):
     """Get ALL user's purchases regardless of status (for debugging)"""
     
-    purchases = db.query(Purchase, Product).join(
+    purchases = db.query(Purchase, Product, User).join(
         Product, Purchase.product_id == Product.id
+    ).join(
+        User, Product.creator_id == User.id
     ).filter(
         Purchase.user_id == current_user.id,
         Product.is_active == True
@@ -175,9 +181,11 @@ def get_all_my_purchases(
             product_price=product.price,
             product_category=product.category.value,
             product_file_type=product.file_type,
-            product_image_url=product.image_url
+            product_image_url=product.image_url,
+            creator_name=creator.display_name or creator.email.split('@')[0],
+            creator_id=creator.id
         )
-        for purchase, product in purchases
+        for purchase, product, creator in purchases
     ]
 
 @router.get("/stats", response_model=PurchaseStatsResponse)

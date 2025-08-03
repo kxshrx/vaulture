@@ -5,7 +5,7 @@ import { Button } from "../ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function Navbar() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isCreator } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -42,13 +42,21 @@ export function Navbar() {
 
               {isAuthenticated() ? (
                 <div className="flex items-center space-x-4">
-                  {user?.role === "creator" && (
-                    <Link
-                      href="/creator/dashboard"
-                      className="text-gray-600 hover:text-gray-900 transition-colors"
-                    >
-                      Creator Dashboard
-                    </Link>
+                  {isCreator() && (
+                    <>
+                      <Link
+                        href="/creator/dashboard"
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                      >
+                        Creator Dashboard
+                      </Link>
+                      <Link
+                        href="/creator/upload"
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                      >
+                        Upload Product
+                      </Link>
+                    </>
                   )}
 
                   <Link
@@ -73,6 +81,22 @@ export function Navbar() {
                         >
                           Dashboard
                         </Link>
+                        {isCreator() && (
+                          <>
+                            <Link
+                              href="/creator/dashboard"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Creator Dashboard
+                            </Link>
+                            <Link
+                              href="/creator/upload"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Upload Product
+                            </Link>
+                          </>
+                        )}
                         <Link
                           href="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -144,13 +168,21 @@ export function Navbar() {
                   >
                     My Purchases
                   </Link>
-                  {user?.role === "creator" && (
-                    <Link
-                      href="/creator/dashboard"
-                      className="block text-gray-600 hover:text-gray-900"
-                    >
-                      Creator Dashboard
-                    </Link>
+                  {isCreator() && (
+                    <>
+                      <Link
+                        href="/creator/dashboard"
+                        className="block text-gray-600 hover:text-gray-900"
+                      >
+                        Creator Dashboard
+                      </Link>
+                      <Link
+                        href="/creator/upload"
+                        className="block text-gray-600 hover:text-gray-900"
+                      >
+                        Upload Product
+                      </Link>
+                    </>
                   )}
                   <Link
                     href="/profile"

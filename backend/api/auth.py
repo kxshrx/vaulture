@@ -1,23 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from backend.db.session import get_db
-from backend.schemas.auth import RegisterSchema, LoginSchema, TokenSchema, UserResponse
-from backend.services.auth_service import create_user, authenticate_user
+from backend.schemas.auth import RegisterSchema, LoginSchema, TokenSchema, UserResponse, RefreshTokenSchema
+from backend.services.auth_service import create_user, authenticate_user, refresh_access_token
 from backend.core.security import get_current_user
 
 router = APIRouter()
 
-@router.post("/register/creator", response_model=UserResponse)
+@router.post("/register/creator", response_model=TokenSchema)
 def register_creator(user_data: RegisterSchema, db: Session = Depends(get_db)):
     """Register as creator - Can sell products and also purchase from other creators"""
-    user = create_user(db, user_data, is_creator=True)
-    return user
+    return create_user(db, user_data, is_creator=True)
 
-@router.post("/register/buyer", response_model=UserResponse)
+@router.post("/register/buyer", response_model=TokenSchema)
 def register_buyer(user_data: RegisterSchema, db: Session = Depends(get_db)):
     """Register as buyer - Can only purchase, cannot sell products"""
-    user = create_user(db, user_data, is_creator=False)
-    return user
+    return create_user(db, user_data, is_creator=False)
 
 @router.post("/login", response_model=TokenSchema)
 def login(login_data: LoginSchema, db: Session = Depends(get_db)):
@@ -56,3 +54,24 @@ def upgrade_to_creator(current_user = Depends(get_current_user), db: Session = D
     }
     
     return user_response
+
+@router.post("/refresh", response_model=TokenSchema)
+def refresh_token(refresh_data: RefreshTokenSchema, db: Session = Depends(get_db)):
+    """Refresh access token using refresh token"""
+    try:
+        return refresh_access_token(refresh_data.refresh_token)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+
+@router.post("/logout")
+def logout(current_user = Depends(get_current_user)):
+    """Logout endpoint - In a stateless JWT system, logout is handled client-side"""
+    # In a real implementation, you might want to:
+    # 1. Add the token to a blacklist
+    # 2. Log the logout event
+    # 3. Invalidate refresh tokens
+    
+    return {"message": "Successfully logged out"}

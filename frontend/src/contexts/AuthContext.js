@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { authApi, profileApi, creatorApi, ApiError } from "@/lib/api";
 
 const AuthContext = createContext({});
 
@@ -15,12 +16,21 @@ export function AuthProvider({ children }) {
 
   const checkAuthState = async () => {
     try {
-      // Check localStorage for stored auth data (in a real app, verify with backend)
+      // Check localStorage for stored auth data
       const storedUser = localStorage.getItem("vaulture_user");
       const storedToken = localStorage.getItem("vaulture_token");
 
       if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
+        // Verify token is still valid by fetching current user profile
+        try {
+          const currentProfile = await profileApi.getMyProfile();
+          setUser(currentProfile);
+        } catch (error) {
+          // Token is invalid, clear storage
+          console.error("Token validation failed:", error);
+          localStorage.removeItem("vaulture_user");
+          localStorage.removeItem("vaulture_token");
+        }
       }
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -34,67 +44,63 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      // TODO: Replace with actual API call
-      console.log("Login attempt:", { email, password });
+      const response = await authApi.login({ email, password });
 
-      // Simulate API response
-      const mockUser = {
-        id: 1,
-        name: "John Doe",
-        email: email,
-        role: email.includes("creator") ? "creator" : "buyer",
-        avatar: null,
-      };
+      // Store token and user data
+      localStorage.setItem("vaulture_token", response.access_token);
+      localStorage.setItem("vaulture_user", JSON.stringify(response.user));
 
-      const mockToken = "mock-jwt-token-" + Date.now();
-
-      // Store in localStorage (in production, use secure storage)
-      localStorage.setItem("vaulture_user", JSON.stringify(mockUser));
-      localStorage.setItem("vaulture_token", mockToken);
-
-      setUser(mockUser);
-      return { success: true, user: mockUser };
+      setUser(response.user);
+      return { success: true, user: response.user };
     } catch (error) {
       console.error("Login failed:", error);
-      return { success: false, error: "Invalid credentials" };
+      let errorMessage = "Login failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
   const signup = async (formData) => {
     try {
-      // TODO: Replace with actual API call
-      console.log("Signup attempt:", formData);
+      const response = await authApi.register(formData);
 
-      // Simulate API response
-      const mockUser = {
-        id: Date.now(),
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        avatar: null,
-      };
+      // Store token and user data
+      localStorage.setItem("vaulture_token", response.access_token);
+      localStorage.setItem("vaulture_user", JSON.stringify(response.user));
 
-      const mockToken = "mock-jwt-token-" + Date.now();
-
-      // Store in localStorage (in production, use secure storage)
-      localStorage.setItem("vaulture_user", JSON.stringify(mockUser));
-      localStorage.setItem("vaulture_token", mockToken);
-
-      setUser(mockUser);
-      return { success: true, user: mockUser };
+      setUser(response.user);
+      return { success: true, user: response.user };
     } catch (error) {
       console.error("Signup failed:", error);
-      return { success: false, error: "Registration failed" };
+      let errorMessage = "Registration failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("vaulture_user");
-    localStorage.removeItem("vaulture_token");
-    setUser(null);
+  const logout = async () => {
+    try {
+      // Call logout endpoint to invalidate token on server
+      await authApi.logout();
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+      // Continue with local logout even if API call fails
+    } finally {
+      localStorage.removeItem("vaulture_user");
+      localStorage.removeItem("vaulture_token");
+      setUser(null);
 
-    // Redirect to home page
-    window.location.href = "/";
+      // Redirect to home page
+      window.location.href = "/";
+    }
   };
 
   const isAuthenticated = () => {
@@ -102,81 +108,91 @@ export function AuthProvider({ children }) {
   };
 
   const isCreator = () => {
-    return user?.role === "creator";
+    return user?.is_creator === true;
   };
 
   const isBuyer = () => {
-    return user?.role === "buyer";
+    return user?.is_creator === false;
   };
 
   const updateProfile = async (profileData) => {
     try {
-      // TODO: Replace with actual API call
-      console.log("Updating profile:", profileData);
+      const updatedProfile = await profileApi.updateMyProfile(profileData);
 
-      // Simulate API response
-      const updatedUser = {
-        ...user,
-        ...profileData,
-      };
+      // Update local user state with new profile data
+      setUser(updatedProfile);
+      localStorage.setItem("vaulture_user", JSON.stringify(updatedProfile));
 
-      // Store in localStorage (in production, use secure storage)
-      localStorage.setItem("vaulture_user", JSON.stringify(updatedUser));
-
-      setUser(updatedUser);
-      return { success: true, user: updatedUser };
+      return { success: true, user: updatedProfile };
     } catch (error) {
       console.error("Profile update failed:", error);
-      return { success: false, error: "Profile update failed" };
+      let errorMessage = "Profile update failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
   const changePassword = async (passwordData) => {
     try {
-      // TODO: Replace with actual API call
-      console.log("Changing password for user:", user.id);
-
-      // Simulate API response
-      return { success: true };
+      await profileApi.changePassword(passwordData);
+      return { success: true, message: "Password changed successfully" };
     } catch (error) {
       console.error("Password change failed:", error);
-      return { success: false, error: "Password change failed" };
+      let errorMessage = "Password change failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
   const deleteAccount = async () => {
     try {
-      // TODO: Replace with actual API call
-      console.log("Deleting account for user:", user.id);
+      await profileApi.deleteAccount();
 
-      // Remove from localStorage
+      // Clear local storage and user state
       localStorage.removeItem("vaulture_user");
       localStorage.removeItem("vaulture_token");
-
       setUser(null);
+
       return { success: true };
     } catch (error) {
       console.error("Account deletion failed:", error);
-      return { success: false, error: "Account deletion failed" };
+      let errorMessage = "Account deletion failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
   const upgradeToCreator = async () => {
     try {
-      // Update user role to creator
-      const upgradedUserData = {
-        ...user,
-        role: "creator",
-      };
+      const response = await creatorApi.upgradeToCreator();
 
-      // Update localStorage
-      localStorage.setItem("vaulture_user", JSON.stringify(upgradedUserData));
+      // Fetch updated profile to get the new creator status
+      const updatedProfile = await profileApi.getMyProfile();
+      setUser(updatedProfile);
+      localStorage.setItem("vaulture_user", JSON.stringify(updatedProfile));
 
-      setUser(upgradedUserData);
-      return { success: true, user: upgradedUserData };
+      return { success: true, user: updatedProfile };
     } catch (error) {
-      console.error("Upgrade failed:", error);
-      return { success: false, error: "Upgrade failed" };
+      console.error("Creator upgrade failed:", error);
+      let errorMessage = "Account upgrade failed";
+
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 

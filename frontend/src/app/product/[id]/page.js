@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  buyerApi,
+  purchaseApi,
+  getImageUrl,
+  formatCreatorName,
+  mapToStandardCategory,
+} from "@/lib/api";
 import { User, Star, Download, Shield, Clock } from "lucide-react";
 
 export default function ProductPage() {
@@ -21,113 +28,116 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // Mock data - replace with API call
   useEffect(() => {
-    const mockProduct = {
-      id: params.id,
-      title: "Digital Art Collection Vol. 1",
-      price: 29.99,
-      images: [
-        "/api/placeholder/600/400",
-        "/api/placeholder/600/400",
-        "/api/placeholder/600/400",
-      ],
-      description: `
-        <h3>Professional Digital Art Collection</h3>
-        <p>This comprehensive collection includes 50+ high-quality digital artworks perfect for your creative projects. Each piece is carefully crafted and available in multiple formats.</p>
-        
-        <h4>What's Included:</h4>
-        <ul>
-          <li>50+ unique digital art pieces</li>
-          <li>High resolution (4K) files</li>
-          <li>Multiple formats: PNG, JPG, PSD</li>
-          <li>Commercial license included</li>
-          <li>Layered PSD files for customization</li>
-        </ul>
-        
-        <h4>Perfect for:</h4>
-        <ul>
-          <li>Web designers</li>
-          <li>Print designers</li>
-          <li>Content creators</li>
-          <li>Social media managers</li>
-        </ul>
-      `,
-      creator: {
-        id: 1,
-        name: "ArtistPro",
-        bio: "Professional digital artist with 10+ years of experience creating stunning visual content for brands worldwide.",
-        avatar: "/api/placeholder/100/100",
-        productCount: 25,
-        totalSales: 1420,
-        socialLinks: {
-          twitter: "https://twitter.com/artistpro",
-          instagram: "https://instagram.com/artistpro",
-        },
-      },
-      category: "Digital Art",
-      purchaseCount: 142,
-      fileSize: "245 MB",
-      fileType: "ZIP Archive",
-      rating: 4.8,
-      reviewCount: 23,
-      tags: ["digital art", "graphics", "design", "commercial license"],
-    };
-
-    const mockRelatedProducts = [
-      {
-        id: 2,
-        title: "Digital Art Collection Vol. 2",
-        price: 34.99,
-        image: "/api/placeholder/400/300",
-        creator: { id: 1, name: "ArtistPro" },
-        category: "Digital Art",
-        purchaseCount: 98,
-      },
-      {
-        id: 3,
-        title: "Abstract Art Pack",
-        price: 24.99,
-        image: "/api/placeholder/400/300",
-        creator: { id: 2, name: "AbstractMaster" },
-        category: "Digital Art",
-        purchaseCount: 76,
-      },
-      {
-        id: 4,
-        title: "Vintage Design Elements",
-        price: 19.99,
-        image: "/api/placeholder/400/300",
-        creator: { id: 3, name: "VintageDesign" },
-        category: "Digital Art",
-        purchaseCount: 154,
-      },
-      {
-        id: 5,
-        title: "Modern Art Collection",
-        price: 39.99,
-        image: "/api/placeholder/400/300",
-        creator: { id: 4, name: "ModernArtist" },
-        category: "Digital Art",
-        purchaseCount: 67,
-      },
-    ];
-
-    setProduct(mockProduct);
-    setRelatedProducts(mockRelatedProducts);
-    setLoading(false);
+    loadProduct();
   }, [params.id]);
 
-  const handlePurchase = () => {
+  useEffect(() => {
+    if (product) {
+      loadRelatedProducts();
+    }
+  }, [product]);
+
+  const loadProduct = async () => {
+    try {
+      setLoading(true);
+      const productData = await buyerApi.getProduct(params.id);
+
+      // Transform backend data to match frontend expectations
+      const transformedProduct = {
+        id: productData.id,
+        title: productData.title,
+        price: productData.price,
+        images: [
+          getImageUrl(productData.image_url, "/api/placeholder/600/400"),
+          // Add more placeholder images if needed
+          "/api/placeholder/600/400",
+          "/api/placeholder/600/400",
+        ],
+        description: productData.description || "No description available",
+        creator: {
+          id: productData.creator_id,
+          name: formatCreatorName(productData.creator_name),
+          bio: `Creator on Vaulture platform`, // Simple bio based on creator status
+          avatar: "/api/placeholder/100/100", // Will be enhanced when we add creator avatars
+          productCount: 0, // Backend doesn't track this yet - can be added later
+          totalSales: 0, // Backend doesn't track this yet - can be added later
+        },
+        category: mapToStandardCategory(productData.category),
+        fileType: productData.file_type || "Unknown",
+        fileSize: formatFileSize(productData.file_size),
+        tags: productData.tags ? productData.tags.split(",") : [],
+        rating: 4.8, // Mock rating - backend doesn't have this yet
+        reviewCount: 0, // Mock reviews - backend doesn't have this yet
+        purchaseCount: 0, // Backend doesn't track this yet
+        created_at: productData.created_at,
+      };
+
+      setProduct(transformedProduct);
+    } catch (error) {
+      console.error("Failed to load product:", error);
+      // Handle error - maybe redirect to 404
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadRelatedProducts = async () => {
+    try {
+      // Load products from same category
+      const response = await buyerApi.getProducts({
+        page: 1,
+        page_size: 4,
+        category: product?.category,
+      });
+
+      // Transform and exclude current product
+      const transformed = response.products
+        .filter((p) => p.id !== parseInt(params.id))
+        .slice(0, 4)
+        .map((product) => ({
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          image: getImageUrl(product.image_url),
+          creator: {
+            id: product.creator_id,
+            name: formatCreatorName(product.creator_name),
+          },
+          category: mapToStandardCategory(product.category),
+        }));
+
+      setRelatedProducts(transformed);
+    } catch (error) {
+      console.error("Failed to load related products:", error);
+    }
+  };
+
+  const formatFileSize = (bytes) => {
+    if (!bytes) return "Unknown";
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
+  };
+
+  const handlePurchase = async () => {
     if (!isAuthenticated()) {
-      // Redirect to login with return URL
-      router.push(`/auth/login?redirect=/product/${params.id}`);
+      router.push("/auth/signin");
       return;
     }
 
-    // TODO: Implement purchase flow
-    console.log("Purchasing product:", product.id);
-    alert("Purchase flow not implemented yet");
+    try {
+      const checkoutData = await purchaseApi.createCheckoutSession(product.id, {
+        success_url: `${window.location.origin}/dashboard?purchase=success`,
+        cancel_url: `${window.location.origin}/product/${product.id}?purchase=cancelled`,
+      });
+
+      // Redirect to Stripe checkout
+      window.location.href = checkoutData.checkout_url;
+    } catch (error) {
+      console.error("Purchase failed:", error);
+      alert("Purchase failed. Please try again.");
+    }
   };
 
   if (loading) {
@@ -135,23 +145,13 @@ export default function ProductPage() {
       <PageContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="aspect-video bg-gray-200 rounded-xl"></div>
               <div className="space-y-4">
-                <div className="bg-gray-200 aspect-video rounded-xl"></div>
-                <div className="flex space-x-2">
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-200 w-20 h-20 rounded-lg"
-                    ></div>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="h-8 bg-gray-200 rounded"></div>
-                <div className="h-6 bg-gray-200 rounded w-24"></div>
-                <div className="h-4 bg-gray-200 rounded w-32"></div>
-                <div className="h-32 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-8 bg-gray-200 rounded w-1/4"></div>
               </div>
             </div>
           </div>
@@ -163,16 +163,18 @@ export default function ProductPage() {
   if (!product) {
     return (
       <PageContainer>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Product Not Found
-          </h1>
-          <p className="text-gray-600 mb-8">
-            The product you're looking for doesn't exist.
-          </p>
-          <Link href="/products">
-            <Button variant="pink">Browse Products</Button>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Product Not Found
+            </h1>
+            <p className="text-gray-600 mb-8">
+              The product you're looking for doesn't exist or has been removed.
+            </p>
+            <Link href="/products">
+              <Button variant="primary">Browse All Products</Button>
+            </Link>
+          </div>
         </div>
       </PageContainer>
     );
@@ -234,9 +236,9 @@ export default function ProductPage() {
             )}
           </div>
 
-          {/* Product Information */}
+          {/* Product Details */}
           <div>
-            {/* Category & Rating */}
+            {/* Category and Rating */}
             <div className="flex items-center justify-between mb-4">
               <Chip variant="category">{product.category}</Chip>
               <div className="flex items-center space-x-1">
@@ -248,7 +250,7 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Title & Price */}
+            {/* Title and Price */}
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {product.title}
             </h1>
@@ -256,7 +258,7 @@ export default function ProductPage() {
               ${product.price}
             </div>
 
-            {/* File Info */}
+            {/* Product Info */}
             <div className="flex items-center space-x-6 mb-6 text-sm text-gray-600">
               <div className="flex items-center space-x-1">
                 <Download className="w-4 h-4" />
@@ -266,7 +268,7 @@ export default function ProductPage() {
               <div>{product.purchaseCount} purchases</div>
             </div>
 
-            {/* Security Features */}
+            {/* Security Notice */}
             <Card className="mb-6 bg-primary-50 border-primary-200">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
@@ -349,7 +351,7 @@ export default function ProductPage() {
           </div>
         </div>
 
-        {/* Product Description */}
+        {/* Description */}
         <div className="mt-12">
           <Card>
             <CardContent className="p-8">

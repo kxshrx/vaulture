@@ -162,3 +162,7 @@ Desktop.ini
 config.local.*
 secrets.json
 .secrets/
+frontend/src/app/creator/products/page_clean.js
+frontend/src/app/creator/products/page_old.js
+frontend/src/app/product/\[id]/page_new.js
+frontend/src/app/product/\[id]/page_old.js

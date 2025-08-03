@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { StatsCard } from "@/components/creator/StatsCard";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import { buyerApi, ApiError } from "@/lib/api";
 import {
   Download,
   Calendar,
@@ -19,86 +20,74 @@ import {
 export default function BuyerDashboard() {
   const { user } = useAuth();
   const [purchases, setPurchases] = useState([]);
-  const [stats, setStats] = useState({});
+  const [stats, setStats] = useState({
+    totalPurchases: 0,
+    totalSpent: 0,
+    lastPurchaseDate: null,
+  });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const purchasesPerPage = 10;
 
-  // Mock data - replace with API calls
+  // Fetch real data from API
   useEffect(() => {
-    const mockPurchases = [
-      {
-        id: 1,
-        product: {
-          id: 1,
-          title: "Digital Art Collection Vol. 1",
-          image: "/api/placeholder/100/100",
-          creator: { name: "ArtistPro" },
-        },
-        purchaseDate: "2025-01-15T10:30:00Z",
-        amount: 29.99,
-        downloadCount: 2,
-        maxDownloads: null, // unlimited
-      },
-      {
-        id: 2,
-        product: {
-          id: 2,
-          title: "Web Development Course",
-          image: "/api/placeholder/100/100",
-          creator: { name: "CodeMaster" },
-        },
-        purchaseDate: "2025-01-10T14:20:00Z",
-        amount: 99.99,
-        downloadCount: 1,
-        maxDownloads: null,
-      },
-      {
-        id: 3,
-        product: {
-          id: 3,
-          title: "UI/UX Templates Pack",
-          image: "/api/placeholder/100/100",
-          creator: { name: "DesignStudio" },
-        },
-        purchaseDate: "2025-01-05T09:15:00Z",
-        amount: 49.99,
-        downloadCount: 3,
-        maxDownloads: null,
-      },
-      {
-        id: 4,
-        product: {
-          id: 4,
-          title: "Photography Presets",
-          image: "/api/placeholder/100/100",
-          creator: { name: "PhotoPro" },
-        },
-        purchaseDate: "2024-12-28T16:45:00Z",
-        amount: 19.99,
-        downloadCount: 0,
-        maxDownloads: null,
-      },
-    ];
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-    const mockStats = {
-      totalPurchases: mockPurchases.length,
-      totalSpent: mockPurchases.reduce(
-        (sum, purchase) => sum + purchase.amount,
-        0
-      ),
-      lastPurchaseDate: mockPurchases[0]?.purchaseDate,
+        // Fetch purchases and stats in parallel
+        const [purchasesData, statsData] = await Promise.all([
+          buyerApi.getPurchases(),
+          buyerApi.getPurchaseStats(),
+        ]);
+
+        setPurchases(purchasesData);
+        setStats({
+          totalPurchases: statsData.total_purchases,
+          totalSpent: statsData.total_spent,
+          lastPurchaseDate:
+            purchasesData.length > 0 ? purchasesData[0].created_at : null,
+        });
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+        setError("Failed to load dashboard data. Please try again.");
+
+        // Set empty defaults on error
+        setPurchases([]);
+        setStats({
+          totalPurchases: 0,
+          totalSpent: 0,
+          lastPurchaseDate: null,
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setPurchases(mockPurchases);
-    setStats(mockStats);
-    setLoading(false);
-  }, []);
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
-  const handleDownload = (purchaseId) => {
-    // TODO: Implement secure download link generation
-    console.log("Generating download link for purchase:", purchaseId);
-    alert("Download link generated! (45 seconds to download)");
+  const handleDownload = async (purchaseId) => {
+    try {
+      // Find the purchase to get the product_id
+      const purchase = purchases.find((p) => p.id === purchaseId);
+      if (!purchase) {
+        throw new Error("Purchase not found");
+      }
+
+      const response = await buyerApi.downloadProduct(purchase.product_id);
+
+      // Open the download URL in a new tab
+      window.open(response.download_url, "_blank");
+    } catch (error) {
+      console.error("Download failed:", error);
+      // You can add a toast notification here
+      alert("Download failed. Please try again.");
+    }
   };
 
   const formatDate = (dateString) => {
@@ -199,29 +188,34 @@ export default function BuyerDashboard() {
                           <div className="flex-shrink-0">
                             <img
                               className="h-16 w-16 rounded-xl object-cover border border-gray-200"
-                              src={purchase.product.image}
-                              alt={purchase.product.title}
+                              src={
+                                purchase.product_image_url ||
+                                "/placeholder-image.png"
+                              }
+                              alt={purchase.product_title}
                             />
                           </div>
                           <div className="flex-1 min-w-0">
                             <Link
-                              href={`/product/${purchase.product.id}`}
+                              href={`/product/${purchase.product_id}`}
                               className="block"
                             >
                               <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 truncate">
-                                {purchase.product.title}
+                                {purchase.product_title}
                               </h3>
                             </Link>
                             <p className="text-sm text-gray-600 mt-1">
-                              by {purchase.product.creator.name}
+                              by {purchase.creator_name}
                             </p>
                             <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                               <span>
-                                Purchased {formatDate(purchase.purchaseDate)}
+                                Purchased {formatDate(purchase.created_at)}
                               </span>
                               <span className="text-gray-300">•</span>
                               <span className="font-medium text-gray-900">
-                                ${purchase.amount.toFixed(2)}
+                                $
+                                {purchase.amount_paid?.toFixed(2) ||
+                                  purchase.product_price?.toFixed(2)}
                               </span>
                             </div>
                           </div>
@@ -229,12 +223,11 @@ export default function BuyerDashboard() {
 
                         {/* Download Info & Actions */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
-                          {/* Download Counter */}
+                          {/* Product Category */}
                           <div className="flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
                             <Package className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm font-medium text-gray-700">
-                              {purchase.downloadCount} /{" "}
-                              {purchase.maxDownloads || "∞"}
+                            <span className="text-sm font-medium text-gray-700 capitalize">
+                              {purchase.product_category}
                             </span>
                           </div>
 
