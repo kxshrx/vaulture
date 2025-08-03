@@ -11,13 +11,13 @@ import math
 
 def create_product(db: Session, product_data: ProductCreate, file: UploadFile, creator_id: int, image_file: UploadFile = None):
     """Create a new product with file upload"""
-    # Upload main file to storage
-    file_url, file_size, file_type = storage_service.upload_file(file)
+    # Upload main file to storage (use product-files bucket)
+    file_url, file_size, file_type = storage_service.upload_file(file, file_type="product")
     
-    # Upload image if provided
+    # Upload image if provided (use product-images bucket)
     image_url = None
     if image_file:
-        image_url, _, _ = storage_service.upload_file(image_file, validate=False)  # Skip validation for images
+        image_url, _, _ = storage_service.upload_file(image_file, file_type="image", validate=False)  # Skip validation for images
     
     # Create product in database
     product = Product(

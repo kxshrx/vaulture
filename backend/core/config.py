@@ -16,6 +16,7 @@ class Settings:
     # Supabase Configuration
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+    SUPABASE_SERVICE_KEY: str = os.getenv("SUPABASE_SERVICE_KEY", "")
     
     # Stripe Configuration
     STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")

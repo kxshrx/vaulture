@@ -15,9 +15,11 @@ class StorageService:
         )
         
         if self.use_supabase:
-            from backend.core.supabase import get_supabase_client
-            self.supabase = get_supabase_client()
-            self.bucket_name = "products"
+            from backend.core.supabase import get_supabase_admin_client
+            self.supabase = get_supabase_admin_client()  # Use admin client for file operations
+            self.bucket_name = "product-files"  # Main bucket for product files
+            self.images_bucket = "product-images"  # Separate bucket for images
+            print(f"✅ Using Supabase storage with admin privileges (buckets: {self.bucket_name}, {self.images_bucket})")
         else:
             # Fallback to local storage for development
             self.local_storage_path = Path(settings.UPLOAD_FOLDER)
@@ -46,7 +48,7 @@ class StorageService:
             
             # No file type restrictions - creators can upload anything!
     
-    def upload_file(self, file: UploadFile, validate: bool = True) -> tuple[str, int, str]:
+    def upload_file(self, file: UploadFile, file_type: str = "product", validate: bool = True) -> tuple[str, int, str]:
         """Upload file to Supabase storage or local storage and return (file_path, file_size, file_type)"""
         try:
             if validate:
@@ -61,14 +63,21 @@ class StorageService:
             file_size = len(file_content)
             
             if self.use_supabase:
+                # Choose bucket based on file type
+                bucket = self.images_bucket if file_type == "image" else self.bucket_name
+                print(f"📤 Uploading {file.filename} to bucket: {bucket}")
+                
                 # Upload to Supabase
-                response = self.supabase.storage.from_(self.bucket_name).upload(
-                    unique_filename, file_content
+                response = self.supabase.storage.from_(bucket).upload(
+                    unique_filename, 
+                    file_content,
+                    file_options={"cache-control": "3600", "upsert": "false"}
                 )
                 
-                if response.status_code != 200:
+                if hasattr(response, 'status_code') and response.status_code != 200:
                     raise HTTPException(status_code=500, detail="Failed to upload file to Supabase")
                 
+                print(f"✅ Upload successful: {unique_filename}")
                 return unique_filename, file_size, file_extension
             else:
                 # Upload to local storage
