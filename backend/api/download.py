@@ -38,12 +38,18 @@ def download_product(
                 detail="You must complete the purchase of this product before downloading"
             )
     
-    # Generate signed URL (valid for 30 seconds - very short for security)
-    signed_url = storage_service.get_signed_url(product.file_url, expires_in=30)
+    # Generate simple masked access URL (clean approach)
+    access_url = f"http://localhost:8000/api/access-file?product_id={product_id}"
     
     return {
-        "download_url": signed_url,
-        "expires_in": 30,
+        "download_url": access_url,
         "product_title": product.title,
-        "access_type": "owner" if is_creator_owner else "purchased"
+        "access_type": "owner" if is_creator_owner else "purchased",
+        "info": {
+            "type": "masked_access",
+            "description": "Secure file access through masked URL",
+            "direct_urls_hidden": True,
+            "requires_authentication": True,
+            "expires_after_access": "60 seconds"
+        }
     }

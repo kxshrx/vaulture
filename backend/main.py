@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-from backend.api import auth, creator, buyer, purchase, download, platform, profile, files, secure_download
+from backend.api import auth, creator, buyer, purchase, download, platform, profile, file_access
 from backend.db.base import engine, Base
 
 # Create database tables
@@ -34,8 +34,7 @@ app.include_router(buyer.router, prefix="", tags=["Buyer"])
 app.include_router(purchase.router, prefix="/purchase", tags=["Purchase"])
 app.include_router(download.router, prefix="/download", tags=["Download"])
 app.include_router(platform.router, prefix="/platform", tags=["Platform"])
-app.include_router(files.router, prefix="/files", tags=["Secure Files"])
-app.include_router(secure_download.router, prefix="/secure-download", tags=["Secure Download"])
+app.include_router(file_access.router, prefix="/api", tags=["File Access"])
 
 @app.get("/")
 def read_root():

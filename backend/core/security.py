@@ -46,6 +46,40 @@ def verify_token(token: str):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+def get_current_user_optional(request):
+    """Get current user if authenticated, otherwise return None"""
+    try:
+        token = None
+        
+        # Try to get token from Authorization header first
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+        
+        # If no header, try to get from cookies (for browser requests)
+        if not token:
+            token = request.cookies.get("vaulture_token")
+        
+        # If no cookie, try query parameter (as fallback)
+        if not token:
+            token = request.query_params.get("token")
+        
+        if not token:
+            return None
+        
+        user_id = verify_token(token)
+        
+        # Get database session
+        from backend.db.session import SessionLocal
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+            return user
+        finally:
+            db.close()
+    except:
+        return None
+
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
