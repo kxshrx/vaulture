@@ -9,7 +9,11 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { PREDEFINED_CATEGORIES, creatorApi, mapToBackendCategory } from "@/lib/api";
+import {
+  PREDEFINED_CATEGORIES,
+  creatorApi,
+  mapToBackendCategory,
+} from "@/lib/api";
 import {
   Upload,
   X,
@@ -117,7 +121,7 @@ export default function ProductUpload() {
       // Debug logging
       console.log("Current user:", user);
       console.log("Auth token:", localStorage.getItem("vaulture_token"));
-      
+
       // Prepare upload data
       const uploadData = {
         title: formData.title,
@@ -137,10 +141,10 @@ export default function ProductUpload() {
 
       // Simulate upload progress
       setUploadProgress(20);
-      
+
       // Call the API
       const result = await creatorApi.uploadFile(uploadData);
-      
+
       setUploadProgress(100);
 
       console.log("Product uploaded successfully:", result);
@@ -149,16 +153,16 @@ export default function ProductUpload() {
       router.push("/creator/products");
     } catch (error) {
       console.error("Upload failed:", error);
-      
+
       let errorMessage = "Unknown error";
       if (error.message) {
         errorMessage = error.message;
       } else if (error.data && error.data.detail) {
         errorMessage = error.data.detail;
-      } else if (typeof error.data === 'string') {
+      } else if (typeof error.data === "string") {
         errorMessage = error.data;
       }
-      
+
       alert("Upload failed. Please try again: " + errorMessage);
     } finally {
       setLoading(false);

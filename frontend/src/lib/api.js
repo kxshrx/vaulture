@@ -38,16 +38,16 @@ export const PREDEFINED_CATEGORIES = [
 export const mapToBackendCategory = (frontendCategory) => {
   const categoryMap = {
     "Digital Art": "digital_art",
-    "Photography": "photography", 
-    "Music": "music",
-    "Video": "video",
-    "Ebooks": "ebooks",
-    "Software": "software",
-    "Templates": "templates",
-    "Courses": "courses",
-    "Fonts": "fonts",
-    "Graphics": "graphics",
-    "Other": "other",
+    Photography: "photography",
+    Music: "music",
+    Video: "video",
+    Ebooks: "ebooks",
+    Software: "software",
+    Templates: "templates",
+    Courses: "courses",
+    Fonts: "fonts",
+    Graphics: "graphics",
+    Other: "other",
   };
 
   return categoryMap[frontendCategory] || "other";
