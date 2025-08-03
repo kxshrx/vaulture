@@ -94,10 +94,45 @@ class StorageService:
         """Generate signed URL for file download"""
         try:
             if self.use_supabase:
-                response = self.supabase.storage.from_(self.bucket_name).create_signed_url(
-                    file_path, expires_in
+                # First, try to determine which bucket the file is in
+                bucket_to_use = self.bucket_name  # Default to product-files
+                
+                # Check if file exists in product-files bucket
+                try:
+                    files = self.supabase.storage.from_(self.bucket_name).list()
+                    file_exists_in_main = any(f['name'] == file_path for f in files)
+                except:
+                    file_exists_in_main = False
+                
+                # If not in main bucket, try images bucket
+                if not file_exists_in_main:
+                    try:
+                        files = self.supabase.storage.from_(self.images_bucket).list()
+                        file_exists_in_images = any(f['name'] == file_path for f in files)
+                        if file_exists_in_images:
+                            bucket_to_use = self.images_bucket
+                    except:
+                        pass  # Stick with default bucket
+                
+                print(f"🔗 Creating signed URL for {file_path} in bucket: {bucket_to_use}")
+                
+                # Create signed URL with explicit parameters
+                response = self.supabase.storage.from_(bucket_to_use).create_signed_url(
+                    path=file_path, 
+                    expires_in=expires_in
                 )
-                return response['signedURL']
+                
+                # Handle different response formats
+                if isinstance(response, dict):
+                    signed_url = response.get('signedURL') or response.get('signedUrl')
+                    if signed_url:
+                        print(f"✅ Signed URL created successfully")
+                        return signed_url
+                    else:
+                        raise Exception(f"No signed URL in response: {response}")
+                else:
+                    raise Exception(f"Unexpected response format: {type(response)}")
+                    
             else:
                 # For local storage, create time-limited token-based URL that requires authentication
                 import time
@@ -112,6 +147,7 @@ class StorageService:
                 # Return URL that points to our secure endpoint (not static files)
                 return f"http://localhost:8000/files/{file_path}?token={token}&expires={expires_at}"
         except Exception as e:
+            print(f"❌ Signed URL creation failed: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to generate download URL: {str(e)}")
 
 storage_service = StorageService()

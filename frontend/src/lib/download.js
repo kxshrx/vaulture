@@ -3,8 +3,7 @@
  */
 
 /**
- * SECURE HYBRID APPROACH: Use signed URLs with authentication verification
- * This maintains the signed URL security system while ensuring proper auth
+ * SECURE DOWNLOAD: Handle both Supabase signed URLs and local storage URLs
  */
 export const downloadFileWithAuth = async (url, filename) => {
   try {
@@ -13,6 +12,30 @@ export const downloadFileWithAuth = async (url, filename) => {
     if (!token) {
       throw new Error("Authentication required for file download");
     }
+
+    // Check if this is a Supabase URL (cloud storage)
+    const isSupabaseUrl = url.includes(".supabase.co/storage/v1/object/sign/");
+
+    if (isSupabaseUrl) {
+      // For Supabase URLs, use direct download (already authenticated by backend)
+      console.log("🔗 Using Supabase direct download");
+
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename || "download";
+      link.style.display = "none";
+
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      return true;
+    }
+
+    // For local storage URLs, use the secure download approach
+    console.log("🔒 Using local secure download");
 
     // Parse the signed URL to extract parameters
     const urlObj = new URL(url);
