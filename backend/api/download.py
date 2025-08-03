@@ -38,12 +38,12 @@ def download_product(
                 detail="You must complete the purchase of this product before downloading"
             )
     
-    # Generate signed URL (valid for 45 seconds)
-    signed_url = storage_service.get_signed_url(product.file_url, expires_in=45)
+    # Generate signed URL (valid for 30 seconds - very short for security)
+    signed_url = storage_service.get_signed_url(product.file_url, expires_in=30)
     
     return {
         "download_url": signed_url,
-        "expires_in": 45,
+        "expires_in": 30,
         "product_title": product.title,
         "access_type": "owner" if is_creator_owner else "purchased"
     }

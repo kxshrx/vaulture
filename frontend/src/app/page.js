@@ -168,8 +168,8 @@ export default function Home() {
                 Account-Based Downloads
               </div>
               <p className="text-gray-500 text-sm">
-                Secure download links that expire help protect your digital
-                products
+                30-second secure download links protect your digital products
+                from unauthorized access
               </p>
             </div>
             <div className="text-center bg-gray-50 rounded-xl p-8">

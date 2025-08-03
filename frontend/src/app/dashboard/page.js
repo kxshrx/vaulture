@@ -11,6 +11,11 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { buyerApi, ApiError } from "@/lib/api";
 import {
+  downloadFileWithAuth,
+  showDownloadNotification,
+  showDownloadError,
+} from "@/lib/download";
+import {
   Download,
   Package,
   RefreshCw,
@@ -104,33 +109,18 @@ export default function BuyerDashboard() {
 
       const response = await buyerApi.downloadProduct(purchase.product_id);
 
-      // Open the download URL in a new tab
-      window.open(response.download_url, "_blank");
+      // Download file with authentication
+      await downloadFileWithAuth(response.download_url, response.product_title);
 
-      // Show success message
+      // Show success notification
+      showDownloadNotification();
       setError("");
-
-      // Optional: Show a success notification
-      const successMessage = document.createElement("div");
-      successMessage.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
-      successMessage.textContent = "Download started successfully!";
-      document.body.appendChild(successMessage);
-
-      setTimeout(() => {
-        document.body.removeChild(successMessage);
-      }, 3000);
     } catch (error) {
       console.error("Download failed:", error);
 
-      let errorMessage = "Download failed. Please try again.";
-      if (error.message) {
-        errorMessage = error.message;
-      } else if (error.response?.data?.detail) {
-        errorMessage = error.response.data.detail;
-      }
-
-      setError(errorMessage);
+      // Show error notification
+      showDownloadError(error.message);
+      setError(error.message);
     } finally {
       setDownloading(null);
     }

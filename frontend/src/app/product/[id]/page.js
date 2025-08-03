@@ -320,10 +320,10 @@ export default function ProductPage() {
                   <Shield className="w-6 h-6 text-primary-600" />
                   <div>
                     <h3 className="font-semibold text-primary-900">
-                      Secure 45-Second Download
+                      Secure 30-Second Download
                     </h3>
                     <p className="text-sm text-primary-700">
-                      Your download link expires in 45 seconds for maximum
+                      Your download link expires in 30 seconds for maximum
                       security
                     </p>
                   </div>

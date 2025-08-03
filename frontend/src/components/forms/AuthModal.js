@@ -82,7 +82,7 @@ export function AuthModal({ isOpen, onClose }) {
             Welcome to Vaulture
           </h2>
           <p className="text-gray-600">
-            Secure digital marketplace with 45-second download links
+            Secure digital marketplace with 30-second download links
           </p>
         </div>
 

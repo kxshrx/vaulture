@@ -90,17 +90,17 @@ class StorageService:
                 )
                 return response['signedURL']
             else:
-                # For local storage, create time-limited token-based URL
-                # This is still not as secure as Supabase but better than permanent URLs
+                # For local storage, create time-limited token-based URL that requires authentication
                 import time
                 import hashlib
                 current_time = int(time.time())
                 expires_at = current_time + expires_in
                 
-                # Create a simple token based on file path and expiration
+                # Create a secure token based on file path and expiration
                 token_data = f"{file_path}:{expires_at}:{settings.JWT_SECRET}"
                 token = hashlib.md5(token_data.encode()).hexdigest()
                 
+                # Return URL that points to our secure endpoint (not static files)
                 return f"http://localhost:8000/files/{file_path}?token={token}&expires={expires_at}"
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to generate download URL: {str(e)}")

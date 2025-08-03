@@ -10,6 +10,11 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { purchaseApi, buyerApi } from "@/lib/api";
 import {
+  downloadFileWithAuth,
+  showDownloadNotification,
+  showDownloadError,
+} from "@/lib/download";
+import {
   CheckCircle,
   Download,
   Package,
@@ -127,24 +132,14 @@ export default function CheckoutSuccessPage() {
 
       const response = await buyerApi.downloadProduct(purchase.product_id);
 
-      // Open the download URL in a new tab
-      window.open(response.download_url, "_blank");
+      // Download file with authentication
+      await downloadFileWithAuth(response.download_url, response.product_title);
 
-      // Show success message
-      const successMessage = document.createElement("div");
-      successMessage.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
-      successMessage.textContent = "Download started successfully!";
-      document.body.appendChild(successMessage);
-
-      setTimeout(() => {
-        if (document.body.contains(successMessage)) {
-          document.body.removeChild(successMessage);
-        }
-      }, 3000);
+      // Show success notification
+      showDownloadNotification();
     } catch (error) {
       console.error("Download failed:", error);
-      alert("Download failed. Please try again from your dashboard.");
+      showDownloadError(error.message);
     } finally {
       setDownloadingProductId(null);
     }
@@ -478,7 +473,7 @@ export default function CheckoutSuccessPage() {
                   <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></div>
                   <div>
                     <strong className="text-gray-900">Secure Download:</strong>{" "}
-                    Your download link will expire in 45 seconds for security
+                    Your download link will expire in 30 seconds for security
                     purposes.
                   </div>
                 </div>
