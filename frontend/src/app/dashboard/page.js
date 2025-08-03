@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -26,7 +26,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-export default function BuyerDashboard() {
+function DashboardContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [purchases, setPurchases] = useState([]);
@@ -194,7 +194,7 @@ export default function BuyerDashboard() {
                   <div className="flex items-center">
                     <RefreshCw className="w-5 h-5 text-blue-500 mr-2" />
                     <p className="text-blue-800">
-                      Verifying your purchase... If your product doesn't appear
+                      Verifying your purchase... If your product doesn&apos;t appear
                       shortly, please refresh the page.
                     </p>
                   </div>
@@ -391,5 +391,25 @@ export default function BuyerDashboard() {
         </div>
       </PageContainer>
     </ProtectedRoute>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <ProtectedRoute requireAuth={true}>
+      <PageContainer>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+        </div>
+      </PageContainer>
+    </ProtectedRoute>
+  );
+}
+
+export default function BuyerDashboard() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

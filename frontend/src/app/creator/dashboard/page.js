@@ -143,7 +143,7 @@ export default function CreatorDashboard() {
               </h1>
               <p className="text-gray-600">
                 Welcome back, {user?.name || user?.display_name || "Creator"}!
-                Here's your business overview.
+                Here&apos;s your business overview.
               </p>
             </div>
             <Link href="/creator/upload">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -25,7 +25,7 @@ import {
   Clock,
 } from "lucide-react";
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -344,17 +344,17 @@ export default function CheckoutSuccessPage() {
                     ? "Payment Verification Needed"
                     : "Payment Processing..."}
                 </h1>
-                <p className="text-yellow-700 text-lg mb-6">
+                                <p className="text-yellow-700 text-lg mb-6">
                   {pollFailed
-                    ? "Your payment may have completed but we need to verify it manually."
-                    : "We're confirming your payment. This usually takes just a few seconds."}
+                    ? "Payment verification is taking longer than usual."
+                    : "We&apos;re confirming your payment. This usually takes just a few seconds."}
                 </p>
 
                 {!pollFailed ? (
                   <div className="animate-pulse mb-6">
                     <div className="h-2 bg-yellow-200 rounded-full mb-4"></div>
                     <p className="text-sm text-yellow-600">
-                      Please don't close this page. Your purchase will appear
+                      Please don&apos;t close this page. Your purchase will appear
                       once confirmed.
                     </p>
                   </div>
@@ -448,7 +448,7 @@ export default function CheckoutSuccessPage() {
                   Verifying Payment...
                 </h1>
                 <p className="text-blue-700 text-lg mb-6">
-                  We're processing your payment. Please wait a moment.
+                  We&apos;re processing your payment. Please wait a moment.
                 </p>
 
                 <div className="animate-pulse mb-6">
@@ -501,7 +501,7 @@ export default function CheckoutSuccessPage() {
           {/* Next Steps */}
           <div className="mt-8 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              What's Next?
+              What&apos;s Next?
             </h3>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
@@ -524,5 +524,30 @@ export default function CheckoutSuccessPage() {
         </div>
       </PageContainer>
     </ProtectedRoute>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <ProtectedRoute requireAuth={true}>
+      <PageContainer>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mx-auto mb-6"></div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Loading...
+            </h2>
+          </div>
+        </div>
+      </PageContainer>
+    </ProtectedRoute>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

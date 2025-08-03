@@ -153,7 +153,7 @@ export default function CreatorProfilePage() {
             Creator Not Found
           </h1>
           <p className="text-gray-600 mb-8">
-            The creator you're looking for doesn't exist or has been removed.
+            The creator you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <Link href="/products">
             <Button variant="primary">Browse All Products</Button>
@@ -341,7 +341,7 @@ export default function CreatorProfilePage() {
                 No products found
               </h3>
               <p className="text-gray-500">
-                This creator hasn't uploaded any products in this category yet.
+                This creator hasn&apos;t uploaded any products in this category yet.
               </p>
             </div>
           )}

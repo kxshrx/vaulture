@@ -46,5 +46,21 @@ const showFileAccessNotification = () => {
   console.log("✅ File access granted (expires in 10 seconds)");
 };
 
+/**
+ * Show download notification
+ */
+export const showDownloadNotification = () => {
+  console.log("✅ Download started successfully");
+  // You can replace this with a toast notification library if needed
+};
+
+/**
+ * Show download error
+ */
+export const showDownloadError = (message) => {
+  console.error("❌ Download failed:", message);
+  // You can replace this with a toast notification library if needed
+};
+
 // Export the main function
 export default downloadFileWithAuth;

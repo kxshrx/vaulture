@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ProductFilters } from "@/components/product/ProductFilters";
@@ -14,7 +14,7 @@ import {
   PREDEFINED_CATEGORIES,
 } from "@/lib/api";
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -203,5 +203,23 @@ export default function ProductsPage() {
         </div>
       </div>
     </PageContainer>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <PageContainer>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      </div>
+    </PageContainer>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ProductsContent />
+    </Suspense>
   );
 }
