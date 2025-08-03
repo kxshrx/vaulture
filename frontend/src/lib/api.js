@@ -138,17 +138,31 @@ export const apiRequest = async (endpoint, options = {}) => {
     let data;
 
     if (contentType && contentType.includes("application/json")) {
-      data = await response.json();
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn("Failed to parse JSON response:", parseError);
+        data = { message: "Invalid JSON response" };
+      }
     } else {
       data = await response.text();
     }
 
     if (!response.ok) {
-      throw new ApiError(
-        data?.detail || data?.message || "API request failed",
-        response.status,
-        data
-      );
+      // Better error message construction
+      let errorMessage = "API request failed";
+
+      if (typeof data === "object" && data !== null) {
+        errorMessage =
+          data.detail || data.message || data.error || errorMessage;
+      } else if (typeof data === "string") {
+        errorMessage = data || errorMessage;
+      }
+
+      // Add status code context
+      errorMessage = `${errorMessage} (Status: ${response.status})`;
+
+      throw new ApiError(errorMessage, response.status, data);
     }
 
     return data;
@@ -157,10 +171,16 @@ export const apiRequest = async (endpoint, options = {}) => {
       throw error;
     }
 
-    // Network or other errors
-    throw new ApiError("Network error or server unavailable", 0, {
-      originalError: error.message,
-    });
+    // Network or other errors - provide more context
+    console.error("API request failed:", error);
+    throw new ApiError(
+      `Network error: ${error.message || "Server unavailable"}`,
+      0,
+      {
+        originalError: error.message,
+        endpoint: endpoint,
+      }
+    );
   }
 };
 

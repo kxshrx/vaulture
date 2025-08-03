@@ -16,6 +16,7 @@ import {
   getImageUrl,
   formatCreatorName,
   mapToStandardCategory,
+  mapToBackendCategory,
 } from "@/lib/api";
 import {
   ShoppingCart,
@@ -92,12 +93,20 @@ export default function ProductPage() {
 
   const loadRelatedProducts = async () => {
     try {
+      console.log("Loading related products for category:", product?.category);
+
+      // Convert frontend category back to backend format
+      const backendCategory = mapToBackendCategory(product?.category);
+      console.log("Converted to backend category:", backendCategory);
+
       // Load products from same category
       const response = await buyerApi.getProducts({
         page: 1,
         page_size: 4,
-        category: product?.category,
+        category: backendCategory,
       });
+
+      console.log("Related products response:", response);
 
       // Transform and exclude current product
       const transformed = response.products
@@ -118,6 +127,13 @@ export default function ProductPage() {
       setRelatedProducts(transformed);
     } catch (error) {
       console.error("Failed to load related products:", error);
+      console.error("Error details:", {
+        message: error.message,
+        status: error.status,
+        data: error.data,
+        endpoint: "/products",
+      });
+      // Don't set related products on error, just log it
     }
   };
 
