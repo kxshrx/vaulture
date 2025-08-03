@@ -23,7 +23,7 @@ export function ProtectedRoute({
       // If specific role is required
       if (requiredRole && user) {
         if (requiredRole === "creator" && !isCreator()) {
-          window.location.href = "/auth/upgrade";
+          window.location.href = "/profile";
           return;
         }
         if (requiredRole === "buyer" && !isBuyer()) {

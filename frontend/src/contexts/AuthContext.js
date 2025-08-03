@@ -109,6 +109,77 @@ export function AuthProvider({ children }) {
     return user?.role === "buyer";
   };
 
+  const updateProfile = async (profileData) => {
+    try {
+      // TODO: Replace with actual API call
+      console.log("Updating profile:", profileData);
+
+      // Simulate API response
+      const updatedUser = {
+        ...user,
+        ...profileData,
+      };
+
+      // Store in localStorage (in production, use secure storage)
+      localStorage.setItem("vaulture_user", JSON.stringify(updatedUser));
+
+      setUser(updatedUser);
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      return { success: false, error: "Profile update failed" };
+    }
+  };
+
+  const changePassword = async (passwordData) => {
+    try {
+      // TODO: Replace with actual API call
+      console.log("Changing password for user:", user.id);
+
+      // Simulate API response
+      return { success: true };
+    } catch (error) {
+      console.error("Password change failed:", error);
+      return { success: false, error: "Password change failed" };
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      // TODO: Replace with actual API call
+      console.log("Deleting account for user:", user.id);
+
+      // Remove from localStorage
+      localStorage.removeItem("vaulture_user");
+      localStorage.removeItem("vaulture_token");
+
+      setUser(null);
+      return { success: true };
+    } catch (error) {
+      console.error("Account deletion failed:", error);
+      return { success: false, error: "Account deletion failed" };
+    }
+  };
+
+  const upgradeToCreator = async () => {
+    try {
+      // Update user role to creator
+      const upgradedUserData = {
+        ...user,
+        role: "creator",
+      };
+
+      // Update localStorage
+      localStorage.setItem("vaulture_user", JSON.stringify(upgradedUserData));
+
+      setUser(upgradedUserData);
+      return { success: true, user: upgradedUserData };
+    } catch (error) {
+      console.error("Upgrade failed:", error);
+      return { success: false, error: "Upgrade failed" };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -118,6 +189,10 @@ export function AuthProvider({ children }) {
     isAuthenticated,
     isCreator,
     isBuyer,
+    updateProfile,
+    changePassword,
+    deleteAccount,
+    upgradeToCreator,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

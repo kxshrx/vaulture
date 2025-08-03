@@ -269,21 +269,6 @@ export function AuthModal({ isOpen, onClose }) {
             </p>
           </form>
         )}
-
-        {/* Upgrade Link for Existing Buyers */}
-        {activeTab === "login" && (
-          <div className="mt-6 text-center p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-700">
-              Already have a buyer account?{" "}
-              <a
-                href="/auth/upgrade"
-                className="font-medium hover:text-blue-800"
-              >
-                Upgrade to Creator
-              </a>
-            </p>
-          </div>
-        )}
       </div>
     </Modal>
   );

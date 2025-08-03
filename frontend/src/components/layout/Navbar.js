@@ -31,23 +31,6 @@ export function Navbar() {
               <span className="text-xl font-bold text-black">Vaulture</span>
             </Link>
 
-            {/* Search Bar - Hidden on mobile */}
-            <form
-              onSubmit={handleSearch}
-              className="hidden md:flex flex-1 max-w-lg mx-8"
-            >
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search for digital products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent bg-gray-50 hover:bg-white transition-colors"
-                />
-                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              </div>
-            </form>
-
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
@@ -90,14 +73,12 @@ export function Navbar() {
                         >
                           Dashboard
                         </Link>
-                        {user?.role === "buyer" && (
-                          <Link
-                            href="/auth/upgrade"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Become a Creator
-                          </Link>
-                        )}
+                        <Link
+                          href="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Profile Settings
+                        </Link>
                         <button
                           onClick={logout}
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -171,14 +152,12 @@ export function Navbar() {
                       Creator Dashboard
                     </Link>
                   )}
-                  {user?.role === "buyer" && (
-                    <Link
-                      href="/auth/upgrade"
-                      className="block text-gray-600 hover:text-gray-900"
-                    >
-                      Become a Creator
-                    </Link>
-                  )}
+                  <Link
+                    href="/profile"
+                    className="block text-gray-600 hover:text-gray-900"
+                  >
+                    Profile Settings
+                  </Link>
                   <button
                     onClick={logout}
                     className="block w-full text-left text-gray-600 hover:text-gray-900"

@@ -179,142 +179,108 @@ export default function BuyerDashboard() {
             />
           </div>
 
-          {/* Upgrade to Creator CTA */}
-          {user?.role === "buyer" && (
-            <Card className="mb-8 bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      Ready to Start Selling?
-                    </h3>
-                    <p className="text-gray-600">
-                      Upgrade to a Creator account and start selling your own
-                      digital products
-                    </p>
-                  </div>
-                  <Link href="/auth/upgrade">
-                    <Button variant="pink">Become a Creator</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Purchase History */}
-          <Card>
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-gray-900">
-                Purchase History
-              </h2>
-            </CardHeader>
-            <CardContent className="p-0">
-              {currentPurchases.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Product
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Creator
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Purchase Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Amount
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Downloads
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {currentPurchases.map((purchase) => (
-                        <tr key={purchase.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-12 w-12">
-                                <img
-                                  className="h-12 w-12 rounded-lg object-cover"
-                                  src={purchase.product.image}
-                                  alt={purchase.product.title}
-                                />
-                              </div>
-                              <div className="ml-4">
-                                <Link
-                                  href={`/product/${purchase.product.id}`}
-                                  className="text-sm font-medium text-gray-900 hover:text-blue-600"
-                                >
-                                  {purchase.product.title}
-                                </Link>
-                              </div>
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Purchase History
+            </h2>
+
+            {currentPurchases.length > 0 ? (
+              <div className="grid gap-4">
+                {currentPurchases.map((purchase) => (
+                  <Card
+                    key={purchase.id}
+                    className="hover:shadow-lg transition-shadow duration-200"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Product Info */}
+                        <div className="flex items-center space-x-4 flex-1">
+                          <div className="flex-shrink-0">
+                            <img
+                              className="h-16 w-16 rounded-xl object-cover border border-gray-200"
+                              src={purchase.product.image}
+                              alt={purchase.product.title}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Link
+                              href={`/product/${purchase.product.id}`}
+                              className="block"
+                            >
+                              <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 truncate">
+                                {purchase.product.title}
+                              </h3>
+                            </Link>
+                            <p className="text-sm text-gray-600 mt-1">
+                              by {purchase.product.creator.name}
+                            </p>
+                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                              <span>
+                                Purchased {formatDate(purchase.purchaseDate)}
+                              </span>
+                              <span className="text-gray-300">•</span>
+                              <span className="font-medium text-gray-900">
+                                ${purchase.amount.toFixed(2)}
+                              </span>
                             </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
-                              {purchase.product.creator.name}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
-                              {formatDate(purchase.purchaseDate)}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-semibold text-gray-900">
-                              ${purchase.amount.toFixed(2)}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                          </div>
+                        </div>
+
+                        {/* Download Info & Actions */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
+                          {/* Download Counter */}
+                          <div className="flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
+                            <Package className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm font-medium text-gray-700">
                               {purchase.downloadCount} /{" "}
                               {purchase.maxDownloads || "∞"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            </span>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center space-x-2">
                             <Button
                               variant="primary"
                               size="small"
                               onClick={() => handleDownload(purchase.id)}
-                              className="flex items-center space-x-1"
+                              className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700"
                             >
                               <Download className="w-4 h-4" />
                               <span>Download</span>
                             </Button>
-                            <Link href={`/product/${purchase.product.id}`}>
-                              <Button variant="ghost" size="small">
-                                <ExternalLink className="w-4 h-4" />
-                              </Button>
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    No purchases yet
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Start exploring our marketplace to find amazing digital
-                    products
-                  </p>
-                  <Link href="/products">
-                    <Button variant="pink">Browse Products</Button>
-                  </Link>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="text-center py-16">
+                <CardContent>
+                  <div className="max-w-sm mx-auto">
+                    <Package className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+                    <h3 className="text-xl font-medium text-gray-900 mb-3">
+                      No purchases yet
+                    </h3>
+                    <p className="text-gray-600 mb-8 leading-relaxed">
+                      Start exploring our marketplace to find amazing digital
+                      products created by talented creators
+                    </p>
+                    <Link href="/products">
+                      <Button
+                        variant="primary"
+                        className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 px-8 py-3"
+                      >
+                        Browse Products
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (

@@ -8,28 +8,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Check, ArrowRight, Star } from "lucide-react";
 
 export default function UpgradePage() {
-  const { user, logout, signup } = useAuth();
+  const { user, logout, upgradeToCreator } = useAuth();
 
   const handleUpgrade = async () => {
     try {
-      // Update user role to creator
-      const upgradedUserData = {
-        ...user,
-        role: "creator",
-      };
+      const result = await upgradeToCreator();
 
-      // Update localStorage
-      localStorage.setItem("vaulture_user", JSON.stringify(upgradedUserData));
+      if (result.success) {
+        alert(
+          "Congratulations! You're now a Creator. Redirecting to your Creator Dashboard..."
+        );
 
-      // Show success message and redirect
-      alert(
-        "Congratulations! You're now a Creator. Redirecting to your Creator Dashboard..."
-      );
-
-      // Redirect to creator dashboard
-      setTimeout(() => {
-        window.location.href = "/creator/dashboard";
-      }, 1000);
+        // Redirect to creator dashboard
+        setTimeout(() => {
+          window.location.href = "/creator/dashboard";
+        }, 1000);
+      } else {
+        alert(result.error || "Upgrade failed. Please try again.");
+      }
     } catch (error) {
       console.error("Upgrade failed:", error);
       alert("Upgrade failed. Please try again.");

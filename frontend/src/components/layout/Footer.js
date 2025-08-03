@@ -85,7 +85,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
-                  href="/auth/upgrade"
+                  href="/profile"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Become a Creator
