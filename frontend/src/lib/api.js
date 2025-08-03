@@ -212,6 +212,8 @@ export const authApi = {
 export const profileApi = {
   getMyProfile: () => apiRequest("/profile/me"),
 
+  getPublicProfile: (userId) => apiRequest(`/profile/${userId}`),
+
   updateMyProfile: (profileData) =>
     apiRequest("/profile/me", {
       method: "PUT",
@@ -278,7 +280,12 @@ export const creatorApi = {
   // Analytics endpoints
   getAnalytics: () => apiRequest("/creator/analytics"),
 
-  getSales: () => apiRequest("/creator/sales"),
+  getSales: (limit = 10) => {
+    const params = new URLSearchParams({ limit });
+    return apiRequest(`/creator/sales?${params}`);
+  },
+
+  getSalesAnalytics: () => apiRequest("/creator/sales/analytics"),
 
   getStats: () => apiRequest("/creator/stats"),
 };
@@ -321,6 +328,11 @@ export const buyerApi = {
   getProduct: (productId) => apiRequest(`/products/${productId}`),
 
   getCategories: () => apiRequest("/products/categories"),
+
+  getCreatorProducts: (creatorId) =>
+    apiRequest(`/creator/${creatorId}/products`),
+
+  getCreatorStats: (creatorId) => apiRequest(`/creator/${creatorId}/stats`),
 
   // Updated to match backend endpoint
   getPurchases: () => apiRequest("/purchase/mypurchases"),

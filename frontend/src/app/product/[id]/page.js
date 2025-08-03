@@ -67,7 +67,6 @@ export default function ProductPage() {
         fileType: productData.file_type || "Unknown",
         fileSize: formatFileSize(productData.file_size),
         tags: productData.tags ? productData.tags.split(",") : [],
-        rating: 4.8, // Mock rating - backend doesn't have this yet
         reviewCount: 0, // Mock reviews - backend doesn't have this yet
         purchaseCount: 0, // Backend doesn't track this yet
         created_at: productData.created_at,
@@ -238,16 +237,9 @@ export default function ProductPage() {
 
           {/* Product Details */}
           <div>
-            {/* Category and Rating */}
+            {/* Category */}
             <div className="flex items-center justify-between mb-4">
               <Chip variant="category">{product.category}</Chip>
-              <div className="flex items-center space-x-1">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium">{product.rating}</span>
-                <span className="text-sm text-gray-600">
-                  ({product.reviewCount} reviews)
-                </span>
-              </div>
             </div>
 
             {/* Title and Price */}

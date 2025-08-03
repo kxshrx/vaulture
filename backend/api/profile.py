@@ -17,6 +17,7 @@ from backend.schemas.user_profile import (
 )
 from backend.services.user_profile_service import (
     get_user_profile,
+    get_public_profile,
     update_user_profile,
     change_user_password,
     search_users
@@ -31,6 +32,14 @@ def get_my_profile(
 ):
     """Get current user's complete profile with private information and stats"""
     return get_user_profile(db, current_user.id)
+
+@router.get("/{user_id}", response_model=PublicProfileResponse)
+def get_public_user_profile(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get public profile information for any user by ID"""
+    return get_public_profile(db, user_id)
 
 @router.put("/me", response_model=UserProfileResponse)
 def update_my_profile(

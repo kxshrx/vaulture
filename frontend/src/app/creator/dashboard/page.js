@@ -10,6 +10,12 @@ import { AnalyticsChart } from "@/components/creator/AnalyticsChart";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import {
+  creatorApi,
+  profileApi,
+  getImageUrl,
+  mapToStandardCategory,
+} from "@/lib/api";
+import {
   Package,
   DollarSign,
   TrendingUp,
@@ -26,82 +32,73 @@ export default function CreatorDashboard() {
   const [analyticsData, setAnalyticsData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Mock data - replace with API calls
+  // Fetch real data from API
   useEffect(() => {
-    const mockStats = {
-      totalProducts: 12,
-      totalSales: 342,
-      totalRevenue: 8450.5,
-      bestProduct: "Digital Art Collection Vol. 1",
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch stats, recent sales, and analytics data in parallel
+        const [
+          statsResponse,
+          salesResponse,
+          analyticsResponse,
+          productsResponse,
+        ] = await Promise.all([
+          creatorApi.getStats(),
+          creatorApi.getSales(5), // Get last 5 sales
+          creatorApi.getSalesAnalytics(),
+          creatorApi.getProducts(),
+        ]);
+
+        // Format stats
+        const formattedStats = {
+          totalProducts: productsResponse.length,
+          totalSales: statsResponse.total_sales || 0,
+          totalRevenue: statsResponse.total_revenue || 0,
+          bestProduct:
+            statsResponse.product_breakdown &&
+            statsResponse.product_breakdown.length > 0
+              ? statsResponse.product_breakdown.reduce((prev, current) =>
+                  prev.sales > current.sales ? prev : current
+                ).product_title
+              : "No products yet",
+        };
+
+        // Recent sales are already formatted from the API
+        const formattedRecentSales = salesResponse || [];
+
+        // Format analytics data
+        const formattedAnalyticsData = {
+          revenue: analyticsResponse.daily_revenue || [],
+          salesByProduct: analyticsResponse.top_products || [],
+          salesByCategory: [], // We'll need to implement this if needed
+        };
+
+        setStats(formattedStats);
+        setRecentSales(formattedRecentSales);
+        setAnalyticsData(formattedAnalyticsData);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        // Set empty data on error
+        setStats({
+          totalProducts: 0,
+          totalSales: 0,
+          totalRevenue: 0,
+          bestProduct: "No data available",
+        });
+        setRecentSales([]);
+        setAnalyticsData({
+          revenue: [],
+          salesByProduct: [],
+          salesByCategory: [],
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const mockRecentSales = [
-      {
-        id: 1,
-        product: "Digital Art Collection Vol. 1",
-        buyer: "John Doe",
-        saleDate: "2025-01-15T10:30:00Z",
-        amount: 29.99,
-      },
-      {
-        id: 2,
-        product: "UI/UX Templates Pack",
-        buyer: "Sarah Wilson",
-        saleDate: "2025-01-15T08:15:00Z",
-        amount: 49.99,
-      },
-      {
-        id: 3,
-        product: "Photography Presets",
-        buyer: "Mike Johnson",
-        saleDate: "2025-01-14T16:45:00Z",
-        amount: 19.99,
-      },
-      {
-        id: 4,
-        product: "Logo Design Templates",
-        buyer: "Emily Brown",
-        saleDate: "2025-01-14T14:20:00Z",
-        amount: 39.99,
-      },
-      {
-        id: 5,
-        product: "Digital Art Collection Vol. 1",
-        buyer: "David Lee",
-        saleDate: "2025-01-14T11:30:00Z",
-        amount: 29.99,
-      },
-    ];
-
-    const mockAnalyticsData = {
-      revenue: [
-        { name: "Jan 1", value: 120 },
-        { name: "Jan 2", value: 200 },
-        { name: "Jan 3", value: 150 },
-        { name: "Jan 4", value: 300 },
-        { name: "Jan 5", value: 250 },
-        { name: "Jan 6", value: 400 },
-        { name: "Jan 7", value: 350 },
-      ],
-      salesByProduct: [
-        { name: "Digital Art Vol. 1", value: 89 },
-        { name: "UI/UX Templates", value: 67 },
-        { name: "Photo Presets", value: 45 },
-        { name: "Logo Templates", value: 34 },
-        { name: "Abstract Art", value: 23 },
-      ],
-      salesByCategory: [
-        { name: "Digital Art", value: 156 },
-        { name: "Templates", value: 101 },
-        { name: "Photography", value: 67 },
-        { name: "Graphics", value: 18 },
-      ],
-    };
-
-    setStats(mockStats);
-    setRecentSales(mockRecentSales);
-    setAnalyticsData(mockAnalyticsData);
-    setLoading(false);
+    fetchDashboardData();
   }, []);
 
   const formatDate = (dateString) => {

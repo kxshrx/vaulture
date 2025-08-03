@@ -4,7 +4,8 @@ from typing import List, Optional
 from backend.db.session import get_db
 from backend.models.product import ProductCategory
 from backend.schemas.product import ProductSearchParams, ProductSearchResponse, ProductResponse
-from backend.services.product_service import search_products, get_product_categories, get_products_by_category, get_product_by_id
+from backend.services.product_service import search_products, get_product_categories, get_products_by_category, get_product_by_id, get_creator_products
+from backend.services.analytics import get_creator_public_stats
 
 router = APIRouter()
 
@@ -62,3 +63,19 @@ def get_products_by_category_endpoint(
 ):
     """Get products filtered by category"""
     return get_products_by_category(db, category, page, page_size)
+
+@router.get("/creator/{creator_id}/products", response_model=List[ProductResponse])
+def get_creator_products_public(
+    creator_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get all active products for a specific creator (public endpoint)"""
+    return get_creator_products(db, creator_id)
+
+@router.get("/creator/{creator_id}/stats")
+def get_creator_stats_public(
+    creator_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get public statistics for a specific creator (no revenue information)"""
+    return get_creator_public_stats(db, creator_id)

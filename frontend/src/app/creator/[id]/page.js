@@ -9,6 +9,13 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Chip } from "@/components/ui/Chip";
 import {
+  profileApi,
+  buyerApi,
+  getImageUrl,
+  mapToStandardCategory,
+  formatCreatorName,
+} from "@/lib/api";
+import {
   MapPin,
   Calendar,
   Globe,
@@ -30,104 +37,69 @@ export default function CreatorProfilePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    // Mock data - replace with API calls
-    const mockCreator = {
-      id: parseInt(creatorId),
-      name: "ArtistPro",
-      username: "artistpro",
-      avatar: "/api/placeholder/150/150",
-      bio: "Digital artist and designer creating beautiful illustrations, UI templates, and creative assets. Passionate about helping other creators succeed.",
-      location: "San Francisco, CA",
-      joinedDate: "2023-01-15",
-      website: "https://artistpro.com",
-      twitter: "@artistpro",
-      instagram: "@artistpro_designs",
-      verified: true,
-      totalSales: 1250,
-      totalProducts: 45,
-      followers: 3400,
-      rating: 4.9,
-      responseTime: "< 2 hours",
+    const fetchCreatorData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch creator profile, products, and stats in parallel
+        const [profileResponse, productsResponse, statsResponse] =
+          await Promise.all([
+            profileApi.getPublicProfile(creatorId),
+            buyerApi.getCreatorProducts(creatorId),
+            buyerApi.getCreatorStats(creatorId),
+          ]);
+
+        // Format creator data
+        const creatorData = {
+          id: profileResponse.id,
+          name:
+            formatCreatorName(profileResponse.display_name) ||
+            "Unknown Creator",
+          username: profileResponse.display_name || "unknown",
+          avatar: "/api/placeholder/150/150", // Use default for now
+          bio: profileResponse.bio || "No bio available.",
+          location: null, // Not available in current schema
+          joinedDate: profileResponse.member_since,
+          website: profileResponse.website,
+          twitter: profileResponse.social_links?.twitter,
+          instagram: profileResponse.social_links?.instagram,
+          verified: false, // Not available in current schema
+          totalSales: statsResponse.total_sales || 0,
+          totalProducts: profileResponse.total_products || 0,
+          followers: 0, // Not available in current schema
+          responseTime: "< 2 hours", // Default for now
+        };
+
+        // Format products data
+        const formattedProducts = productsResponse.map((product) => ({
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          image: getImageUrl(product.image_url),
+          creator: creatorData,
+          category: mapToStandardCategory(product.category),
+          purchaseCount: 0, // This would need to be added to the product response
+          featured: false, // Default for now
+        }));
+
+        setCreator(creatorData);
+        setProducts(formattedProducts);
+        setStats({
+          totalRevenue: 0, // Not exposed in public stats
+          totalSales: statsResponse.total_sales || 0,
+          responseRate: "98%", // Default for now
+        });
+      } catch (error) {
+        console.error("Error fetching creator data:", error);
+        setCreator(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const mockProducts = [
-      {
-        id: 1,
-        title: "Digital Art Collection Vol. 1",
-        price: 29.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Digital Art",
-        purchaseCount: 142,
-        rating: 4.8,
-        featured: true,
-      },
-      {
-        id: 2,
-        title: "Abstract Wallpaper Pack",
-        price: 19.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Digital Art",
-        purchaseCount: 89,
-        rating: 4.7,
-      },
-      {
-        id: 3,
-        title: "UI/UX Templates Bundle",
-        price: 49.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Templates",
-        purchaseCount: 234,
-        rating: 4.9,
-      },
-      {
-        id: 4,
-        title: "Logo Design Templates",
-        price: 24.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Templates",
-        purchaseCount: 67,
-        rating: 4.6,
-      },
-      {
-        id: 5,
-        title: "Social Media Graphics Pack",
-        price: 34.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Graphics",
-        purchaseCount: 156,
-        rating: 4.8,
-      },
-      {
-        id: 6,
-        title: "Icon Set Collection",
-        price: 15.99,
-        image: "/api/placeholder/400/300",
-        creator: mockCreator,
-        category: "Graphics",
-        purchaseCount: 98,
-        rating: 4.5,
-      },
-    ];
-
-    const mockStats = {
-      totalRevenue: 15420,
-      avgRating: 4.7,
-      totalSales: mockProducts.reduce(
-        (sum, product) => sum + product.purchaseCount,
-        0
-      ),
-      responseRate: "98%",
-    };
-
-    setCreator(mockCreator);
-    setProducts(mockProducts);
-    setStats(mockStats);
-    setLoading(false);
+    if (creatorId) {
+      fetchCreatorData();
+    }
   }, [creatorId]);
 
   const categories = ["All", "Digital Art", "Templates", "Graphics"];
@@ -244,10 +216,8 @@ export default function CreatorProfilePage() {
                   <span>Joined {formatJoinDate(creator.joinedDate)}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Star className="w-4 h-4 fill-current text-yellow-400" />
-                  <span>
-                    {creator.rating}/5 ({creator.totalSales} sales)
-                  </span>
+                  <Package className="w-4 h-4" />
+                  <span>{creator.totalSales} total sales</span>
                 </div>
               </div>
 
@@ -308,7 +278,7 @@ export default function CreatorProfilePage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="p-6 text-center">
               <Package className="w-8 h-8 text-primary-500 mx-auto mb-3" />
@@ -334,15 +304,6 @@ export default function CreatorProfilePage() {
                 {creator.followers.toLocaleString()}
               </div>
               <div className="text-gray-600 text-sm">Followers</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <Star className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-black mb-1">
-                {stats.avgRating}
-              </div>
-              <div className="text-gray-600 text-sm">Avg Rating</div>
             </CardContent>
           </Card>
         </div>

@@ -7,7 +7,7 @@ from backend.models.user import User
 from backend.models.product import ProductCategory
 from backend.schemas.product import ProductCreate, ProductResponse
 from backend.services.product_service import create_product, get_creator_products
-from backend.services.analytics import get_creator_stats
+from backend.services.analytics import get_creator_stats, get_recent_sales, get_sales_analytics
 
 router = APIRouter()
 
@@ -65,3 +65,28 @@ def get_creator_statistics(
 ):
     """Total sales, earnings, per-product breakdown"""
     return get_creator_stats(db, current_user.id)
+
+@router.get("/analytics")
+def get_creator_analytics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_creator)
+):
+    """Comprehensive analytics data for dashboard"""
+    return get_creator_stats(db, current_user.id)
+
+@router.get("/sales")
+def get_creator_sales(
+    limit: int = 10,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_creator)
+):
+    """Get recent sales for creator"""
+    return get_recent_sales(db, current_user.id, limit)
+
+@router.get("/sales/analytics")
+def get_creator_sales_analytics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_creator)
+):
+    """Get sales analytics for charts"""
+    return get_sales_analytics(db, current_user.id)
