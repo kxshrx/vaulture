@@ -17,7 +17,16 @@ import {
   formatCreatorName,
   mapToStandardCategory,
 } from "@/lib/api";
-import { User, Star, Download, Shield, Clock } from "lucide-react";
+import {
+  ShoppingCart,
+  Download,
+  Share2,
+  Heart,
+  Star,
+  CheckCircle,
+  Shield,
+  RefreshCw,
+} from "lucide-react";
 
 export default function ProductPage() {
   const params = useParams();
@@ -119,23 +128,67 @@ export default function ProductPage() {
     return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
   };
 
+  const [purchasing, setPurchasing] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
+
+  // Check if user has already purchased this product
+  useEffect(() => {
+    const checkPurchaseStatus = async () => {
+      if (isAuthenticated() && product) {
+        try {
+          const purchases = await buyerApi.getPurchases();
+          const purchased = purchases.some((p) => p.product_id === product.id);
+          setHasPurchased(purchased);
+        } catch (error) {
+          console.error("Error checking purchase status:", error);
+        }
+      }
+    };
+
+    checkPurchaseStatus();
+  }, [isAuthenticated, product]);
+
   const handlePurchase = async () => {
     if (!isAuthenticated()) {
-      router.push("/auth/signin");
+      router.push(
+        `/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+      return;
+    }
+
+    if (hasPurchased) {
+      router.push("/dashboard");
+      return;
+    }
+
+    // Check if user is trying to buy their own product
+    if (user && product.creator.id === user.id) {
+      alert("You cannot purchase your own product.");
       return;
     }
 
     try {
+      setPurchasing(true);
+
       const checkoutData = await purchaseApi.createCheckoutSession(product.id, {
-        success_url: `${window.location.origin}/dashboard?purchase=success`,
-        cancel_url: `${window.location.origin}/product/${product.id}?purchase=cancelled`,
+        success_url: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${window.location.origin}/checkout/cancel?product_id=${product.id}&session_id={CHECKOUT_SESSION_ID}`,
       });
 
       // Redirect to Stripe checkout
       window.location.href = checkoutData.checkout_url;
     } catch (error) {
       console.error("Purchase failed:", error);
-      alert("Purchase failed. Please try again.");
+
+      let errorMessage = "Purchase failed. Please try again.";
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+
+      alert(errorMessage);
+      setPurchasing(false);
     }
   };
 
@@ -280,16 +333,7 @@ export default function ProductPage() {
 
             {/* Purchase Button */}
             <div className="mb-8">
-              {isAuthenticated() ? (
-                <Button
-                  variant="pink"
-                  size="large"
-                  onClick={handlePurchase}
-                  className="w-full"
-                >
-                  Buy Now - ${product.price}
-                </Button>
-              ) : (
+              {!isAuthenticated() ? (
                 <div className="space-y-3">
                   <Button
                     variant="pink"
@@ -297,11 +341,118 @@ export default function ProductPage() {
                     onClick={handlePurchase}
                     className="w-full"
                   >
-                    Sign In to Purchase
+                    Sign In to Purchase - ${product.price}
                   </Button>
                   <p className="text-sm text-gray-600 text-center">
                     Instant download after purchase
                   </p>
+                </div>
+              ) : hasPurchased ? (
+                <div className="space-y-3">
+                  <Button
+                    variant="secondary"
+                    size="large"
+                    onClick={() => router.push("/dashboard")}
+                    className="w-full bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                  >
+                    <Download className="w-5 h-5 mr-2" />
+                    Already Purchased - Download Now
+                  </Button>
+                  <p className="text-sm text-green-600 text-center">
+                    You can download this product from your dashboard
+                  </p>
+                </div>
+              ) : user && product.creator.id === user.id ? (
+                <div className="space-y-3">
+                  <Button
+                    variant="secondary"
+                    size="large"
+                    disabled
+                    className="w-full"
+                  >
+                    Your Product
+                  </Button>
+                  <p className="text-sm text-gray-600 text-center">
+                    This is your own product
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Button
+                    variant="pink"
+                    size="large"
+                    onClick={handlePurchase}
+                    disabled={purchasing}
+                    className="w-full relative overflow-hidden"
+                  >
+                    {purchasing ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                        Processing Payment...
+                      </>
+                    ) : (
+                      <>Buy Now - ${product.price}</>
+                    )}
+                  </Button>
+                  <p className="text-sm text-gray-600 text-center">
+                    Secure payment • Instant download • 30-day support
+                  </p>
+
+                  {/* Security badges */}
+                  <div className="flex items-center justify-center space-x-4 pt-2">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M9 12L11 14L15 10"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      SSL Secured
+                    </div>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect
+                          x="1"
+                          y="4"
+                          width="22"
+                          height="16"
+                          rx="2"
+                          ry="2"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        />
+                        <line
+                          x1="1"
+                          y1="10"
+                          x2="23"
+                          y2="10"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                      Stripe Protected
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

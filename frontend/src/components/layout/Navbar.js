@@ -51,6 +51,12 @@ export function Navbar() {
                         Creator Dashboard
                       </Link>
                       <Link
+                        href="/creator/analytics"
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                      >
+                        Analytics
+                      </Link>
+                      <Link
                         href="/creator/upload"
                         className="text-gray-600 hover:text-gray-900 transition-colors"
                       >
@@ -88,6 +94,12 @@ export function Navbar() {
                               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
                               Creator Dashboard
+                            </Link>
+                            <Link
+                              href="/creator/analytics"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Analytics
                             </Link>
                             <Link
                               href="/creator/upload"
@@ -175,6 +187,12 @@ export function Navbar() {
                         className="block text-gray-600 hover:text-gray-900"
                       >
                         Creator Dashboard
+                      </Link>
+                      <Link
+                        href="/creator/analytics"
+                        className="block text-gray-600 hover:text-gray-900"
+                      >
+                        Analytics
                       </Link>
                       <Link
                         href="/creator/upload"

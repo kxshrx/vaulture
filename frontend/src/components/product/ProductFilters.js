@@ -58,6 +58,7 @@ export function ProductFilters({
     setSearchQuery("");
     setPriceRange({ min: "", max: "" });
     onFilterChange({});
+    onSearch("");
   };
 
   return (
@@ -223,10 +224,11 @@ export function ProductFilters({
             {(filters.priceMin || filters.priceMax) && (
               <Chip
                 active
-                onClick={() =>
-                  handleFilterChange("priceMin", "") ||
-                  handleFilterChange("priceMax", "")
-                }
+                onClick={() => {
+                  handleFilterChange("priceMin", "");
+                  handleFilterChange("priceMax", "");
+                  setPriceRange({ min: "", max: "" });
+                }}
               >
                 Price: ${filters.priceMin || "0"} - ${filters.priceMax || "∞"} ×
               </Chip>

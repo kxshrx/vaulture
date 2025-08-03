@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
@@ -11,14 +12,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { buyerApi, ApiError } from "@/lib/api";
 import {
   Download,
-  Calendar,
-  DollarSign,
   Package,
-  ExternalLink,
+  RefreshCw,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
   const [purchases, setPurchases] = useState([]);
   const [stats, setStats] = useState({
     totalPurchases: 0,
@@ -28,7 +33,23 @@ export default function BuyerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [downloading, setDownloading] = useState(null);
   const purchasesPerPage = 10;
+
+  // Check for download parameter
+  const downloadProductId = searchParams.get("download");
+
+  useEffect(() => {
+    // If there's a download parameter, try to download that product
+    if (downloadProductId && purchases.length > 0) {
+      const purchase = purchases.find(
+        (p) => p.product_id.toString() === downloadProductId
+      );
+      if (purchase) {
+        handleDownload(purchase.id);
+      }
+    }
+  }, [downloadProductId, purchases]);
 
   // Fetch real data from API
   useEffect(() => {
@@ -73,6 +94,8 @@ export default function BuyerDashboard() {
 
   const handleDownload = async (purchaseId) => {
     try {
+      setDownloading(purchaseId);
+
       // Find the purchase to get the product_id
       const purchase = purchases.find((p) => p.id === purchaseId);
       if (!purchase) {
@@ -83,10 +106,33 @@ export default function BuyerDashboard() {
 
       // Open the download URL in a new tab
       window.open(response.download_url, "_blank");
+
+      // Show success message
+      setError("");
+
+      // Optional: Show a success notification
+      const successMessage = document.createElement("div");
+      successMessage.className =
+        "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50";
+      successMessage.textContent = "Download started successfully!";
+      document.body.appendChild(successMessage);
+
+      setTimeout(() => {
+        document.body.removeChild(successMessage);
+      }, 3000);
     } catch (error) {
       console.error("Download failed:", error);
-      // You can add a toast notification here
-      alert("Download failed. Please try again.");
+
+      let errorMessage = "Download failed. Please try again.";
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+
+      setError(errorMessage);
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -138,6 +184,41 @@ export default function BuyerDashboard() {
             <p className="text-gray-600">
               Manage your digital product purchases and downloads
             </p>
+
+            {/* Success/Error Messages */}
+            {searchParams.get("purchase") === "success" && (
+              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center">
+                  <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                  <p className="text-green-800">
+                    🎉 Purchase completed successfully! You can now download
+                    your product below.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {searchParams.get("session_id") &&
+              !searchParams.get("purchase") && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center">
+                    <RefreshCw className="w-5 h-5 text-blue-500 mr-2" />
+                    <p className="text-blue-800">
+                      Verifying your purchase... If your product doesn't appear
+                      shortly, please refresh the page.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center">
+                  <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+                  <p className="text-red-800">{error}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Quick Stats */}
@@ -237,10 +318,20 @@ export default function BuyerDashboard() {
                               variant="primary"
                               size="small"
                               onClick={() => handleDownload(purchase.id)}
+                              disabled={downloading === purchase.id}
                               className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700"
                             >
-                              <Download className="w-4 h-4" />
-                              <span>Download</span>
+                              {downloading === purchase.id ? (
+                                <>
+                                  <RefreshCw className="w-4 h-4 animate-spin" />
+                                  <span>Downloading...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="w-4 h-4" />
+                                  <span>Download</span>
+                                </>
+                              )}
                             </Button>
                           </div>
                         </div>
