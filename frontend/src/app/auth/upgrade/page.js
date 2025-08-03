@@ -16,7 +16,7 @@ export default function UpgradePage() {
 
       if (result.success) {
         alert(
-          "Congratulations! You're now a Creator. Redirecting to your Creator Dashboard..."
+          "Creator account activated successfully. Redirecting to your secure Creator Dashboard..."
         );
 
         // Redirect to creator dashboard
@@ -24,11 +24,13 @@ export default function UpgradePage() {
           window.location.href = "/creator/dashboard";
         }, 1000);
       } else {
-        alert(result.error || "Upgrade failed. Please try again.");
+        alert(
+          result.error || "Account upgrade failed. Please contact support."
+        );
       }
     } catch (error) {
       console.error("Upgrade failed:", error);
-      alert("Upgrade failed. Please try again.");
+      alert("Account upgrade failed. Please contact support.");
     }
   };
 
@@ -66,11 +68,11 @@ export default function UpgradePage() {
               <span>Upgrade Your Account</span>
             </div>
             <h1 className="text-5xl font-bold text-black mb-6">
-              Become a Creator
+              Upgrade to Creator Account
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Start selling your digital products and join thousands of creators
-              earning money on Vaulture
+              Join thousands of creators who trust our enterprise-grade security
+              to protect their digital products and maximize revenue
             </p>
           </div>
 
@@ -78,10 +80,10 @@ export default function UpgradePage() {
           <Card className="border-2 border-primary-200 shadow-lg">
             <CardHeader className="text-center p-8">
               <h2 className="text-3xl font-bold text-black mb-2">
-                Creator Account
+                Professional Creator Tools
               </h2>
               <p className="text-gray-600 text-lg">
-                Everything you need to start selling
+                Enterprise-grade platform for digital product sales
               </p>
             </CardHeader>
             <CardContent className="p-8">
@@ -93,7 +95,7 @@ export default function UpgradePage() {
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className="text-gray-700">
-                      Upload unlimited products
+                      Unlimited secure product uploads
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -101,7 +103,7 @@ export default function UpgradePage() {
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className="text-gray-700">
-                      Advanced analytics dashboard
+                      Real-time performance analytics
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -109,7 +111,7 @@ export default function UpgradePage() {
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className="text-gray-700">
-                      Secure file protection
+                      Advanced DRM & piracy protection
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -117,7 +119,7 @@ export default function UpgradePage() {
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className="text-gray-700">
-                      45-second download links
+                      Secure time-limited access links
                     </span>
                   </div>
                 </div>
@@ -126,7 +128,9 @@ export default function UpgradePage() {
                     <div className="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center">
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
-                    <span className="text-gray-700">Instant payouts</span>
+                    <span className="text-gray-700">
+                      Automated payment processing
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center">
@@ -141,24 +145,30 @@ export default function UpgradePage() {
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
                     <span className="text-gray-700">
-                      Marketing tools & promotions
+                      Professional marketing suite
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-primary-100 rounded-full flex items-center justify-center">
                       <Check className="w-4 h-4 text-primary-600" />
                     </div>
-                    <span className="text-gray-700">Priority support</span>
+                    <span className="text-gray-700">
+                      Dedicated customer support
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Pricing */}
               <div className="text-center bg-gray-50 rounded-lg p-6 mb-8">
-                <div className="text-4xl font-bold text-black mb-2">Free</div>
-                <div className="text-gray-600 mb-4">5% commission on sales</div>
+                <div className="text-4xl font-bold text-black mb-2">
+                  Free to Start
+                </div>
+                <div className="text-gray-600 mb-4">
+                  Industry-low 5% commission on sales
+                </div>
                 <div className="text-sm text-gray-500">
-                  No monthly fees or setup costs
+                  No setup fees • No monthly charges • Cancel anytime
                 </div>
               </div>
 
@@ -170,11 +180,12 @@ export default function UpgradePage() {
                   onClick={handleUpgrade}
                   className="w-full md:w-auto text-lg px-12 py-4"
                 >
-                  Upgrade to Creator
+                  Activate Creator Account
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <p className="text-sm text-gray-500 mt-4">
-                  Takes effect immediately • No commitments
+                  Instant activation • Full platform access • Secure payment
+                  processing
                 </p>
               </div>
             </CardContent>
@@ -183,12 +194,14 @@ export default function UpgradePage() {
           {/* Testimonial */}
           <div className="text-center mt-16 bg-gray-50 rounded-2xl p-8">
             <blockquote className="text-xl text-gray-700 italic mb-4">
-              "Vaulture made it incredibly easy to start selling my digital art.
-              The security features give me peace of mind, and the analytics
-              help me understand my customers better."
+              "Vaulture's security features completely eliminated piracy
+              concerns for my digital courses. The professional analytics and
+              payment processing helped me scale to six figures."
             </blockquote>
-            <div className="font-semibold text-black">Sarah Chen</div>
-            <div className="text-gray-500">Digital Artist • $12k+ in sales</div>
+            <div className="font-semibold text-black">Dr. Sarah Chen</div>
+            <div className="text-gray-500">
+              Course Creator • $180k+ in protected sales
+            </div>
           </div>
         </div>
       </div>

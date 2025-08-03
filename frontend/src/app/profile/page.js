@@ -161,7 +161,9 @@ export default function ProfilePage() {
       const result = await deleteAccount();
 
       if (result.success) {
-        alert("Account deleted successfully. You will be logged out.");
+        alert(
+          "Account termination completed. You will be securely logged out."
+        );
         logout();
       } else {
         setError(result.error || "Failed to delete account");
@@ -177,7 +179,7 @@ export default function ProfilePage() {
 
       if (result.success) {
         alert(
-          "Congratulations! You're now a Creator. Redirecting to your Creator Dashboard..."
+          "Creator account activated successfully. Redirecting to your secure Creator Dashboard..."
         );
 
         // Redirect to creator dashboard
@@ -185,17 +187,19 @@ export default function ProfilePage() {
           window.location.href = "/creator/dashboard";
         }, 1000);
       } else {
-        alert(result.error || "Upgrade failed. Please try again.");
+        alert(
+          result.error || "Account upgrade failed. Please contact support."
+        );
       }
     } catch (error) {
       console.error("Upgrade failed:", error);
-      alert("Upgrade failed. Please try again.");
+      alert("Account upgrade failed. Please contact support.");
     }
   };
 
   const tabs = [
-    { id: "general", label: "General", icon: User },
-    { id: "password", label: "Password", icon: Shield },
+    { id: "general", label: "Profile", icon: User },
+    { id: "password", label: "Security", icon: Shield },
     { id: "account", label: "Account", icon: Mail },
   ];
 
@@ -215,10 +219,11 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-gray-900">
-                      {user?.name || "Profile Settings"}
+                      {user?.name || "Account Settings"}
                     </h1>
                     <p className="text-gray-600 text-lg">
-                      Manage your account settings and preferences
+                      Secure your account and customize your marketplace
+                      experience
                     </p>
                   </div>
                 </div>
@@ -291,22 +296,23 @@ export default function ProfilePage() {
                           <Star className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
-                          Become a Creator
+                          Start Selling Digital Products
                         </h3>
                         <p className="text-gray-600 text-sm mb-5 leading-relaxed">
-                          Start selling your digital products and earn money
-                          with our powerful platform
+                          Join thousands of creators earning with our secure,
+                          piracy-protected marketplace
                         </p>
                         <Button
                           variant="primary"
                           onClick={handleUpgradeToCreator}
                           className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl transition-all duration-200"
                         >
-                          Upgrade Now
+                          Become a Creator
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                         <p className="text-xs text-gray-500 mt-3">
-                          Free to upgrade • 5% commission only
+                          No setup fees • Industry-low 5% commission • Advanced
+                          DRM protection
                         </p>
                       </div>
                     </CardContent>
@@ -326,10 +332,11 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <h2 className="text-xl font-bold text-gray-900">
-                            General Information
+                            Profile Information
                           </h2>
                           <p className="text-gray-600">
-                            Update your basic profile information
+                            Build trust with customers through your professional
+                            profile
                           </p>
                         </div>
                       </div>
@@ -381,7 +388,7 @@ export default function ProfilePage() {
 
                         <div className="space-y-2">
                           <label className="block text-sm font-semibold text-gray-700">
-                            Bio
+                            Professional Bio
                           </label>
                           <textarea
                             value={profileData.bio}
@@ -391,15 +398,15 @@ export default function ProfilePage() {
                                 bio: e.target.value,
                               })
                             }
-                            placeholder="Tell us about yourself..."
+                            placeholder="Describe your expertise, background, and what makes your digital products unique..."
                             rows={4}
                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-none"
                             maxLength={500}
                           />
                           <div className="flex justify-between items-center">
                             <p className="text-xs text-gray-500">
-                              Share a bit about yourself to help others know you
-                              better
+                              Help customers understand your expertise and build
+                              trust
                             </p>
                             <p className="text-xs text-gray-500">
                               {profileData.bio.length}/500
@@ -421,7 +428,7 @@ export default function ProfilePage() {
                                   website: e.target.value,
                                 })
                               }
-                              placeholder="https://yourwebsite.com"
+                              placeholder="https://www.yourprofessionalsite.com"
                               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                             />
                           </div>
@@ -448,11 +455,11 @@ export default function ProfilePage() {
                         {/* Social Links */}
                         <div className="bg-gray-50 rounded-xl p-6">
                           <h3 className="text-lg font-bold text-gray-900 mb-1">
-                            Social Links
+                            Professional Links
                           </h3>
                           <p className="text-gray-600 text-sm mb-6">
-                            Connect your social media profiles to build trust
-                            with customers
+                            Connect your professional profiles to establish
+                            credibility and trust
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="relative">
@@ -566,10 +573,10 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <h2 className="text-xl font-bold text-gray-900">
-                            Change Password
+                            Security Settings
                           </h2>
                           <p className="text-gray-600">
-                            Update your password to keep your account secure
+                            Secure your account with enterprise-grade protection
                           </p>
                         </div>
                       </div>
@@ -691,23 +698,22 @@ export default function ProfilePage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-bold text-blue-900 mb-2">
-                                Password Requirements:
+                                Strong Password Requirements:
                               </h4>
                               <ul className="text-sm text-blue-700 space-y-1">
                                 <li className="flex items-center space-x-2">
                                   <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
-                                  <span>At least 8 characters long</span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
-                                  <span>Contains both letters and numbers</span>
+                                  <span>Minimum 8 characters required</span>
                                 </li>
                                 <li className="flex items-center space-x-2">
                                   <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
                                   <span>
-                                    Include special characters for better
-                                    security
+                                    Mix of letters, numbers, and symbols
                                   </span>
+                                </li>
+                                <li className="flex items-center space-x-2">
+                                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                                  <span>Protected by advanced encryption</span>
                                 </li>
                               </ul>
                             </div>
@@ -741,10 +747,10 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <h2 className="text-xl font-bold text-gray-900">
-                              Account Information
+                              Account Overview
                             </h2>
                             <p className="text-gray-600">
-                              Your account details and membership information
+                              Review your account status and membership details
                             </p>
                           </div>
                         </div>
@@ -899,25 +905,28 @@ export default function ProfilePage() {
                             <div className="flex items-start justify-between">
                               <div>
                                 <h3 className="font-bold text-red-900 mb-2 text-lg">
-                                  Delete Account
+                                  Account Termination
                                 </h3>
                                 <p className="text-red-700 mb-4 leading-relaxed">
-                                  Permanently delete your account and all
-                                  associated data. This action cannot be undone
-                                  and you will lose access to all your
-                                  purchases, products, and data.
+                                  Permanently close your Vaulture account and
+                                  remove all associated data. This action is
+                                  irreversible.
                                 </p>
                                 <ul className="text-sm text-red-600 space-y-1">
                                   <li>
-                                    • All your personal data will be deleted
-                                  </li>
-                                  <li>• Purchase history will be removed</li>
-                                  <li>
-                                    • Downloaded files will remain accessible
-                                    for 30 days
+                                    • Personal information permanently deleted
+                                    within 30 days
                                   </li>
                                   <li>
-                                    • Active subscriptions will be cancelled
+                                    • Purchase records archived for legal
+                                    compliance
+                                  </li>
+                                  <li>
+                                    • Digital products remain accessible for 90
+                                    days
+                                  </li>
+                                  <li>
+                                    • Recurring billing automatically cancelled
                                   </li>
                                 </ul>
                               </div>
@@ -927,7 +936,7 @@ export default function ProfilePage() {
                                 className="ml-6 bg-red-600 hover:bg-red-700 shadow-lg hover:shadow-xl transition-all duration-200"
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Delete Account
+                                Close Account
                               </Button>
                             </div>
                           </div>
@@ -950,14 +959,14 @@ export default function ProfilePage() {
                   <AlertTriangle className="w-6 h-6 text-red-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  Delete Account
+                  Confirm Account Termination
                 </h3>
               </div>
 
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Are you absolutely sure you want to delete your account? This
-                action cannot be undone and you will lose access to all your
-                purchases and data.
+                This action will permanently close your Vaulture account and
+                cannot be reversed. You will lose access to all purchases,
+                digital products, and account data.
               </p>
 
               <div className="flex space-x-3">
@@ -973,7 +982,7 @@ export default function ProfilePage() {
                   onClick={handleDeleteAccount}
                   className="flex-1 bg-red-600 hover:bg-red-700 shadow-lg"
                 >
-                  Delete Account
+                  Close Account Permanently
                 </Button>
               </div>
             </div>

@@ -127,19 +127,19 @@ export default function Home() {
       <section className="bg-white py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-black mb-8 leading-tight">
-            Sell & buy digital products{" "}
-            <span className="text-primary-500">with ease</span>
+            Digital Marketplace{" "}
+            <span className="text-primary-500">for Creators</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-            The fastest and most secure marketplace for digital creators.
-            45-second download links keep your products safe while giving buyers
-            instant access.
+            Sell your digital products with confidence. Account-based access and
+            secure download links help protect your work while keeping things
+            simple for your customers.
           </p>
 
           {/* Main Search Bar */}
           <div className="max-w-2xl mx-auto mb-12">
             <SearchBar
-              placeholder="What are you looking for?"
+              placeholder="Find digital products..."
               onSearch={handleSearch}
               size="large"
             />
@@ -163,25 +163,41 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black mb-2">10,000+</div>
-              <div className="text-gray-600 font-medium">
-                Products Available
+          {/* Key Features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="text-center bg-gray-50 rounded-xl p-8">
+              <div className="text-3xl font-bold text-black mb-3">
+                Upload. Price. Earn
               </div>
+              <div className="text-gray-600 font-medium text-lg mb-2">
+                Simple Setup
+              </div>
+              <p className="text-gray-500 text-sm">
+                Upload your files, set your price, and start earning in minutes
+              </p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary-500 mb-2">
-                45sec
+            <div className="text-center bg-primary-50 rounded-xl p-8">
+              <div className="text-3xl font-bold text-primary-600 mb-3 ">
+                Protected Access
               </div>
-              <div className="text-gray-600 font-medium">
-                Secure Download Links
+              <div className="text-gray-600 font-medium text-lg mb-2">
+                Account-Based Downloads
               </div>
+              <p className="text-gray-500 text-sm">
+                Secure download links that expire help protect your digital
+                products
+              </p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black mb-2">5,000+</div>
-              <div className="text-gray-600 font-medium">Happy Creators</div>
+            <div className="text-center bg-gray-50 rounded-xl p-8">
+              <div className="text-3xl font-bold text-black mb-3">
+                5% Commission
+              </div>
+              <div className="text-gray-600 font-medium text-lg mb-2">
+                Fair & Transparent
+              </div>
+              <p className="text-gray-500 text-sm">
+                Keep 95% of every sale with no hidden fees or monthly charges
+              </p>
             </div>
           </div>
         </div>
@@ -193,10 +209,10 @@ export default function Home() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-4xl font-bold text-black mb-2">
-                Trending Products
+                Popular Products
               </h2>
               <p className="text-gray-600 text-lg">
-                Most popular digital products this week
+                Trending digital products this week
               </p>
             </div>
             <Link href="/products?sort=popular">
@@ -276,8 +292,8 @@ export default function Home() {
             Ready to start selling?
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of creators who trust Vaulture to sell their digital
-            products securely and efficiently.
+            Join creators who are already using Vaulture to sell their digital
+            products with ease and peace of mind.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
@@ -287,7 +303,7 @@ export default function Home() {
             </Link>
             <Link href="/products">
               <Button variant="outline" size="large" className="px-8">
-                Browse Marketplace
+                Browse Products
               </Button>
             </Link>
           </div>
