@@ -1,7 +1,19 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, func, Enum as SQLEnum, Boolean
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Text,
+    Float,
+    DateTime,
+    ForeignKey,
+    func,
+    Enum as SQLEnum,
+    Boolean,
+)
 from sqlalchemy.orm import relationship
 from backend.db.base import Base
 import enum
+
 
 class ProductCategory(enum.Enum):
     DIGITAL_ART = "digital_art"
@@ -16,9 +28,10 @@ class ProductCategory(enum.Enum):
     GRAPHICS = "graphics"
     OTHER = "other"
 
+
 class Product(Base):
     __tablename__ = "products"
-    
+
     id = Column(Integer, primary_key=True)
     creator_id = Column(Integer, ForeignKey("users.id"))
     creator_name = Column(String)  # Store creator name for easy access
@@ -33,6 +46,6 @@ class Product(Base):
     file_type = Column(String)  # File extension/type
     is_active = Column(Boolean, default=True)  # For soft deletion
     created_at = Column(DateTime, default=func.now())
-    
+
     creator = relationship("User", back_populates="products")
     purchases = relationship("Purchase", back_populates="product")

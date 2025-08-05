@@ -16,19 +16,21 @@ from backend.core.config import settings
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+
 def verify_shareable_token(product_id: str, token: str, expires: int) -> bool:
     """Verify that the shareable download token is valid and hasn't expired"""
     current_time = int(time.time())
-    
+
     # Check if token has expired
     if current_time > expires:
         return False
-    
+
     # Recreate the expected token
     token_data = f"{product_id}:{expires}:{settings.JWT_SECRET}"
     expected_token = hashlib.md5(token_data.encode()).hexdigest()
-    
+
     return token == expected_token
+
 
 @router.get("/{token}")
 async def shareable_download(
@@ -37,17 +39,17 @@ async def shareable_download(
     expires: int,
     request: Request,
     auth_token: Optional[str] = Query(None),  # Allow token from query params
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     SHAREABLE DOWNLOAD LINK - The Anti-Reddit Piracy Solution
-    
+
     This endpoint can be shared on Reddit/forums, but:
     1. Requires user to be logged in
-    2. Verifies user has purchased the product  
+    2. Verifies user has purchased the product
     3. Link expires in 30 seconds
     4. Generates new download each time
-    
+
     Flow:
     User shares: https://yoursite.com/d/abc123?product=1&expires=123456
     → Anyone can click it
@@ -55,12 +57,14 @@ async def shareable_download(
     → And must have purchased the product
     → Gets a fresh 30-second download
     """
-    
+
     client_ip = request.client.host
-    
+
     # STEP 1: Verify the shareable token is valid and not expired
     if not verify_shareable_token(str(product), token, expires):
-        logger.warning(f"Invalid/expired shareable token: ip={client_ip}, product={product}")
+        logger.warning(
+            f"Invalid/expired shareable token: ip={client_ip}, product={product}"
+        )
         return HTMLResponse(
             content=f"""
             <html>
@@ -93,26 +97,27 @@ async def shareable_download(
             </body>
             </html>
             """,
-            status_code=403
+            status_code=403,
         )
-    
+
     # STEP 2: Check if user is logged in via various methods
     try:
         current_user = None
-        
+
         # First, try the auth_token from query params (added by JavaScript)
         if auth_token:
             try:
                 from backend.core.security import verify_token
+
                 user_id = verify_token(auth_token)
                 current_user = db.query(User).filter(User.id == user_id).first()
             except:
                 pass
-        
+
         # If no query token, try the optional detection (headers/cookies)
         if not current_user:
             current_user = get_current_user_optional(request)
-        
+
         if not current_user:
             # Create a more user-friendly login redirect that preserves the download intent
             return HTMLResponse(
@@ -184,7 +189,7 @@ async def shareable_download(
                 </body>
                 </html>
                 """,
-                status_code=401
+                status_code=401,
             )
     except:
         # Same as above - create user-friendly login page
@@ -208,9 +213,9 @@ async def shareable_download(
             </body>
             </html>
             """,
-            status_code=401
+            status_code=401,
         )
-    
+
     # STEP 3: Verify product exists
     product_obj = db.query(Product).filter(Product.id == product).first()
     if not product_obj:
@@ -222,22 +227,30 @@ async def shareable_download(
                 <p>The requested product could not be found.</p>
             </body></html>
             """,
-            status_code=404
+            status_code=404,
         )
-    
+
     # STEP 4: Verify user has access (owner or purchased)
-    is_creator_owner = current_user.is_creator and product_obj.creator_id == current_user.id
-    
+    is_creator_owner = (
+        current_user.is_creator and product_obj.creator_id == current_user.id
+    )
+
     if not is_creator_owner:
         # Check if user has completed purchase
-        purchase = db.query(Purchase).filter(
-            Purchase.user_id == current_user.id,
-            Purchase.product_id == product,
-            Purchase.payment_status == PaymentStatus.COMPLETED
-        ).first()
-        
+        purchase = (
+            db.query(Purchase)
+            .filter(
+                Purchase.user_id == current_user.id,
+                Purchase.product_id == product,
+                Purchase.payment_status == PaymentStatus.COMPLETED,
+            )
+            .first()
+        )
+
         if not purchase:
-            logger.warning(f"Unauthorized access to shared link: user_id={current_user.id}, ip={client_ip}, product={product}")
+            logger.warning(
+                f"Unauthorized access to shared link: user_id={current_user.id}, ip={client_ip}, product={product}"
+            )
             return HTMLResponse(
                 content=f"""
                 <html><body style="font-family: Arial; text-align: center; margin-top: 100px;">
@@ -249,48 +262,58 @@ async def shareable_download(
                     <small>Anti-piracy protection: Downloads require valid purchase</small>
                 </body></html>
                 """,
-                status_code=403
+                status_code=403,
             )
-    
+
     # STEP 5: All checks passed - Serve file securely (don't expose Supabase URLs)
     try:
         # Get fresh Supabase signed URL for internal use only (not exposed to client)
-        internal_signed_url = storage_service.get_signed_url(product_obj.file_url, expires_in=300)
-        
+        internal_signed_url = storage_service.get_signed_url(
+            product_obj.file_url, expires_in=300
+        )
+
         # Fetch file from Supabase internally
         import httpx
+
         async with httpx.AsyncClient() as client:
             response = await client.get(internal_signed_url)
-            
+
             if response.status_code != 200:
-                logger.error(f"Failed to fetch file from Supabase: {response.status_code}")
+                logger.error(
+                    f"Failed to fetch file from Supabase: {response.status_code}"
+                )
                 raise HTTPException(status_code=500, detail="File download failed")
-            
+
             # Stream the file content directly (never expose Supabase URLs)
             file_content = response.content
-        
+
         # Log successful access
         access_type = "owner" if is_creator_owner else "purchased"
-        logger.info(f"Shareable link download: user_id={current_user.id}, ip={client_ip}, product={product}, access_type={access_type}")
-        
+        logger.info(
+            f"Shareable link download: user_id={current_user.id}, ip={client_ip}, product={product}, access_type={access_type}"
+        )
+
         # Return file as direct download with security headers
         from fastapi import Response
+
         return Response(
             content=file_content,
             media_type="application/octet-stream",
             headers={
                 "Content-Disposition": f'attachment; filename="{product_obj.title}.{product_obj.file_type}"',
                 "Cache-Control": "no-cache, no-store, must-revalidate",
-                "Pragma": "no-cache", 
+                "Pragma": "no-cache",
                 "Expires": "0",
                 "X-Content-Type-Options": "nosniff",
                 "X-Frame-Options": "DENY",
-                "X-Anti-Piracy": "Account-bound download"
-            }
+                "X-Anti-Piracy": "Account-bound download",
+            },
         )
-        
+
     except Exception as e:
-        logger.error(f"Download error: user_id={current_user.id}, product={product}, error={str(e)}")
+        logger.error(
+            f"Download error: user_id={current_user.id}, product={product}, error={str(e)}"
+        )
         return HTMLResponse(
             content="""
             <html><body style="font-family: Arial; text-align: center; margin-top: 100px;">
@@ -298,5 +321,5 @@ async def shareable_download(
                 <p>There was an error generating your download. Please try again.</p>
             </body></html>
             """,
-            status_code=500
+            status_code=500,
         )

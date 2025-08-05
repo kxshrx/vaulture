@@ -12,25 +12,35 @@ from backend.models.user import User
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.utcnow() + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM
+    )
     return encoded_jwt
+
 
 def verify_token(token: str):
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        payload = jwt.decode(
+            token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
+        )
         user_id: int = payload.get("sub")
         if user_id is None:
             raise HTTPException(
@@ -46,31 +56,33 @@ def verify_token(token: str):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
 def get_current_user_optional(request):
     """Get current user if authenticated, otherwise return None"""
     try:
         token = None
-        
+
         # Try to get token from Authorization header first
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
-        
+
         # If no header, try to get from cookies (for browser requests)
         if not token:
             token = request.cookies.get("vaulture_token")
-        
+
         # If no cookie, try query parameter (as fallback)
         if not token:
             token = request.query_params.get("token")
-        
+
         if not token:
             return None
-        
+
         user_id = verify_token(token)
-        
+
         # Get database session
         from backend.db.session import SessionLocal
+
         db = SessionLocal()
         try:
             user = db.query(User).filter(User.id == user_id).first()
@@ -80,9 +92,10 @@ def get_current_user_optional(request):
     except:
         return None
 
+
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     token = credentials.credentials
     user_id = verify_token(token)
@@ -94,14 +107,15 @@ def get_current_user(
         )
     return user
 
+
 def require_creator(user: User = Depends(get_current_user)):
     """Require user to be a creator for creator-only endpoints"""
     if not user.is_creator:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only creators allowed"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Only creators allowed"
         )
     return user
+
 
 def allow_creator_purchases(user: User = Depends(get_current_user)):
     """Allow both creators and buyers to make purchases - creators can buy from other creators"""

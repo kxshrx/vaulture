@@ -16,19 +16,21 @@ from backend.core.config import settings
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+
 def verify_access_token(product_id: str, token: str, expires: int) -> bool:
     """Verify that the file access token is valid and hasn't expired"""
     current_time = int(time.time())
-    
+
     # Check if token has expired
     if current_time > expires:
         return False
-    
+
     # Recreate the expected token
     token_data = f"{product_id}:{expires}:{settings.JWT_SECRET}"
     expected_token = hashlib.md5(token_data.encode()).hexdigest()
-    
+
     return token == expected_token
+
 
 @router.get("/{token}")
 async def masked_file_access(
@@ -37,25 +39,27 @@ async def masked_file_access(
     expires: int,
     request: Request,
     auth_token: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     MASKED FILE ACCESS - The Real Anti-Piracy Solution
-    
+
     Instead of giving users direct Supabase URLs, give them masked URLs that:
     1. Expire quickly (30 seconds)
-    2. Require authentication  
+    2. Require authentication
     3. Verify purchase/ownership
     4. Redirect to actual Supabase file for viewing/downloading
-    
+
     Users get normal file access but can't share working URLs
     """
-    
+
     client_ip = request.client.host
-    
+
     # STEP 1: Verify the access token is valid and not expired
     if not verify_access_token(str(product), token, expires):
-        logger.warning(f"Invalid/expired access token: ip={client_ip}, product={product}")
+        logger.warning(
+            f"Invalid/expired access token: ip={client_ip}, product={product}"
+        )
         return HTMLResponse(
             content=f"""
             <html>
@@ -88,13 +92,13 @@ async def masked_file_access(
             </body>
             </html>
             """,
-            status_code=403
+            status_code=403,
         )
-    
+
     # STEP 2: Check if user is authenticated
     try:
         current_user = None
-        
+
         # First, try the auth_token from query params (added by JavaScript)
         if auth_token:
             try:
@@ -102,11 +106,11 @@ async def masked_file_access(
                 current_user = db.query(User).filter(User.id == user_id).first()
             except:
                 pass
-        
+
         # If no query token, try the optional detection (headers/cookies)
         if not current_user:
             current_user = get_current_user_optional(request)
-        
+
         if not current_user:
             # Create a login page with countdown timer
             return HTMLResponse(
@@ -177,7 +181,7 @@ async def masked_file_access(
                 </body>
                 </html>
                 """,
-                status_code=401
+                status_code=401,
             )
     except:
         # Same as above - show login page
@@ -192,9 +196,9 @@ async def masked_file_access(
             </body>
             </html>
             """,
-            status_code=401
+            status_code=401,
         )
-    
+
     # STEP 3: Verify product exists
     product_obj = db.query(Product).filter(Product.id == product).first()
     if not product_obj:
@@ -206,22 +210,30 @@ async def masked_file_access(
                 <p>The requested product could not be found.</p>
             </body></html>
             """,
-            status_code=404
+            status_code=404,
         )
-    
+
     # STEP 4: Verify user has access (owner or purchased)
-    is_creator_owner = current_user.is_creator and product_obj.creator_id == current_user.id
-    
+    is_creator_owner = (
+        current_user.is_creator and product_obj.creator_id == current_user.id
+    )
+
     if not is_creator_owner:
         # Check if user has completed purchase
-        purchase = db.query(Purchase).filter(
-            Purchase.user_id == current_user.id,
-            Purchase.product_id == product,
-            Purchase.payment_status == PaymentStatus.COMPLETED
-        ).first()
-        
+        purchase = (
+            db.query(Purchase)
+            .filter(
+                Purchase.user_id == current_user.id,
+                Purchase.product_id == product,
+                Purchase.payment_status == PaymentStatus.COMPLETED,
+            )
+            .first()
+        )
+
         if not purchase:
-            logger.warning(f"Unauthorized file access attempt: user_id={current_user.id}, ip={client_ip}, product={product}")
+            logger.warning(
+                f"Unauthorized file access attempt: user_id={current_user.id}, ip={client_ip}, product={product}"
+            )
             return HTMLResponse(
                 content=f"""
                 <html><body style="font-family: Arial; text-align: center; margin-top: 100px;">
@@ -233,24 +245,30 @@ async def masked_file_access(
                     <small>Anti-piracy protection: File access requires valid purchase</small>
                 </body></html>
                 """,
-                status_code=403
+                status_code=403,
             )
-    
+
     # STEP 5: All checks passed - Redirect to actual Supabase file
     try:
         # Get Supabase signed URL (longer expiry for actual viewing/downloading)
-        supabase_url = storage_service.get_signed_url(product_obj.file_url, expires_in=3600)  # 1 hour for file viewing
-        
+        supabase_url = storage_service.get_signed_url(
+            product_obj.file_url, expires_in=3600
+        )  # 1 hour for file viewing
+
         # Log successful access
         access_type = "owner" if is_creator_owner else "purchased"
-        logger.info(f"Masked file access granted: user_id={current_user.id}, ip={client_ip}, product={product}, access_type={access_type}")
-        
+        logger.info(
+            f"Masked file access granted: user_id={current_user.id}, ip={client_ip}, product={product}, access_type={access_type}"
+        )
+
         # Redirect to the actual Supabase file
         # User can now view/download the file normally, but the URL was masked
         return RedirectResponse(url=supabase_url)
-        
+
     except Exception as e:
-        logger.error(f"File access error: user_id={current_user.id}, product={product}, error={str(e)}")
+        logger.error(
+            f"File access error: user_id={current_user.id}, product={product}, error={str(e)}"
+        )
         return HTMLResponse(
             content="""
             <html><body style="font-family: Arial; text-align: center; margin-top: 100px;">
@@ -258,5 +276,5 @@ async def masked_file_access(
                 <p>There was an error accessing the file. Please try again.</p>
             </body></html>
             """,
-            status_code=500
+            status_code=500,
         )

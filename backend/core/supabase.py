@@ -1,9 +1,11 @@
 from supabase import create_client, Client
 from backend.core.config import settings
 
+
 def get_supabase_client() -> Client:
     """Get Supabase client instance with anon key"""
     return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+
 
 def get_supabase_admin_client() -> Client:
     """Get Supabase client instance with service role key for admin operations"""

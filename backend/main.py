@@ -1,7 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-from backend.api import auth, creator, buyer, purchase, download, platform, profile, file_access
+from backend.api import (
+    auth,
+    creator,
+    buyer,
+    purchase,
+    download,
+    platform,
+    profile,
+    file_access,
+)
 from backend.db.base import engine, Base
 
 # Create database tables
@@ -10,7 +19,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Creators Platform API",
     description="Digital Content Platform with Secure File Delivery",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Add CORS middleware
@@ -36,9 +45,13 @@ app.include_router(download.router, prefix="/download", tags=["Download"])
 app.include_router(platform.router, prefix="/platform", tags=["Platform"])
 app.include_router(file_access.router, prefix="/api", tags=["File Access"])
 
+
 @app.get("/")
 def read_root():
-    return {"message": "Creators Platform API - Digital Content Platform with Secure File Delivery"}
+    return {
+        "message": "Creators Platform API - Digital Content Platform with Secure File Delivery"
+    }
+
 
 @app.get("/health")
 def health_check():

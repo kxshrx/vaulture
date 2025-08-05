@@ -1,5 +1,6 @@
 from .base import SessionLocal
 
+
 def get_db():
     db = SessionLocal()
     try:

@@ -3,8 +3,10 @@ from datetime import datetime
 from typing import Optional
 from enum import Enum
 
+
 class PaymentMethodType(str, Enum):
     STRIPE = "stripe"
+
 
 class PaymentStatus(str, Enum):
     PENDING = "pending"
@@ -12,17 +14,28 @@ class PaymentStatus(str, Enum):
     FAILED = "failed"
     REFUNDED = "refunded"
 
+
 class PurchaseRequest(BaseModel):
     """Request schema for creating a purchase"""
-    payment_method: PaymentMethodType = Field(default=PaymentMethodType.STRIPE, description="Payment method")
-    success_url: Optional[str] = Field(None, description="URL to redirect to after successful payment")
-    cancel_url: Optional[str] = Field(None, description="URL to redirect to after cancelled payment")
+
+    payment_method: PaymentMethodType = Field(
+        default=PaymentMethodType.STRIPE, description="Payment method"
+    )
+    success_url: Optional[str] = Field(
+        None, description="URL to redirect to after successful payment"
+    )
+    cancel_url: Optional[str] = Field(
+        None, description="URL to redirect to after cancelled payment"
+    )
+
 
 class CheckoutSessionResponse(BaseModel):
     """Response schema for checkout session creation"""
+
     checkout_url: str
     session_id: str
     expires_at: int
+
 
 class PurchaseResponse(BaseModel):
     id: int
@@ -35,9 +48,10 @@ class PurchaseResponse(BaseModel):
     payment_status: PaymentStatus
     created_at: datetime
     completed_at: Optional[datetime]
-    
+
     class Config:
         from_attributes = True
+
 
 class PurchaseWithProduct(BaseModel):
     id: int
@@ -54,9 +68,10 @@ class PurchaseWithProduct(BaseModel):
     product_image_url: Optional[str]
     creator_name: str
     creator_id: int
-    
+
     class Config:
         from_attributes = True
+
 
 class PurchaseStatsResponse(BaseModel):
     total_purchases: int
@@ -64,8 +79,10 @@ class PurchaseStatsResponse(BaseModel):
     categories: dict = Field(..., description="Purchase count by category")
     recent_purchases: int = Field(..., description="Purchases in last 30 days")
 
+
 class WebhookEventResponse(BaseModel):
     """Response schema for webhook processing"""
+
     message: str
     purchase_id: Optional[int] = None
     payment_status: Optional[PaymentStatus] = None
