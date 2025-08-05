@@ -194,9 +194,9 @@ export default function UpgradePage() {
           {/* Testimonial */}
           <div className="text-center mt-16 bg-gray-50 rounded-2xl p-8">
             <blockquote className="text-xl text-gray-700 italic mb-4">
-              &ldquo;Vaulture&apos;s security features completely eliminated piracy
-              concerns for my digital courses. The professional analytics and
-              payment processing helped me scale to six figures.&rdquo;
+              &ldquo;Vaulture&apos;s security features completely eliminated
+              piracy concerns for my digital courses. The professional analytics
+              and payment processing helped me scale to six figures.&rdquo;
             </blockquote>
             <div className="font-semibold text-black">Dr. Sarah Chen</div>
             <div className="text-gray-500">

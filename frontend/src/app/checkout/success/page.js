@@ -344,7 +344,7 @@ function CheckoutSuccessContent() {
                     ? "Payment Verification Needed"
                     : "Payment Processing..."}
                 </h1>
-                                <p className="text-yellow-700 text-lg mb-6">
+                <p className="text-yellow-700 text-lg mb-6">
                   {pollFailed
                     ? "Payment verification is taking longer than usual."
                     : "We&apos;re confirming your payment. This usually takes just a few seconds."}
@@ -354,8 +354,8 @@ function CheckoutSuccessContent() {
                   <div className="animate-pulse mb-6">
                     <div className="h-2 bg-yellow-200 rounded-full mb-4"></div>
                     <p className="text-sm text-yellow-600">
-                      Please don&apos;t close this page. Your purchase will appear
-                      once confirmed.
+                      Please don&apos;t close this page. Your purchase will
+                      appear once confirmed.
                     </p>
                   </div>
                 ) : (

@@ -194,8 +194,8 @@ function DashboardContent() {
                   <div className="flex items-center">
                     <RefreshCw className="w-5 h-5 text-blue-500 mr-2" />
                     <p className="text-blue-800">
-                      Verifying your purchase... If your product doesn&apos;t appear
-                      shortly, please refresh the page.
+                      Verifying your purchase... If your product doesn&apos;t
+                      appear shortly, please refresh the page.
                     </p>
                   </div>
                 </div>

@@ -14,14 +14,26 @@ export const downloadFileWithAuth = async (url, filename) => {
       throw new Error("Please log in to access files");
     }
 
+    // Fix URL if it contains localhost (backend configuration issue)
+    let correctedUrl = url;
+    if (url.includes("localhost:8000")) {
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      correctedUrl = url.replace("http://localhost:8000", API_BASE_URL);
+      console.log(
+        "🔧 Corrected URL from localhost to production:",
+        correctedUrl
+      );
+    }
+
     // Check if this is our masked access URL
-    const isMaskedAccessUrl = url.includes("/api/access-file");
+    const isMaskedAccessUrl = correctedUrl.includes("/api/access-file");
 
     if (isMaskedAccessUrl) {
       console.log("🎯 Accessing file (10s expiry, hidden Supabase URLs)");
 
       // Add token to URL for authentication in same tab
-      const urlWithToken = `${url}&token=${encodeURIComponent(token)}`;
+      const urlWithToken = `${correctedUrl}&token=${encodeURIComponent(token)}`;
 
       // Open in same tab to preserve authentication context
       window.location.href = urlWithToken;
@@ -31,7 +43,7 @@ export const downloadFileWithAuth = async (url, filename) => {
 
     // Fallback: Direct URL
     console.log("⚠️ Direct URL access");
-    window.open(url, "_blank");
+    window.open(correctedUrl, "_blank");
     return true;
   } catch (error) {
     console.error("File access failed:", error);

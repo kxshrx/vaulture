@@ -14,6 +14,11 @@ const nextConfig = {
         port: "8000",
         pathname: "/files/**",
       },
+      {
+        protocol: "https",
+        hostname: "vaulture.onrender.com",
+        pathname: "/files/**",
+      },
     ],
   },
 };
