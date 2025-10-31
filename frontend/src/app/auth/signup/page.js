@@ -80,37 +80,37 @@ export default function SignupPage() {
 
   return (
     <AuthRedirect>
-      <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           {/* Header */}
           <div className="text-center">
             <Link href="/" className="inline-flex items-center space-x-2 mb-8">
-              <div className="w-10 h-10 bg-black rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-xl">V</span>
+              <div className="w-10 h-10 bg-neon-500 rounded-md flex items-center justify-center shadow-neon-sm">
+                <span className="text-dark-900 font-bold text-xl">V</span>
               </div>
-              <span className="text-2xl font-bold text-black">Vaulture</span>
+              <span className="text-2xl font-bold text-white">Vaulture</span>
             </Link>
-            <h2 className="text-4xl font-bold text-black mb-2">
+            <h2 className="text-4xl font-bold text-white mb-2">
               Create your account
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-400 text-lg">
               Join thousands of creators and buyers on Vaulture
             </p>
           </div>
 
           {/* Signup Form */}
-          <Card className="border-gray-200">
+          <Card className="border-dark-400 bg-dark-800">
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm font-medium">
+                  <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-md text-sm font-medium">
                     {error}
                   </div>
                 )}
 
                 {/* Account Type Selection */}
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-3">
+                  <label className="block text-sm font-semibold text-white mb-3">
                     I want to
                   </label>
                   <div className="flex space-x-3">
@@ -181,23 +181,23 @@ export default function SignupPage() {
                     name="terms"
                     type="checkbox"
                     required
-                    className="h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded mt-1"
+                    className="h-4 w-4 text-neon-500 focus:ring-neon-500 border-dark-400 bg-dark-500 rounded mt-1"
                   />
                   <label
                     htmlFor="terms"
-                    className="ml-3 block text-sm text-gray-700"
+                    className="ml-3 block text-sm text-gray-300"
                   >
                     I agree to the{" "}
                     <Link
                       href="/terms"
-                      className="text-primary-500 hover:text-primary-600 font-medium"
+                      className="text-neon-500 hover:text-neon-400 font-medium"
                     >
                       Terms of Service
                     </Link>{" "}
                     and{" "}
                     <Link
                       href="/privacy"
-                      className="text-primary-500 hover:text-primary-600 font-medium"
+                      className="text-neon-500 hover:text-neon-400 font-medium"
                     >
                       Privacy Policy
                     </Link>
@@ -206,7 +206,7 @@ export default function SignupPage() {
 
                 <Button
                   type="submit"
-                  variant="pink"
+                  variant="primary"
                   size="large"
                   className="w-full"
                   disabled={isLoading}
@@ -219,11 +219,11 @@ export default function SignupPage() {
 
           {/* Login Link */}
           <div className="text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-400">
               Already have an account?{" "}
               <Link
                 href="/auth/login"
-                className="text-primary-500 hover:text-primary-600 font-semibold"
+                className="text-neon-500 hover:text-neon-400 font-semibold"
               >
                 Sign in
               </Link>
@@ -233,10 +233,10 @@ export default function SignupPage() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-dark-400" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-medium">
+              <span className="px-4 bg-dark-900 text-gray-400 font-medium">
                 Or continue with
               </span>
             </div>

@@ -58,28 +58,28 @@ function LoginForm() {
 
   return (
     <AuthRedirect>
-      <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           {/* Header */}
           <div className="text-center">
             <Link href="/" className="inline-flex items-center space-x-2 mb-8">
-              <div className="w-10 h-10 bg-black rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-xl">V</span>
+              <div className="w-10 h-10 bg-neon-500 rounded-md flex items-center justify-center shadow-neon-sm">
+                <span className="text-dark-900 font-bold text-xl">V</span>
               </div>
-              <span className="text-2xl font-bold text-black">Vaulture</span>
+              <span className="text-2xl font-bold text-white">Vaulture</span>
             </Link>
-            <h2 className="text-4xl font-bold text-black mb-2">Welcome back</h2>
-            <p className="text-gray-600 text-lg">
+            <h2 className="text-4xl font-bold text-white mb-2">Welcome back</h2>
+            <p className="text-gray-400 text-lg">
               Sign in to your account to continue
             </p>
           </div>
 
           {/* Login Form */}
-          <Card className="border-gray-200">
+          <Card className="border-dark-400 bg-dark-800">
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm font-medium">
+                  <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-md text-sm font-medium">
                     {error}
                   </div>
                 )}
@@ -110,11 +110,11 @@ function LoginForm() {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-neon-500 focus:ring-neon-500 border-dark-400 bg-dark-500 rounded"
                     />
                     <label
                       htmlFor="remember-me"
-                      className="ml-2 block text-sm text-gray-700"
+                      className="ml-2 block text-sm text-gray-300"
                     >
                       Remember me
                     </label>
@@ -122,7 +122,7 @@ function LoginForm() {
 
                   <Link
                     href="/auth/forgot-password"
-                    className="text-sm text-primary-500 hover:text-primary-600 font-medium"
+                    className="text-sm text-neon-500 hover:text-neon-400 font-medium"
                   >
                     Forgot password?
                   </Link>
@@ -130,7 +130,7 @@ function LoginForm() {
 
                 <Button
                   type="submit"
-                  variant="pink"
+                  variant="primary"
                   size="large"
                   className="w-full"
                   disabled={isLoading}
@@ -143,11 +143,11 @@ function LoginForm() {
 
           {/* Sign Up Link */}
           <div className="text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-400">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/signup"
-                className="text-primary-500 hover:text-primary-600 font-semibold"
+                className="text-neon-500 hover:text-neon-400 font-semibold"
               >
                 Sign up for free
               </Link>
@@ -157,10 +157,10 @@ function LoginForm() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-dark-400" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-medium">
+              <span className="px-4 bg-dark-900 text-gray-400 font-medium">
                 Or continue with
               </span>
             </div>
@@ -219,8 +219,8 @@ function LoginForm() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+    <div className="min-h-screen bg-dark-900 flex items-center justify-center px-4">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neon-500"></div>
     </div>
   );
 }
