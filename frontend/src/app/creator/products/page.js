@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { creatorApi } from "@/lib/api";
+import { creatorApi, formatPriceINR } from "@/lib/api";
 import {
   Plus,
   Edit,
@@ -277,7 +277,7 @@ export default function CreatorProducts() {
                                   {product.category}
                                 </span>
                                 <span>•</span>
-                                <span>${product.price}</span>
+                                <span>{formatPriceINR(product.price)}</span>
                                 <span>•</span>
                                 <span>{formatDate(product.uploadDate)}</span>
                                 <span>•</span>
@@ -302,7 +302,7 @@ export default function CreatorProducts() {
                               </div>
                               <div className="text-center">
                                 <div className="font-medium text-gray-900">
-                                  ${product.revenue.toFixed(2)}
+                                  {formatPriceINR(product.revenue)}
                                 </div>
                                 <div>Revenue</div>
                               </div>

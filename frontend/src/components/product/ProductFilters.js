@@ -45,15 +45,32 @@ export function ProductFilters({
   };
 
   const handleFilterChange = (key, value) => {
-    onFilterChange({ ...filters, [key]: value });
+    const newFilters = { ...filters };
+    if (value === "" || value === null || value === undefined) {
+      delete newFilters[key];
+    } else {
+      newFilters[key] = value;
+    }
+    onFilterChange(newFilters);
   };
 
   const handlePriceChange = () => {
-    onFilterChange({
-      ...filters,
-      priceMin: priceRange.min,
-      priceMax: priceRange.max,
-    });
+    const newFilters = { ...filters };
+    
+    // Convert INR to USD for backend (divide by 83)
+    if (priceRange.min) {
+      newFilters.min_price = (parseFloat(priceRange.min) / 83).toFixed(2);
+    } else {
+      delete newFilters.min_price;
+    }
+    
+    if (priceRange.max) {
+      newFilters.max_price = (parseFloat(priceRange.max) / 83).toFixed(2);
+    } else {
+      delete newFilters.max_price;
+    }
+    
+    onFilterChange(newFilters);
   };
 
   const clearFilters = () => {
@@ -179,12 +196,12 @@ export function ProductFilters({
           {/* Price Range */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Price Range
+              Price Range (₹ INR)
             </label>
             <div className="flex items-center space-x-2">
               <input
                 type="number"
-                placeholder="Min"
+                placeholder="Min ₹"
                 value={priceRange.min}
                 onChange={(e) =>
                   setPriceRange({ ...priceRange, min: e.target.value })
@@ -194,7 +211,7 @@ export function ProductFilters({
               <span className="text-gray-500">to</span>
               <input
                 type="number"
-                placeholder="Max"
+                placeholder="Max ₹"
                 value={priceRange.max}
                 onChange={(e) =>
                   setPriceRange({ ...priceRange, max: e.target.value })
@@ -223,16 +240,21 @@ export function ProductFilters({
                 Type: {filters.type} ×
               </Chip>
             )}
-            {(filters.priceMin || filters.priceMax) && (
+            {(filters.min_price || filters.max_price) && (
               <Chip
                 active
                 onClick={() => {
-                  handleFilterChange("priceMin", "");
-                  handleFilterChange("priceMax", "");
+                  handleFilterChange("min_price", "");
+                  handleFilterChange("max_price", "");
                   setPriceRange({ min: "", max: "" });
                 }}
               >
-                Price: ${filters.priceMin || "0"} - ${filters.priceMax || "∞"} ×
+                Price: ₹{filters.min_price ? Math.round(filters.min_price * 83) : "0"} - ₹{filters.max_price ? Math.round(filters.max_price * 83) : "∞"} ×
+              </Chip>
+            )}
+            {filters.sort && (
+              <Chip active onClick={() => handleFilterChange("sort", "")}>
+                Sort: {filters.sort} ×
               </Chip>
             )}
           </div>

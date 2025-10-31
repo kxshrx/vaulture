@@ -19,6 +19,16 @@ const nextConfig = {
         hostname: "vaulture.onrender.com",
         pathname: "/files/**",
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "source.unsplash.com",
+        pathname: "/**",
+      },
     ],
   },
 };

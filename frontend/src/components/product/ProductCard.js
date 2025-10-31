@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card } from "../ui/Card";
 import { Chip } from "../ui/Chip";
+import { formatPriceINR } from "@/lib/api";
 
 export function ProductCard({ product, className = "" }) {
   const {
@@ -53,7 +54,7 @@ export function ProductCard({ product, className = "" }) {
             >
               {creator?.name}
             </button>
-            <span className="text-xl font-bold text-black">${price}</span>
+            <span className="text-xl font-bold text-black">{formatPriceINR(price)}</span>
           </div>
 
           {purchaseCount > 0 && (

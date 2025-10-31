@@ -247,14 +247,18 @@ export default function Home() {
                   </div>
                 ))
               : categories.map((category) => (
-                  <Chip
+                  <Link
                     key={category}
-                    active={selectedCategory === category}
-                    onClick={() => setSelectedCategory(category)}
-                    variant="category"
+                    href={category === "All" ? "/products" : `/products?category=${encodeURIComponent(category)}`}
                   >
-                    {category}
-                  </Chip>
+                    <Chip
+                      active={selectedCategory === category}
+                      onClick={() => setSelectedCategory(category)}
+                      variant="category"
+                    >
+                      {category}
+                    </Chip>
+                  </Link>
                 ))}
           </div>
         </section>

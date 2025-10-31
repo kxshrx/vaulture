@@ -5,13 +5,52 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 /**
+ * Currency conversion rate (USD to INR)
+ */
+const USD_TO_INR_RATE = 83;
+
+/**
+ * Convert USD price to INR
+ */
+export const convertToINR = (usdPrice) => {
+  return Math.round(usdPrice * USD_TO_INR_RATE);
+};
+
+/**
+ * Format price in INR
+ */
+export const formatINR = (inrPrice) => {
+  return `₹${inrPrice.toLocaleString('en-IN')}`;
+};
+
+/**
+ * Convert and format price from USD to INR
+ */
+export const formatPriceINR = (usdPrice) => {
+  const inrPrice = convertToINR(usdPrice);
+  return formatINR(inrPrice);
+};
+
+/**
  * Utility function to get proper image URL
  */
 export const getImageUrl = (
   imageUrl,
-  fallback = "/api/placeholder/400/300"
+  fallback = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=600&fit=crop"
 ) => {
   if (!imageUrl) return fallback;
+  
+  // If it's already a complete URL (starts with http:// or https://), return as-is
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  
+  // If it's a source.unsplash.com URL path
+  if (imageUrl.includes('source.unsplash.com')) {
+    return `https://${imageUrl}`;
+  }
+  
+  // Otherwise, prepend the API base URL for local files
   return `${API_BASE_URL}/files/${imageUrl}`;
 };
 

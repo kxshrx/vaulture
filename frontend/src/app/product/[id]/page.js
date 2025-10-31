@@ -17,6 +17,7 @@ import {
   formatCreatorName,
   mapToStandardCategory,
   mapToBackendCategory,
+  formatPriceINR,
 } from "@/lib/api";
 import {
   ShoppingCart,
@@ -53,39 +54,74 @@ export default function ProductPage() {
       setLoading(true);
       const productData = await buyerApi.getProduct(params.id);
 
+      // Fetch creator profile and stats
+      let creatorData = {
+        id: productData.creator_id,
+        name: formatCreatorName(productData.creator_name),
+        bio: null,
+        avatar: "/api/placeholder/100/100",
+        productCount: 0,
+        totalSales: 0,
+      };
+
+      try {
+        const [profileResponse, statsResponse] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/profile/${productData.creator_id}`).then(r => r.json()),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/creator/${productData.creator_id}/stats`).then(r => r.json()),
+        ]);
+
+        const displayName = formatCreatorName(profileResponse.display_name || productData.creator_name);
+        creatorData = {
+          id: productData.creator_id,
+          name: displayName,
+          bio: profileResponse.bio,
+          avatar: null,
+          initials: displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
+          productCount: profileResponse.total_products || 0,
+          totalSales: statsResponse.total_sales || 0,
+        };
+      } catch (error) {
+        console.warn("Could not fetch creator details:", error);
+        const displayName = formatCreatorName(productData.creator_name);
+        creatorData.initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      }
+
+      // Build images array: main image + additional images
+      const images = [getImageUrl(productData.image_url, "/api/placeholder/600/400")];
+      
+      // Add additional images if available
+      if (productData.image_urls && Array.isArray(productData.image_urls)) {
+        productData.image_urls.forEach(url => {
+          images.push(getImageUrl(url, "/api/placeholder/600/400"));
+        });
+      }
+      
+      // If we only have one image, don't show thumbnails
+      // But ensure we have at least one image
+      if (images.length === 1) {
+        // Keep just the main image, no need for duplicates
+      }
+
       // Transform backend data to match frontend expectations
       const transformedProduct = {
         id: productData.id,
         title: productData.title,
         price: productData.price,
-        images: [
-          getImageUrl(productData.image_url, "/api/placeholder/600/400"),
-          // Add more placeholder images if needed
-          "/api/placeholder/600/400",
-          "/api/placeholder/600/400",
-        ],
+        images: images,
         description: productData.description || "No description available",
-        creator: {
-          id: productData.creator_id,
-          name: formatCreatorName(productData.creator_name),
-          bio: `Creator on Vaulture platform`, // Simple bio based on creator status
-          avatar: "/api/placeholder/100/100", // Will be enhanced when we add creator avatars
-          productCount: 0, // Backend doesn't track this yet - can be added later
-          totalSales: 0, // Backend doesn't track this yet - can be added later
-        },
+        creator: creatorData,
         category: mapToStandardCategory(productData.category),
         fileType: productData.file_type || "Unknown",
         fileSize: formatFileSize(productData.file_size),
         tags: productData.tags ? productData.tags.split(",") : [],
-        reviewCount: 0, // Mock reviews - backend doesn't have this yet
-        purchaseCount: 0, // Backend doesn't track this yet
+        reviewCount: 0,
+        purchaseCount: 0,
         created_at: productData.created_at,
       };
 
       setProduct(transformedProduct);
     } catch (error) {
       console.error("Failed to load product:", error);
-      // Handle error - maybe redirect to 404
     } finally {
       setLoading(false);
     }
@@ -317,7 +353,7 @@ export default function ProductPage() {
               {product.title}
             </h1>
             <div className="text-3xl font-bold text-primary-500 mb-6">
-              ${product.price}
+              {formatPriceINR(product.price)}
             </div>
 
             {/* Product Info */}
@@ -358,7 +394,7 @@ export default function ProductPage() {
                     onClick={handlePurchase}
                     className="w-full"
                   >
-                    Sign In to Purchase - ${product.price}
+                    Sign In to Purchase - {formatPriceINR(product.price)}
                   </Button>
                   <p className="text-sm text-gray-600 text-center">
                     Instant download after purchase
@@ -408,7 +444,7 @@ export default function ProductPage() {
                         Processing Payment...
                       </>
                     ) : (
-                      <>Buy Now - ${product.price}</>
+                      <>Buy Now - {formatPriceINR(product.price)}</>
                     )}
                   </Button>
                   <p className="text-sm text-gray-600 text-center">
@@ -478,13 +514,8 @@ export default function ProductPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="relative w-12 h-12">
-                    <Image
-                      src={product.creator.avatar}
-                      alt={product.creator.name}
-                      fill
-                      className="rounded-full object-cover"
-                    />
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-sm font-bold">{product.creator.initials}</span>
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">
@@ -497,9 +528,11 @@ export default function ProductPage() {
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4">
-                  {product.creator.bio}
-                </p>
+                {product.creator.bio && (
+                  <p className="text-gray-600 text-sm mb-4">
+                    {product.creator.bio}
+                  </p>
+                )}
 
                 <Link href={`/creator/${product.creator.id}`}>
                   <Button variant="secondary" size="small" className="w-full">

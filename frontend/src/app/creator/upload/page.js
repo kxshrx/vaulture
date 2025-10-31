@@ -404,20 +404,26 @@ export default function ProductUpload() {
               <CardContent>
                 <div className="max-w-md">
                   <Input
-                    label="Price (USD)"
+                    label="Price (₹ INR - approx. $0.012 USD per rupee)"
                     name="price"
                     type="number"
-                    min="0.99"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleInputChange}
+                    min="83"
+                    step="1"
+                    value={formData.price ? Math.round(formData.price * 83) : ''}
+                    onChange={(e) => {
+                      const inrValue = parseFloat(e.target.value) || 0;
+                      const usdValue = (inrValue / 83).toFixed(2);
+                      handleInputChange({
+                        target: { name: 'price', value: usdValue }
+                      });
+                    }}
                     error={errors.price}
-                    placeholder="29.99"
+                    placeholder="2490 (≈ $30 USD)"
                     required
                   />
                   <p className="mt-2 text-sm text-gray-600">
-                    Minimum price is $0.99. Platform fee: 5% + payment
-                    processing fees.
+                    Minimum price is ₹83 ($0.99 USD). Platform fee: 5% + payment processing fees.
+                    {formData.price && ` Current price: ₹${Math.round(formData.price * 83)} (≈ $${formData.price} USD)`}
                   </p>
                 </div>
               </CardContent>

@@ -100,10 +100,12 @@ export default function CreatorDashboard() {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
+    const inrAmount = Math.round((amount || 0) * 83);
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "USD",
-    }).format(amount || 0);
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(inrAmount);
   };
 
   const hasData = stats.totalSales > 0 || stats.totalProducts > 0;

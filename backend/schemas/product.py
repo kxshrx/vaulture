@@ -46,6 +46,7 @@ class ProductResponse(BaseModel):
     tags: Optional[str]
     file_url: Optional[str]
     image_url: Optional[str]
+    image_urls: Optional[List[str]] = None  # Additional product images
     file_size: Optional[int]
     file_type: Optional[str]
     is_active: bool
@@ -64,6 +65,7 @@ class ProductListResponse(BaseModel):
     category: ProductCategory
     tags: Optional[str]
     image_url: Optional[str]
+    image_urls: Optional[List[str]] = None  # Additional product images
     file_type: Optional[str]
     created_at: datetime
 

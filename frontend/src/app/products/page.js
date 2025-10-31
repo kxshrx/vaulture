@@ -11,6 +11,7 @@ import {
   getImageUrl,
   formatCreatorName,
   mapToStandardCategory,
+  mapToBackendCategory,
   PREDEFINED_CATEGORIES,
 } from "@/lib/api";
 
@@ -44,10 +45,60 @@ function ProductsContent() {
   const loadProducts = async (filterParams = {}) => {
     try {
       setLoading(true);
+      
+      // Map frontend parameters to backend API format
+      const mappedFilters = {};
+      
+      // Map category to backend enum
+      if (filterParams.category) {
+        mappedFilters.category = mapToBackendCategory(filterParams.category);
+      }
+      
+      // Map search query
+      if (filterParams.query) {
+        mappedFilters.query = filterParams.query;
+      }
+      
+      // Map price range (frontend: priceMin/priceMax -> backend: min_price/max_price)
+      if (filterParams.min_price || filterParams.priceMin) {
+        mappedFilters.min_price = filterParams.min_price || filterParams.priceMin;
+      }
+      if (filterParams.max_price || filterParams.priceMax) {
+        mappedFilters.max_price = filterParams.max_price || filterParams.priceMax;
+      }
+      
+      // Map sort (frontend: sort with values like 'newest' -> backend: sort_by + sort_order)
+      const sortValue = filterParams.sort || filterParams.sort_by || 'newest';
+      switch (sortValue) {
+        case 'newest':
+          mappedFilters.sort_by = 'created_at';
+          mappedFilters.sort_order = 'desc';
+          break;
+        case 'oldest':
+          mappedFilters.sort_by = 'created_at';
+          mappedFilters.sort_order = 'asc';
+          break;
+        case 'price-low':
+          mappedFilters.sort_by = 'price';
+          mappedFilters.sort_order = 'asc';
+          break;
+        case 'price-high':
+          mappedFilters.sort_by = 'price';
+          mappedFilters.sort_order = 'desc';
+          break;
+        case 'title':
+          mappedFilters.sort_by = 'title';
+          mappedFilters.sort_order = 'asc';
+          break;
+        default:
+          mappedFilters.sort_by = 'created_at';
+          mappedFilters.sort_order = 'desc';
+      }
+      
       const params = {
         page: currentPage,
         page_size: productsPerPage,
-        ...filterParams,
+        ...mappedFilters,
       };
 
       const response = await buyerApi.getProducts(params);

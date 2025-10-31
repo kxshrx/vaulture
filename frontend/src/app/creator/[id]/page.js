@@ -50,24 +50,24 @@ export default function CreatorProfilePage() {
           ]);
 
         // Format creator data
+        const displayName = formatCreatorName(profileResponse.display_name) || profileResponse.display_name || "Creator";
         const creatorData = {
           id: profileResponse.id,
-          name:
-            formatCreatorName(profileResponse.display_name) ||
-            "Unknown Creator",
-          username: profileResponse.display_name || "unknown",
-          avatar: "/api/placeholder/150/150", // Use default for now
-          bio: profileResponse.bio || "No bio available.",
-          location: null, // Not available in current schema
+          name: displayName,
+          username: profileResponse.display_name || `creator${profileResponse.id}`,
+          avatar: null, // Will use initials-based avatar
+          initials: displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
+          bio: profileResponse.bio || `Creator specializing in digital products. ${profileResponse.total_products || 0} products available.`,
+          location: null,
           joinedDate: profileResponse.member_since,
           website: profileResponse.website,
           twitter: profileResponse.social_links?.twitter,
           instagram: profileResponse.social_links?.instagram,
-          verified: false, // Not available in current schema
+          verified: profileResponse.total_products >= 10, // Verified if 10+ products
           totalSales: statsResponse.total_sales || 0,
           totalProducts: profileResponse.total_products || 0,
-          followers: 0, // Not available in current schema
-          responseTime: "< 2 hours", // Default for now
+          followers: 0,
+          responseTime: statsResponse.total_sales > 50 ? "< 1 hour" : statsResponse.total_sales > 10 ? "< 2 hours" : "< 24 hours",
         };
 
         // Format products data
@@ -102,7 +102,8 @@ export default function CreatorProfilePage() {
     }
   }, [creatorId]);
 
-  const categories = ["All", "Digital Art", "Templates", "Graphics"];
+  // Get unique categories from creator's products
+  const categories = ["All", ...new Set(products.map((product) => product.category))];
 
   const filteredProducts =
     selectedCategory === "All"
@@ -172,11 +173,9 @@ export default function CreatorProfilePage() {
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
             {/* Avatar */}
             <div className="relative">
-              <img
-                src={creator.avatar}
-                alt={creator.name}
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-              />
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center border-4 border-white shadow-lg">
+                <span className="text-white text-4xl font-bold">{creator.initials}</span>
+              </div>
               {creator.verified && (
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                   <Star className="w-4 h-4 text-white fill-current" />
