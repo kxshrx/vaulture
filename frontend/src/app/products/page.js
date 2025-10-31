@@ -42,7 +42,7 @@ function ProductsContent() {
     loadCategories();
   }, [searchParams]);
 
-  const loadProducts = async (filterParams = {}) => {
+  const loadProducts = async (filterParams = {}, pageNum = null) => {
     try {
       setLoading(true);
       
@@ -96,7 +96,7 @@ function ProductsContent() {
       }
       
       const params = {
-        page: currentPage,
+        page: pageNum !== null ? pageNum : currentPage,
         page_size: productsPerPage,
         ...mappedFilters,
       };
@@ -166,7 +166,7 @@ function ProductsContent() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    loadProducts({ ...filters, page });
+    loadProducts(filters, page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
