@@ -9,19 +9,19 @@ export function Button({
   ...props
 }) {
   const baseClasses =
-    "inline-flex items-center justify-center font-semibold rounded-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-900 disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
     primary:
-      "bg-black text-white hover:bg-gray-800 focus:ring-gray-800 shadow-sm active:bg-gray-900",
+      "bg-neon-500 text-dark-900 hover:bg-neon-400 focus:ring-neon-500 shadow-neon-sm hover:shadow-neon active:scale-95 font-bold",
     secondary:
-      "bg-white text-black hover:bg-gray-50 focus:ring-gray-400 border border-gray-300 shadow-sm",
-    ghost: "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-400",
-    pink: "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-sm active:bg-primary-700",
+      "bg-dark-400 text-white hover:bg-dark-300 focus:ring-dark-400 border border-dark-200 shadow-sm",
+    ghost: "bg-transparent text-gray-300 hover:bg-dark-400 hover:text-neon-500 focus:ring-neon-500",
+    pink: "bg-neon-500 text-dark-900 hover:bg-neon-400 focus:ring-neon-500 shadow-neon-sm hover:shadow-neon active:scale-95 font-bold",
     outline:
-      "bg-transparent text-black hover:bg-gray-50 focus:ring-gray-400 border border-black",
+      "bg-transparent text-neon-500 hover:bg-neon-500/10 focus:ring-neon-500 border-2 border-neon-500 hover:border-neon-400",
     danger:
-      "bg-error-500 text-white hover:bg-error-600 focus:ring-error-500 shadow-sm",
+      "bg-error-500 text-white hover:bg-error-600 focus:ring-error-500 shadow-sm active:scale-95",
   };
 
   const sizes = {

@@ -34,12 +34,13 @@ export function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className={`
-            w-full pl-12 pr-24 border border-gray-300 rounded-md 
-            focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
-            transition-all duration-150 bg-gray-50 hover:bg-white ${sizes[size]}
+            w-full pl-12 pr-24 border border-dark-300 rounded-lg 
+            focus:outline-none focus:ring-2 focus:ring-neon-500 focus:border-neon-500
+            transition-all duration-200 bg-dark-400 hover:bg-dark-300 text-white
+            placeholder:text-gray-500 ${sizes[size]}
           `}
         />
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
         <Button
           type="submit"
           variant="primary"

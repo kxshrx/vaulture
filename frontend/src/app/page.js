@@ -108,13 +108,19 @@ export default function Home() {
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="bg-white py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-black mb-8 leading-tight">
+      <section className="gradient-neon py-16 md:py-24 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-neon-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-neon-500/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
             Digital Marketplace{" "}
-            <span className="text-primary-500">for Creators</span>
+            <span className="neon-text">for Creators</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
             Sell your digital products with confidence. Account-based access and
             secure download links help protect your work while keeping things
             simple for your customers.
@@ -149,37 +155,37 @@ export default function Home() {
 
           {/* Key Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="text-center bg-gray-50 rounded-xl p-8">
-              <div className="text-3xl font-bold text-black mb-3">
+            <div className="text-center bg-dark-400 border border-dark-300 rounded-xl p-8 card-hover">
+              <div className="text-3xl font-bold text-white mb-3">
                 Upload. Price. Earn
               </div>
-              <div className="text-gray-600 font-medium text-lg mb-2">
+              <div className="text-neon-500 font-medium text-lg mb-2">
                 Simple Setup
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 Upload your files, set your price, and start earning in minutes
               </p>
             </div>
-            <div className="text-center bg-primary-50 rounded-xl p-8">
-              <div className="text-3xl font-bold text-primary-600 mb-3 ">
+            <div className="text-center bg-dark-400 border-2 border-neon-500 rounded-xl p-8 shadow-neon card-hover">
+              <div className="text-3xl font-bold neon-text mb-3">
                 Protected Access
               </div>
-              <div className="text-gray-600 font-medium text-lg mb-2">
+              <div className="text-white font-medium text-lg mb-2">
                 Account-Based Downloads
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 30-second secure download links protect your digital products
                 from unauthorized access
               </p>
             </div>
-            <div className="text-center bg-gray-50 rounded-xl p-8">
-              <div className="text-3xl font-bold text-black mb-3">
+            <div className="text-center bg-dark-400 border border-dark-300 rounded-xl p-8 card-hover">
+              <div className="text-3xl font-bold text-white mb-3">
                 5% Commission
               </div>
-              <div className="text-gray-600 font-medium text-lg mb-2">
+              <div className="text-neon-500 font-medium text-lg mb-2">
                 Fair & Transparent
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 Keep 95% of every sale with no hidden fees or monthly charges
               </p>
             </div>
@@ -192,15 +198,15 @@ export default function Home() {
         <section className="mb-16">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-4xl font-bold text-black mb-2">
+              <h2 className="text-4xl font-bold text-white mb-2">
                 Popular Products
               </h2>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-400 text-lg">
                 Trending digital products this week
               </p>
             </div>
             <Link href="/products?sort=popular">
-              <Button variant="ghost" className="text-black hover:text-black">
+              <Button variant="ghost" className="text-white hover:text-neon-500">
                 View All →
               </Button>
             </Link>
@@ -213,9 +219,9 @@ export default function Home() {
               [...Array(4)].map((_, index) => (
                 <div key={index} className="flex-none w-72">
                   <div className="animate-pulse">
-                    <div className="bg-gray-200 aspect-video rounded-xl mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="bg-dark-400 aspect-video rounded-xl mb-4"></div>
+                    <div className="h-4 bg-dark-400 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-dark-400 rounded w-1/2"></div>
                   </div>
                 </div>
               ))
@@ -235,7 +241,7 @@ export default function Home() {
 
         {/* Category Filter Chips */}
         <section className="mb-12">
-          <h3 className="text-2xl font-bold text-black mb-6">
+          <h3 className="text-2xl font-bold text-white mb-6">
             Browse by Category
           </h3>
           <div className="flex flex-wrap gap-3 overflow-x-auto pb-2">
@@ -243,7 +249,7 @@ export default function Home() {
               ? // Loading skeletons for categories
                 [...Array(5)].map((_, index) => (
                   <div key={index} className="animate-pulse">
-                    <div className="h-8 bg-gray-200 rounded-full px-4 py-2 w-20"></div>
+                    <div className="h-8 bg-dark-400 rounded-full px-4 py-2 w-20"></div>
                   </div>
                 ))
               : categories.map((category) => (
@@ -267,12 +273,12 @@ export default function Home() {
         <section>
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-3xl font-bold text-white mb-2">
                 {selectedCategory === "All"
                   ? "Newly Added"
                   : `${selectedCategory} Products`}
               </h2>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-400 text-lg">
                 {selectedCategory === "All"
                   ? "Fresh digital products from our creators"
                   : `Latest ${selectedCategory.toLowerCase()} products`}
@@ -285,7 +291,7 @@ export default function Home() {
                   : ""
               }`}
             >
-              <Button variant="ghost" className="text-black hover:text-black">
+              <Button variant="ghost" className="text-white hover:text-neon-500">
                 View All →
               </Button>
             </Link>
@@ -296,10 +302,10 @@ export default function Home() {
               // Loading skeletons
               [...Array(8)].map((_, index) => (
                 <div key={index} className="animate-pulse">
-                  <div className="bg-gray-200 aspect-video rounded-xl mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="bg-dark-400 aspect-video rounded-xl mb-4"></div>
+                  <div className="h-4 bg-dark-400 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-dark-400 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-dark-400 rounded w-1/4"></div>
                 </div>
               ))
             ) : filteredProducts.length > 0 ? (
@@ -317,25 +323,28 @@ export default function Home() {
         </section>
 
         {/* Call to Action Section */}
-        <section className="mt-24 text-center bg-white border border-gray-100 rounded-2xl p-16">
-          <h2 className="text-3xl font-bold text-black mb-4">
-            Ready to start selling?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join creators who are already using Vaulture to sell their digital
-            products with ease and peace of mind.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/signup">
-              <Button variant="pink" size="large" className="px-8">
-                Start Selling Today
-              </Button>
-            </Link>
-            <Link href="/products">
-              <Button variant="outline" size="large" className="px-8">
-                Browse Products
-              </Button>
-            </Link>
+        <section className="mt-24 text-center bg-dark-400 border-2 border-neon-500 rounded-2xl p-16 shadow-neon relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-neon-500/5 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Ready to start selling?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Join creators who are already using Vaulture to sell their digital
+              products with ease and peace of mind.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/signup">
+                <Button variant="pink" size="large" className="px-8">
+                  Start Selling Today
+                </Button>
+              </Link>
+              <Link href="/products">
+                <Button variant="outline" size="large" className="px-8">
+                  Browse Products
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </div>

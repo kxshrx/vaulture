@@ -8,49 +8,54 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Custom blue-purple gradient theme
-        primary: {
-          50: "#f0f2fe",
-          100: "#e8ecfc",
-          200: "#d4dcf9",
-          300: "#c0c9ee", // Lightest shade
-          400: "#a2aadb", // Medium shade
-          500: "#898ac4", // Darkest shade
-          600: "#7a7bb8",
-          700: "#6b6ca9",
-          800: "#5c5d9a",
-          900: "#4d4e8b",
+        // Dark theme with neon green accents
+        neon: {
+          50: "#f0ffe8",
+          100: "#dcffc7",
+          200: "#beff94",
+          300: "#95ff56",
+          400: "#6fff21",
+          500: "#39ff14", // Primary neon green
+          600: "#2ed60f",
+          700: "#24a80b",
+          800: "#1d8309",
+          900: "#166607",
         },
-        gray: {
-          50: "#ffffff",
-          100: "#f8f9fa",
-          200: "#e9ecef",
-          300: "#dee2e6",
-          400: "#ced4da",
-          500: "#adb5bd",
-          600: "#6c757d",
-          700: "#495057",
-          800: "#343a40",
-          900: "#212529",
-          950: "#000000",
+        dark: {
+          50: "#4a4a4a",
+          100: "#3a3a3a",
+          200: "#2a2a2a",
+          300: "#1f1f1f",
+          400: "#1a1a1a",
+          500: "#141414", // Primary dark background
+          600: "#0f0f0f",
+          700: "#0a0a0a",
+          800: "#050505",
+          900: "#000000", // Pure black
+        },
+        accent: {
+          cyan: "#00fff0",
+          purple: "#b026ff",
+          pink: "#ff10f0",
+          yellow: "#ffed4e",
         },
         success: {
           50: "#f0fdf4",
           100: "#dcfce7",
-          500: "#10b981",
-          600: "#059669",
+          500: "#39ff14",
+          600: "#2ed60f",
         },
         error: {
           50: "#fef2f2",
           100: "#fee2e2",
-          500: "#ef4444",
-          600: "#dc2626",
+          500: "#ff4444",
+          600: "#dd2222",
         },
         warning: {
           50: "#fffbeb",
           100: "#fef3c7",
-          500: "#f59e0b",
-          600: "#d97706",
+          500: "#ffed4e",
+          600: "#e8d845",
         },
       },
       spacing: {
@@ -59,13 +64,15 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        subtle:
-          "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-        card: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        elevated:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        subtle: "0 1px 3px 0 rgba(0, 0, 0, 0.5)",
+        card: "0 4px 20px 0 rgba(57, 255, 20, 0.15)",
+        elevated: "0 10px 40px 0 rgba(57, 255, 20, 0.25)",
+        neon: "0 0 20px rgba(57, 255, 20, 0.6), 0 0 40px rgba(57, 255, 20, 0.3)",
+        "neon-sm": "0 0 10px rgba(57, 255, 20, 0.5)",
+        "neon-lg": "0 0 30px rgba(57, 255, 20, 0.7), 0 0 60px rgba(57, 255, 20, 0.4)",
       },
       borderRadius: {
         xl: "0.75rem",
@@ -75,6 +82,8 @@ module.exports = {
       animation: {
         "slide-in": "slideIn 0.3s ease-out",
         "fade-in": "fadeIn 0.2s ease-out",
+        "glow-pulse": "glowPulse 2s ease-in-out infinite",
+        "slide-up": "slideUp 0.4s ease-out",
       },
       keyframes: {
         slideIn: {
@@ -84,6 +93,14 @@ module.exports = {
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
+        },
+        glowPulse: {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(57, 255, 20, 0.5)" },
+          "50%": { boxShadow: "0 0 30px rgba(57, 255, 20, 0.8)" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
     },

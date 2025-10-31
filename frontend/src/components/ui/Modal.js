@@ -37,7 +37,7 @@ export function Modal({
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {/* Overlay */}
         <div
-          className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+          className="fixed inset-0 transition-opacity bg-dark-900/90 backdrop-blur-sm"
           onClick={onClose}
         />
 
@@ -45,16 +45,16 @@ export function Modal({
         <div
           className={`
           inline-block w-full p-6 my-8 overflow-hidden text-left align-middle transition-all transform 
-          bg-white shadow-xl rounded-2xl ${sizes[size]} ${className}
+          bg-dark-400 border-2 border-neon-500 shadow-neon-lg rounded-2xl ${sizes[size]} ${className}
         `}
         >
           {/* Header */}
           {title && (
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+              <h3 className="text-lg font-semibold text-white">{title}</h3>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-neon-500 transition-colors"
               >
                 <X size={20} />
               </button>

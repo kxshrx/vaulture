@@ -7,15 +7,15 @@ export function Chip({
   className = "",
 }) {
   const baseClasses =
-    "inline-flex items-center font-semibold rounded-md transition-all duration-150 cursor-pointer";
+    "inline-flex items-center font-semibold rounded-lg transition-all duration-200 cursor-pointer";
 
   const variants = {
     default: active
-      ? "bg-black text-white"
-      : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+      ? "bg-neon-500 text-dark-900 shadow-neon-sm"
+      : "bg-dark-400 text-gray-300 hover:bg-dark-300 hover:text-neon-500 border border-dark-300",
     category: active
-      ? "bg-primary-50 text-primary-700 border border-primary-200"
-      : "bg-white text-gray-600 border border-gray-300 hover:border-gray-400 hover:bg-gray-50",
+      ? "bg-neon-500 text-dark-900 border-2 border-neon-500 shadow-neon-sm font-bold"
+      : "bg-dark-400 text-gray-300 border border-dark-300 hover:border-neon-500 hover:text-neon-500",
   };
 
   const sizes = {

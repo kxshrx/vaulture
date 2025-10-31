@@ -22,22 +22,22 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-white/95">
+      <nav className="backdrop-custom border-b border-dark-400 fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-lg">V</span>
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="w-8 h-8 bg-neon-500 rounded-lg flex items-center justify-center shadow-neon-sm group-hover:shadow-neon transition-all">
+                <span className="text-dark-900 font-bold text-lg">V</span>
               </div>
-              <span className="text-xl font-bold text-black">Vaulture</span>
+              <span className="text-xl font-bold text-white group-hover:text-neon-500 transition-colors">Vaulture</span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
                 href="/products"
-                className="text-gray-700 hover:text-black transition-colors font-medium"
+                className="text-gray-300 hover:text-neon-500 transition-colors font-medium"
               >
                 Browse
               </Link>
@@ -48,19 +48,19 @@ export function Navbar() {
                     <>
                       <Link
                         href="/creator/dashboard"
-                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        className="text-gray-400 hover:text-neon-500 transition-colors"
                       >
                         Creator Dashboard
                       </Link>
                       <Link
                         href="/creator/analytics"
-                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        className="text-gray-400 hover:text-neon-500 transition-colors"
                       >
                         Analytics
                       </Link>
                       <Link
                         href="/creator/upload"
-                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        className="text-gray-400 hover:text-neon-500 transition-colors"
                       >
                         Upload Product
                       </Link>
@@ -69,23 +69,23 @@ export function Navbar() {
 
                   <Link
                     href="/dashboard"
-                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                    className="text-gray-400 hover:text-neon-500 transition-colors"
                   >
                     My Purchases
                   </Link>
 
                   <div className="relative group">
-                    <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
+                    <button className="flex items-center space-x-2 text-gray-300 hover:text-neon-500 transition-colors">
                       <User size={20} />
                       <span>{user?.name}</span>
                     </button>
 
                     {/* Dropdown menu */}
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div className="absolute right-0 mt-2 w-48 bg-dark-400 border border-dark-300 rounded-lg shadow-elevated opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <div className="py-1">
                         <Link
                           href="/dashboard"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                         >
                           Dashboard
                         </Link>
@@ -93,19 +93,19 @@ export function Navbar() {
                           <>
                             <Link
                               href="/creator/dashboard"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="block px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                             >
                               Creator Dashboard
                             </Link>
                             <Link
                               href="/creator/analytics"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="block px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                             >
                               Analytics
                             </Link>
                             <Link
                               href="/creator/upload"
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="block px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                             >
                               Upload Product
                             </Link>
@@ -113,13 +113,13 @@ export function Navbar() {
                         )}
                         <Link
                           href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                         >
                           Profile Settings
                         </Link>
                         <button
                           onClick={logout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-dark-300 hover:text-neon-500"
                         >
                           Sign Out
                         </button>
@@ -142,7 +142,7 @@ export function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="md:hidden p-2 rounded-md text-gray-300 hover:text-neon-500 hover:bg-dark-400"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -156,20 +156,20 @@ export function Navbar() {
                 placeholder="Search for digital products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 bg-dark-400 border border-dark-300 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-500"
               />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
             </form>
           </div>
         </div>
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white">
+          <div className="md:hidden border-t border-dark-400 backdrop-custom">
             <div className="px-4 py-3 space-y-3">
               <Link
                 href="/products"
-                className="block text-gray-600 hover:text-gray-900"
+                className="block text-gray-300 hover:text-neon-500"
               >
                 Browse Products
               </Link>
@@ -178,7 +178,7 @@ export function Navbar() {
                 <>
                   <Link
                     href="/dashboard"
-                    className="block text-gray-600 hover:text-gray-900"
+                    className="block text-gray-300 hover:text-neon-500"
                   >
                     My Purchases
                   </Link>
@@ -186,19 +186,19 @@ export function Navbar() {
                     <>
                       <Link
                         href="/creator/dashboard"
-                        className="block text-gray-600 hover:text-gray-900"
+                        className="block text-gray-300 hover:text-neon-500"
                       >
                         Creator Dashboard
                       </Link>
                       <Link
                         href="/creator/analytics"
-                        className="block text-gray-600 hover:text-gray-900"
+                        className="block text-gray-300 hover:text-neon-500"
                       >
                         Analytics
                       </Link>
                       <Link
                         href="/creator/upload"
-                        className="block text-gray-600 hover:text-gray-900"
+                        className="block text-gray-300 hover:text-neon-500"
                       >
                         Upload Product
                       </Link>
@@ -206,13 +206,13 @@ export function Navbar() {
                   )}
                   <Link
                     href="/profile"
-                    className="block text-gray-600 hover:text-gray-900"
+                    className="block text-gray-300 hover:text-neon-500"
                   >
                     Profile Settings
                   </Link>
                   <button
                     onClick={logout}
-                    className="block w-full text-left text-gray-600 hover:text-gray-900"
+                    className="block w-full text-left text-gray-300 hover:text-neon-500"
                   >
                     Sign Out
                   </button>

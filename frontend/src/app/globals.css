@@ -15,43 +15,46 @@ body {
   overflow-x: hidden;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #0a0a0a;
+  color: #ffffff;
   line-height: 1.5;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar - Gumroad style */
+/* Custom scrollbar - Dark theme with neon accent */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8f9fa;
+  background: #141414;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #dee2e6;
-  border-radius: 4px;
+  background: #2a2a2a;
+  border-radius: 5px;
+  border: 2px solid #141414;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #adb5bd;
+  background: #39ff14;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
 }
 
 /* Focus styles */
 *:focus {
-  outline: 2px solid #898ac4;
+  outline: 2px solid #39ff14;
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background-color: #898ac4;
-  color: white;
+  background-color: #39ff14;
+  color: #000000;
 }
 
 /* Hide scrollbar for horizontal scroll sections */
@@ -62,4 +65,48 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Neon glow effects */
+.neon-text {
+  color: #39ff14;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.8),
+               0 0 20px rgba(57, 255, 20, 0.6),
+               0 0 30px rgba(57, 255, 20, 0.4);
+}
+
+.neon-border {
+  border: 1px solid #39ff14;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.neon-glow-hover:hover {
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.6),
+              0 0 40px rgba(57, 255, 20, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Gradient backgrounds */
+.gradient-dark {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+}
+
+.gradient-neon {
+  background: linear-gradient(135deg, #141414 0%, #1a1a1a 50%, #141414 100%);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(57, 255, 20, 0.25);
+}
+
+/* Backdrop blur */
+.backdrop-custom {
+  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.8);
 }

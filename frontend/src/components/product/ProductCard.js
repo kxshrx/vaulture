@@ -21,14 +21,14 @@ export function ProductCard({ product, className = "" }) {
   };
 
   return (
-    <Card hover className={`overflow-hidden cursor-pointer ${className}`}>
+    <Card hover className={`overflow-hidden cursor-pointer group ${className}`}>
       <Link href={`/product/${id}`}>
         {/* Product Image */}
-        <div className="relative aspect-video bg-gray-100">
+        <div className="relative aspect-video bg-dark-500 overflow-hidden">
           {image ? (
-            <Image src={image} alt={title} fill className="object-cover" />
+            <Image src={image} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
+            <div className="flex items-center justify-center h-full text-gray-500">
               <span>No Image</span>
             </div>
           )}
@@ -39,22 +39,25 @@ export function ProductCard({ product, className = "" }) {
               {category}
             </Chip>
           </div>
+          
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
 
         {/* Product Info */}
         <div className="p-5">
-          <h3 className="font-semibold text-black mb-2 line-clamp-2 text-lg leading-tight">
+          <h3 className="font-semibold text-white mb-2 line-clamp-2 text-lg leading-tight group-hover:text-neon-500 transition-colors">
             {title}
           </h3>
 
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={handleCreatorClick}
-              className="text-sm text-gray-600 hover:text-black transition-colors text-left font-medium"
+              className="text-sm text-gray-400 hover:text-neon-500 transition-colors text-left font-medium"
             >
               {creator?.name}
             </button>
-            <span className="text-xl font-bold text-black">{formatPriceINR(price)}</span>
+            <span className="text-xl font-bold text-neon-500">{formatPriceINR(price)}</span>
           </div>
 
           {purchaseCount > 0 && (
