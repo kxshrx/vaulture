@@ -21,32 +21,14 @@ body {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  position: relative;
-}
+  
+  /* Geometric pattern background - bigger grid, more translucent */
+background-image:
+  linear-gradient(120deg, rgba(120, 255, 180, 0.03) 1px, transparent 1px),
+  linear-gradient(240deg, rgba(120, 180, 255, 0.03) 1px, transparent 1px);
+background-size: 100px 100px;
+background-color: #000;
 
-/* Geometric pattern background overlay - visible on all pages */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px),
-    linear-gradient(rgba(57, 255, 20, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(57, 255, 20, 0.015) 1px, transparent 1px);
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-  background-position: 0 0, 0 0, 0 0, 0 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Ensure content appears above pattern */
-body > * {
-  position: relative;
-  z-index: 2;
 }
 
 /* Custom scrollbar - Dark theme with neon accent */

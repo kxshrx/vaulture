@@ -36,7 +36,7 @@ export default function UpgradePage() {
 
   return (
     <ProtectedRoute requireAuth={true} requiredRole="buyer">
-      <div className="min-h-screen bg-dark-900">
+      <div className="min-h-screen">
         {/* Navigation */}
         <nav className="border-b border-dark-400 backdrop-custom">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

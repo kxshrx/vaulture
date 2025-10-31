@@ -108,7 +108,7 @@ export default function Home() {
   return (
     <PageContainer>
       {/* Hero Section */}
-      <section className="gradient-neon py-16 md:py-24 relative overflow-hidden">
+      <section className="py-16 md:py-24 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-64 h-64 bg-neon-500/10 rounded-full blur-3xl animate-pulse"></div>
