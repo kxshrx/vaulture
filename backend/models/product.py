@@ -41,8 +41,8 @@ class Product(Base):
     price = Column(Float, nullable=False)
     category = Column(SQLEnum(ProductCategory), default=ProductCategory.OTHER)
     tags = Column(String)  # Comma-separated tags for search
-    file_url = Column(String)  # Supabase path for main file
-    image_url = Column(String)  # Supabase path for product image/thumbnail (main image)
+    file_url = Column(String)  # Storage path for main file
+    image_url = Column(String)  # Storage path for product image/thumbnail (main image)
     image_urls = Column(JSON)  # JSON array of additional product images for gallery
     file_size = Column(Integer)  # File size in bytes
     file_type = Column(String)  # File extension/type
