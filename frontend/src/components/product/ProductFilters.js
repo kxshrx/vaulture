@@ -81,7 +81,7 @@ export function ProductFilters({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div className="bg-dark-400 border border-dark-300 rounded-xl p-6 mb-6">
       {/* Main Search Bar */}
       <form onSubmit={handleSearch} className="mb-4">
         <div className="relative">
@@ -90,9 +90,9 @@ export function ProductFilters({
             placeholder="Search for digital products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-24 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            className="w-full pl-10 pr-24 py-3 bg-dark-500 border border-dark-300 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500 text-lg"
           />
-          <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-500" />
           <Button
             type="submit"
             variant="primary"
@@ -120,24 +120,24 @@ export function ProductFilters({
           />
         </Button>
 
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-400">
           {resultsCount} product{resultsCount !== 1 ? "s" : ""} found
         </div>
       </div>
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="border-t border-gray-200 pt-4 space-y-4">
+        <div className="border-t border-dark-300 pt-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Category
               </label>
               <select
                 value={filters.category || ""}
                 onChange={(e) => handleFilterChange("category", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-dark-500 border border-dark-300 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500"
               >
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -150,13 +150,13 @@ export function ProductFilters({
 
             {/* Product Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Product Type
               </label>
               <select
                 value={filters.type || ""}
                 onChange={(e) => handleFilterChange("type", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-dark-500 border border-dark-300 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500"
               >
                 <option value="">All Types</option>
                 {productTypes.map((type) => (
@@ -169,13 +169,13 @@ export function ProductFilters({
 
             {/* Sort Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Sort By
               </label>
               <select
                 value={filters.sort || "newest"}
                 onChange={(e) => handleFilterChange("sort", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-dark-500 border border-dark-300 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -195,7 +195,7 @@ export function ProductFilters({
 
           {/* Price Range */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Price Range (₹ INR)
             </label>
             <div className="flex items-center space-x-2">
@@ -206,9 +206,9 @@ export function ProductFilters({
                 onChange={(e) =>
                   setPriceRange({ ...priceRange, min: e.target.value })
                 }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 bg-dark-500 border border-dark-300 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500"
               />
-              <span className="text-gray-500">to</span>
+              <span className="text-gray-400">to</span>
               <input
                 type="number"
                 placeholder="Max ₹"
@@ -216,7 +216,7 @@ export function ProductFilters({
                 onChange={(e) =>
                   setPriceRange({ ...priceRange, max: e.target.value })
                 }
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 bg-dark-500 border border-dark-300 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-500"
               />
               <Button variant="secondary" onClick={handlePriceChange}>
                 Apply
@@ -228,7 +228,7 @@ export function ProductFilters({
 
       {/* Active Filters */}
       {Object.keys(filters).length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-dark-300">
           <div className="flex flex-wrap gap-2">
             {filters.category && (
               <Chip active onClick={() => handleFilterChange("category", "")}>

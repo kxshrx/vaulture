@@ -169,16 +169,16 @@ export default function CreatorProfilePage() {
     <PageContainer>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Creator Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+        <div className="bg-dark-400 rounded-lg shadow-card border border-dark-300 p-8 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center border-4 border-white shadow-lg">
-                <span className="text-white text-4xl font-bold">{creator.initials}</span>
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-neon-400 to-neon-600 flex items-center justify-center border-4 border-dark-400 shadow-neon">
+                <span className="text-dark-900 text-4xl font-bold">{creator.initials}</span>
               </div>
               {creator.verified && (
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-                  <Star className="w-4 h-4 text-white fill-current" />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-neon-500 rounded-full flex items-center justify-center shadow-neon-sm">
+                  <Star className="w-4 h-4 text-dark-900 fill-current" />
                 </div>
               )}
             </div>
@@ -186,25 +186,25 @@ export default function CreatorProfilePage() {
             {/* Creator Info */}
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-4xl font-bold text-black">
+                <h1 className="text-4xl font-bold text-white">
                   {creator.name}
                 </h1>
                 {creator.verified && (
                   <Chip
                     variant="category"
                     size="small"
-                    className="bg-primary-100 text-primary-700"
+                    className="bg-neon-500 text-dark-900 border-neon-500"
                   >
                     Verified
                   </Chip>
                 )}
               </div>
-              <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+              <p className="text-gray-300 text-lg mb-4 leading-relaxed">
                 {creator.bio}
               </p>
 
               {/* Meta Info */}
-              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 mb-6">
+              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-6">
                 {creator.location && (
                   <div className="flex items-center space-x-2">
                     <MapPin className="w-4 h-4" />
@@ -228,7 +228,7 @@ export default function CreatorProfilePage() {
                     href={creator.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors"
+                    className="flex items-center space-x-2 text-gray-400 hover:text-neon-500 transition-colors"
                   >
                     <Globe className="w-4 h-4" />
                     <span>Website</span>
@@ -242,7 +242,7 @@ export default function CreatorProfilePage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors"
+                    className="flex items-center space-x-2 text-gray-400 hover:text-neon-500 transition-colors"
                   >
                     <Twitter className="w-4 h-4" />
                     <span>{creator.twitter}</span>
@@ -256,7 +256,7 @@ export default function CreatorProfilePage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors"
+                    className="flex items-center space-x-2 text-gray-400 hover:text-neon-500 transition-colors"
                   >
                     <Instagram className="w-4 h-4" />
                     <span>{creator.instagram}</span>
@@ -281,38 +281,38 @@ export default function CreatorProfilePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="p-6 text-center">
-              <Package className="w-8 h-8 text-primary-500 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-black mb-1">
+              <Package className="w-8 h-8 text-neon-500 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-white mb-1">
                 {creator.totalProducts}
               </div>
-              <div className="text-gray-600 text-sm">Products</div>
+              <div className="text-gray-400 text-sm">Products</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
-              <TrendingUp className="w-8 h-8 text-green-500 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-black mb-1">
+              <TrendingUp className="w-8 h-8 text-neon-500 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-white mb-1">
                 {stats.totalSales}
               </div>
-              <div className="text-gray-600 text-sm">Total Sales</div>
+              <div className="text-gray-400 text-sm">Total Sales</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
-              <Users className="w-8 h-8 text-blue-500 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-black mb-1">
+              <Users className="w-8 h-8 text-neon-500 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-white mb-1">
                 {creator.followers.toLocaleString()}
               </div>
-              <div className="text-gray-600 text-sm">Followers</div>
+              <div className="text-gray-400 text-sm">Followers</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Products Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="bg-dark-400 rounded-lg shadow-card border border-dark-300 p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-black">Products</h2>
-            <div className="text-gray-600">
+            <h2 className="text-2xl font-bold text-white">Products</h2>
+            <div className="text-gray-400">
               {filteredProducts.length} products
             </div>
           </div>
@@ -336,11 +336,11 @@ export default function CreatorProfilePage() {
             <ProductGrid products={filteredProducts} />
           ) : (
             <div className="text-center py-12">
-              <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">
                 No products found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-400">
                 This creator hasn&apos;t uploaded any products in this category
                 yet.
               </p>

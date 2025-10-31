@@ -290,16 +290,16 @@ export default function ProductPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="mb-8">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-gray-900">
+          <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <Link href="/" className="hover:text-neon-500">
               Home
             </Link>
             <span>/</span>
-            <Link href="/products" className="hover:text-gray-900">
+            <Link href="/products" className="hover:text-neon-500">
               Products
             </Link>
             <span>/</span>
-            <span className="text-gray-900">{product.title}</span>
+            <span className="text-white">{product.title}</span>
           </div>
         </nav>
 
@@ -325,8 +325,8 @@ export default function ProductPage() {
                     onClick={() => setSelectedImage(index)}
                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
                       selectedImage === index
-                        ? "border-primary-500"
-                        : "border-gray-200"
+                        ? "border-neon-500 shadow-neon-sm"
+                        : "border-dark-300"
                     }`}
                   >
                     <Image
@@ -349,15 +349,15 @@ export default function ProductPage() {
             </div>
 
             {/* Title and Price */}
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl font-bold text-white mb-4">
               {product.title}
             </h1>
-            <div className="text-3xl font-bold text-primary-500 mb-6">
+            <div className="text-3xl font-bold text-neon-500 mb-6">
               {formatPriceINR(product.price)}
             </div>
 
             {/* Product Info */}
-            <div className="flex items-center space-x-6 mb-6 text-sm text-gray-600">
+            <div className="flex items-center space-x-6 mb-6 text-sm text-gray-400">
               <div className="flex items-center space-x-1">
                 <Download className="w-4 h-4" />
                 <span>{product.fileType}</span>
@@ -367,15 +367,15 @@ export default function ProductPage() {
             </div>
 
             {/* Security Notice */}
-            <Card className="mb-6 bg-primary-50 border-primary-200">
+            <Card className="mb-6 bg-dark-500 border-neon-500">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <Shield className="w-6 h-6 text-primary-600" />
+                  <Shield className="w-6 h-6 text-neon-500" />
                   <div>
-                    <h3 className="font-semibold text-primary-900">
+                    <h3 className="font-semibold text-white">
                       Secure 30-Second Download
                     </h3>
-                    <p className="text-sm text-primary-700">
+                    <p className="text-sm text-gray-400">
                       Your download link expires in 30 seconds for maximum
                       security
                     </p>
@@ -514,14 +514,14 @@ export default function ProductPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-sm font-bold">{product.creator.initials}</span>
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-neon-400 to-neon-600 flex items-center justify-center flex-shrink-0 shadow-neon-sm">
+                    <span className="text-dark-900 text-sm font-bold">{product.creator.initials}</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-white">
                       {product.creator.name}
                     </h3>
-                    <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <div className="flex items-center space-x-4 text-sm text-gray-400">
                       <span>{product.creator.productCount} products</span>
                       <span>{product.creator.totalSales} sales</span>
                     </div>
@@ -529,7 +529,7 @@ export default function ProductPage() {
                 </div>
 
                 {product.creator.bio && (
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-gray-400 text-sm mb-4">
                     {product.creator.bio}
                   </p>
                 )}
@@ -548,11 +548,11 @@ export default function ProductPage() {
         <div className="mt-12">
           <Card>
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-white mb-6">
                 Product Description
               </h2>
               <div
-                className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-a:text-primary-600 prose-strong:text-gray-900"
+                className="prose prose-invert max-w-none prose-headings:text-white prose-a:text-neon-500 prose-strong:text-white prose-p:text-gray-300"
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </CardContent>
@@ -561,7 +561,7 @@ export default function ProductPage() {
 
         {/* Tags */}
         <div className="mt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {product.tags.map((tag) => (
               <Chip key={tag} variant="category" size="small">
@@ -573,7 +573,7 @@ export default function ProductPage() {
 
         {/* Related Products */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-8">
             Related Products
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

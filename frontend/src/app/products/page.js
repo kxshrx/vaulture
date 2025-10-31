@@ -175,10 +175,10 @@ function ProductsContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             Digital Products
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Discover amazing digital products from talented creators
           </p>
         </div>
@@ -242,7 +242,7 @@ function ProductsContent() {
         )}
 
         {/* Results Summary */}
-        <div className="mt-8 text-center text-gray-600">
+        <div className="mt-8 text-center text-gray-400">
           {loading
             ? "Loading products..."
             : totalProducts > 0
