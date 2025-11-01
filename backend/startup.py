@@ -51,12 +51,10 @@ def seed_database():
         
         creator = User(
             email="creator@vaulture.com",
-            username="demo_creator",
             hashed_password=hashed_password,
-            full_name="Demo Creator",
-            is_active=True,
+            display_name="Demo Creator",
+            bio="Demo creator account for showcasing products",
             is_creator=True,
-            stripe_account_id="acct_demo123",
             created_at=datetime.utcnow()
         )
         db.add(creator)
