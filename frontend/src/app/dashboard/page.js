@@ -168,10 +168,10 @@ function DashboardContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Dashboard Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-white mb-2">
               My Purchases
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-300 text-lg">
               Manage your digital product purchases and downloads
             </p>
 
@@ -216,12 +216,12 @@ function DashboardContent() {
             <StatsCard
               title="Total Purchases"
               value={stats.totalPurchases}
-              icon={<Package className="w-6 h-6 text-primary-600" />}
+              icon={<Package className="w-6 h-6 text-neon-500" />}
             />
             <StatsCard
               title="Total Spent"
               value={`$${stats.totalSpent?.toFixed(2)}`}
-              icon={<DollarSign className="w-6 h-6 text-green-600" />}
+              icon={<DollarSign className="w-6 h-6 text-neon-500" />}
             />
             <StatsCard
               title="Last Purchase"
@@ -235,13 +235,13 @@ function DashboardContent() {
                   ? formatDate(stats.lastPurchaseDate).split(",")[1]
                   : ""
               }
-              icon={<Calendar className="w-6 h-6 text-purple-600" />}
+              icon={<Calendar className="w-6 h-6 text-neon-500" />}
             />
           </div>
 
           {/* Purchase History */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-bold text-white mb-6">
               Purchase History
             </h2>
 
@@ -250,7 +250,7 @@ function DashboardContent() {
                 {currentPurchases.map((purchase) => (
                   <Card
                     key={purchase.id}
-                    className="hover:shadow-lg transition-shadow duration-200"
+                    hover
                   >
                     <CardContent className="p-6">
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -271,19 +271,19 @@ function DashboardContent() {
                               href={`/product/${purchase.product_id}`}
                               className="block"
                             >
-                              <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors duration-200 truncate">
+                              <h3 className="text-lg font-semibold text-white hover:text-neon-500 transition-colors duration-200 truncate">
                                 {purchase.product_title}
                               </h3>
                             </Link>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-gray-400 mt-1">
                               by {purchase.creator_name}
                             </p>
-                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-400">
                               <span>
                                 Purchased {formatDate(purchase.created_at)}
                               </span>
-                              <span className="text-gray-300">•</span>
-                              <span className="font-medium text-gray-900">
+                              <span className="text-dark-300">•</span>
+                              <span className="font-medium text-neon-500">
                                 $
                                 {purchase.amount_paid?.toFixed(2) ||
                                   purchase.product_price?.toFixed(2)}
@@ -295,9 +295,9 @@ function DashboardContent() {
                         {/* Download Info & Actions */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
                           {/* Product Category */}
-                          <div className="flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
-                            <Package className="w-4 h-4 text-gray-400" />
-                            <span className="text-sm font-medium text-gray-700 capitalize">
+                          <div className="flex items-center space-x-2 bg-dark-500 px-3 py-2 rounded-lg">
+                            <Package className="w-4 h-4 text-neon-500" />
+                            <span className="text-sm font-medium text-gray-300 capitalize">
                               {purchase.product_category}
                             </span>
                           </div>
@@ -309,7 +309,7 @@ function DashboardContent() {
                               size="small"
                               onClick={() => handleDownload(purchase.id)}
                               disabled={downloading === purchase.id}
-                              className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700"
+                              className="flex items-center space-x-2"
                             >
                               {downloading === purchase.id ? (
                                 <>
@@ -331,21 +331,21 @@ function DashboardContent() {
                 ))}
               </div>
             ) : (
-              <Card className="text-center py-16">
+              <Card className="text-center py-16 border-2 border-neon-500 shadow-neon">
                 <CardContent>
                   <div className="max-w-sm mx-auto">
-                    <Package className="w-20 h-20 text-gray-300 mx-auto mb-6" />
-                    <h3 className="text-xl font-medium text-gray-900 mb-3">
+                    <Package className="w-20 h-20 text-neon-500 mx-auto mb-6" />
+                    <h3 className="text-2xl font-bold text-white mb-3">
                       No purchases yet
                     </h3>
-                    <p className="text-gray-600 mb-8 leading-relaxed">
+                    <p className="text-gray-300 mb-8 leading-relaxed">
                       Start exploring our marketplace to find amazing digital
                       products created by talented creators
                     </p>
                     <Link href="/products">
                       <Button
-                        variant="primary"
-                        className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 px-8 py-3"
+                        variant="pink"
+                        className="px-8 py-3"
                       >
                         Browse Products
                       </Button>

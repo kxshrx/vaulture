@@ -165,41 +165,38 @@ export default function CreatorDashboard() {
               title="Total Products"
               value={stats.totalProducts}
               subtitle={`${stats.activeProducts} active`}
-              icon={<Package className="w-6 h-6 text-primary-600" />}
+              icon={<Package className="w-6 h-6 text-neon-500" />}
             />
             <StatsCard
               title="Total Sales"
               value={stats.totalSales}
-              icon={<TrendingUp className="w-6 h-6 text-green-600" />}
+              icon={<TrendingUp className="w-6 h-6 text-neon-500" />}
             />
             <StatsCard
               title="Total Revenue"
               value={formatCurrency(stats.totalRevenue)}
-              icon={<DollarSign className="w-6 h-6 text-purple-600" />}
+              icon={<DollarSign className="w-6 h-6 text-neon-500" />}
             />
             <StatsCard
               title="Active Products"
               value={stats.activeProducts}
               subtitle="Ready for sale"
-              icon={<Users className="w-6 h-6 text-orange-600" />}
+              icon={<Users className="w-6 h-6 text-neon-500" />}
             />
           </div>
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Link href="/creator/upload">
-              <Card
-                hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-primary-500 bg-gradient-to-br from-gray-800 to-gray-900"
-              >
+              <Card hover>
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                    <Plus className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 bg-dark-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
+                    <Plus className="w-8 h-8 text-neon-500" />
                   </div>
                   <h3 className="font-bold text-xl text-white mb-2">
                     Upload New Product
                   </h3>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-gray-400">
                     Add a new digital product to sell
                   </p>
                 </CardContent>
@@ -207,18 +204,15 @@ export default function CreatorDashboard() {
             </Link>
 
             <Link href="/creator/products">
-              <Card
-                hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-green-500 bg-gradient-to-br from-gray-800 to-gray-900"
-              >
+              <Card hover>
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                    <Package className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 bg-dark-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
+                    <Package className="w-8 h-8 text-neon-500" />
                   </div>
                   <h3 className="font-bold text-xl text-white mb-2">
                     Manage Products
                   </h3>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-gray-400">
                     Edit and organize your products
                   </p>
                 </CardContent>
@@ -226,18 +220,15 @@ export default function CreatorDashboard() {
             </Link>
 
             <Link href="/creator/analytics">
-              <Card
-                hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-purple-500 bg-gradient-to-br from-gray-800 to-gray-900"
-              >
+              <Card hover>
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                    <TrendingUp className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 bg-dark-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
+                    <TrendingUp className="w-8 h-8 text-neon-500" />
                   </div>
                   <h3 className="font-bold text-xl text-white mb-2">
                     View Analytics
                   </h3>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-gray-400">
                     Detailed sales and revenue data
                   </p>
                 </CardContent>
@@ -280,14 +271,14 @@ export default function CreatorDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Recent Sales Overview */}
                 <div className="lg:col-span-2">
-                  <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
+                  <Card>
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-bold text-white">
                           Recent Sales
                         </h2>
                         <Link href="/creator/analytics">
-                          <Button variant="ghost" size="small" className="text-primary-400 hover:text-primary-300 hover:bg-gray-800">
+                          <Button variant="ghost" size="small" className="text-neon-500 hover:text-neon-400">
                             View Full Analytics
                           </Button>
                         </Link>
@@ -299,7 +290,7 @@ export default function CreatorDashboard() {
                           {recentSales.map((sale) => (
                             <div
                               key={sale.id}
-                              className="flex items-center justify-between py-4 px-4 border-2 border-gray-700 rounded-xl hover:border-primary-500 transition-all bg-gray-800/50"
+                              className="flex items-center justify-between py-4 px-4 border border-dark-300 rounded-xl hover:border-neon-500/50 transition-all bg-dark-500 card-hover"
                             >
                               <div>
                                 <div className="font-semibold text-lg text-white">
@@ -309,7 +300,7 @@ export default function CreatorDashboard() {
                                   {sale.buyer} • {formatDate(sale.sale_date)}
                                 </div>
                               </div>
-                              <div className="font-bold text-xl text-primary-400">
+                              <div className="font-bold text-xl text-neon-500">
                                 {formatCurrency(sale.amount)}
                               </div>
                             </div>
@@ -317,8 +308,8 @@ export default function CreatorDashboard() {
                         </div>
                       ) : (
                         <div className="p-12 text-center">
-                          <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <TrendingUp className="w-10 h-10 text-gray-500" />
+                          <div className="w-20 h-20 bg-dark-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <TrendingUp className="w-10 h-10 text-neon-500" />
                           </div>
                           <p className="text-gray-300 font-semibold text-lg">No sales yet</p>
                           <p className="text-sm mt-2 text-gray-400">
@@ -333,7 +324,7 @@ export default function CreatorDashboard() {
                 {/* Quick Overview */}
                 <div className="space-y-6">
                   {/* Performance Summary */}
-                  <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
+                  <Card>
                     <CardHeader>
                       <h3 className="text-xl font-bold text-white">
                         Summary
@@ -341,20 +332,20 @@ export default function CreatorDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
-                          <span className="text-gray-300 font-medium">Revenue</span>
-                          <span className="font-bold text-xl text-primary-400">
+                        <div className="flex items-center justify-between py-3 px-4 bg-dark-500 rounded-xl">
+                          <span className="text-gray-400 font-medium">Revenue</span>
+                          <span className="font-bold text-xl text-neon-500">
                             {formatCurrency(stats.totalRevenue)}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
-                          <span className="text-gray-300 font-medium">Sales</span>
+                        <div className="flex items-center justify-between py-3 px-4 bg-dark-500 rounded-xl">
+                          <span className="text-gray-400 font-medium">Sales</span>
                           <span className="font-bold text-xl text-white">
                             {stats.totalSales}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
-                          <span className="text-gray-300 font-medium">Products</span>
+                        <div className="flex items-center justify-between py-3 px-4 bg-dark-500 rounded-xl">
+                          <span className="text-gray-400 font-medium">Products</span>
                           <span className="font-bold text-xl text-white">
                             {stats.totalProducts}
                           </span>
@@ -365,7 +356,7 @@ export default function CreatorDashboard() {
                           <Button
                             variant="primary"
                             size="small"
-                            className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 font-semibold"
+                            className="w-full font-semibold"
                           >
                             View Detailed Analytics
                           </Button>
@@ -377,14 +368,14 @@ export default function CreatorDashboard() {
               </div>
 
               {/* Recent Products */}
-              <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
+              <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-white">
                       Recent Products
                     </h2>
                     <Link href="/creator/products">
-                      <Button variant="ghost" size="small" className="text-primary-400 hover:text-primary-300 hover:bg-gray-800">
+                      <Button variant="ghost" size="small" className="text-neon-500 hover:text-neon-400">
                         View All Products
                       </Button>
                     </Link>
@@ -397,54 +388,52 @@ export default function CreatorDashboard() {
                         <Card
                           key={product.id}
                           hover
-                          className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-primary-500 bg-gray-800/50"
+                          className="cursor-pointer group overflow-hidden"
                         >
-                          <CardContent className="p-4">
-                            <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-3 flex items-center justify-center overflow-hidden border-2 border-gray-600">
-                              {product.image_url || product.image ? (
-                                <img
-                                  src={product.image_url || product.image}
-                                  alt={product.title}
-                                  className="w-full h-full object-cover rounded-xl transition-transform group-hover:scale-105"
-                                  onError={(e) => {
-                                    e.target.style.display = "none";
-                                    e.target.parentNode.classList.add(
-                                      "bg-gradient-to-br",
-                                      "from-gray-700",
-                                      "to-gray-800"
-                                    );
-                                    e.target.nextElementSibling.style.display =
-                                      "flex";
-                                  }}
-                                />
-                              ) : null}
-                              <div
-                                className={`w-full h-full flex items-center justify-center ${
-                                  product.image_url || product.image
-                                    ? "hidden"
-                                    : ""
-                                }`}
-                              >
-                                <Package className="w-10 h-10 text-primary-400" />
-                              </div>
+                          <div className="aspect-video bg-dark-500 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+                            {product.image_url || product.image ? (
+                              <img
+                                src={product.image_url || product.image}
+                                alt={product.title}
+                                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                  e.target.parentNode.classList.add(
+                                    "bg-dark-500"
+                                  );
+                                  e.target.nextElementSibling.style.display =
+                                    "flex";
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className={`w-full h-full flex items-center justify-center ${
+                                product.image_url || product.image
+                                  ? "hidden"
+                                  : ""
+                              }`}
+                            >
+                              <Package className="w-10 h-10 text-neon-500" />
                             </div>
-                            <h4 className="font-semibold text-white text-lg truncate mb-2 group-hover:text-primary-400 transition-colors">
+                          </div>
+                          <div className="p-4">
+                            <h4 className="font-semibold text-white text-lg line-clamp-2 mb-2 group-hover:text-neon-500 transition-colors">
                               {product.title}
                             </h4>
-                            <p className="text-base text-primary-400 mb-2 font-bold">
+                            <p className="text-xl text-neon-500 mb-2 font-bold">
                               {formatCurrency(product.price)}
                             </p>
                             <p className="text-sm text-gray-400">
                               {formatDate(product.created_at)}
                             </p>
-                          </CardContent>
+                          </div>
                         </Card>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl border-2 border-dashed border-gray-600">
-                      <div className="w-20 h-20 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <Package className="w-10 h-10 text-gray-400" />
+                    <div className="text-center py-12 bg-dark-500 rounded-xl">
+                      <div className="w-20 h-20 bg-dark-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Package className="w-10 h-10 text-neon-500" />
                       </div>
                       <p className="text-white font-semibold text-lg mb-2">
                         No products yet

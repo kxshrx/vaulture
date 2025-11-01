@@ -176,20 +176,20 @@ export default function ProductUpload() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-white mb-2">
               Upload New Product
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-300 text-lg">
               Add a new digital product to your marketplace
             </p>
           </div>
 
           <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-8">
             {/* Product Details */}
-            <Card>
+            <Card hover>
               <CardHeader>
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <FileText className="w-5 h-5 mr-2" />
+                <h2 className="text-xl font-semibold text-white flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-neon-500" />
                   Product Details
                 </h2>
               </CardHeader>
@@ -255,15 +255,15 @@ export default function ProductUpload() {
             </Card>
 
             {/* File Upload */}
-            <Card className="border-2 hover:border-primary-200 transition-colors">
+            <Card hover className="border-2 border-neon-500/30 hover:border-neon-500/50 transition-colors">
               <CardHeader>
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mr-3">
-                    <Upload className="w-5 h-5 text-white" />
+                <h2 className="text-xl font-semibold text-white flex items-center">
+                  <div className="w-10 h-10 bg-dark-500 rounded-xl flex items-center justify-center mr-3">
+                    <Upload className="w-5 h-5 text-neon-500" />
                   </div>
                   Product File
                 </h2>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-300 mt-2">
                   Upload the main digital product file that buyers will download
                 </p>
               </CardHeader>
@@ -362,15 +362,15 @@ export default function ProductUpload() {
             </Card>
 
             {/* Product Images */}
-            <Card className="border-2 hover:border-purple-200 transition-colors">
+            <Card hover className="border-2 border-neon-500/30 hover:border-neon-500/50 transition-colors">
               <CardHeader>
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
-                    <ImageIcon className="w-5 h-5 text-white" />
+                <h2 className="text-xl font-semibold text-white flex items-center">
+                  <div className="w-10 h-10 bg-dark-500 rounded-xl flex items-center justify-center mr-3">
+                    <ImageIcon className="w-5 h-5 text-neon-500" />
                   </div>
                   Product Images (Optional)
                 </h2>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-300 mt-2">
                   Add preview images to showcase your product
                 </p>
               </CardHeader>
@@ -438,15 +438,15 @@ export default function ProductUpload() {
             </Card>
 
             {/* Pricing */}
-            <Card className="border-2 hover:border-green-200 transition-colors">
+            <Card hover className="border-2 border-neon-500/30 hover:border-neon-500/50 transition-colors">
               <CardHeader>
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-3">
-                    <DollarSign className="w-5 h-5 text-white" />
+                <h2 className="text-xl font-semibold text-white flex items-center">
+                  <div className="w-10 h-10 bg-dark-500 rounded-xl flex items-center justify-center mr-3">
+                    <DollarSign className="w-5 h-5 text-neon-500" />
                   </div>
                   Pricing
                 </h2>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-300 mt-2">
                   Set a fair price for your digital product
                 </p>
               </CardHeader>
@@ -500,25 +500,25 @@ export default function ProductUpload() {
 
             {/* Upload Progress */}
             {loading && (
-              <Card className="border-2 border-primary-300 bg-gradient-to-br from-primary-50 to-white">
+              <Card className="border-2 border-neon-500 shadow-neon">
                 <CardContent className="p-8">
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
-                      <Upload className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-dark-500 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
+                      <Upload className="w-8 h-8 text-neon-500" />
                     </div>
-                    <p className="text-xl font-bold text-gray-900 mb-2">
+                    <p className="text-xl font-bold text-white mb-2">
                       Uploading Your Product...
                     </p>
-                    <p className="text-gray-600 mb-6">Please wait while we process your files</p>
-                    <div className="w-full bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
+                    <p className="text-gray-300 mb-6">Please wait while we process your files</p>
+                    <div className="w-full bg-dark-500 rounded-full h-3 mb-4 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-300 relative overflow-hidden"
+                        className="bg-neon-500 h-3 rounded-full transition-all duration-300 relative overflow-hidden shadow-neon-sm"
                         style={{ width: `${uploadProgress}%` }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-shimmer"></div>
                       </div>
                     </div>
-                    <p className="text-sm font-semibold text-primary-600">
+                    <p className="text-sm font-semibold text-neon-500">
                       {uploadProgress}% complete
                     </p>
                   </div>
