@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { SearchBar } from "@/components/forms/SearchBar";
@@ -23,9 +23,19 @@ export default function Home() {
   const [categories, setCategories] = useState(["All"]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const initialLoadRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double-loading in development strict mode
+    if (initialLoadRef.current) return;
+    initialLoadRef.current = true;
+    
     loadData();
+
+    // Cleanup function to reset on unmount
+    return () => {
+      initialLoadRef.current = false;
+    };
   }, []);
 
   useEffect(() => {

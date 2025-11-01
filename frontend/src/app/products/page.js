@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ProductFilters } from "@/components/product/ProductFilters";
@@ -26,8 +26,13 @@ function ProductsContent() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const productsPerPage = 12;
+  const initialLoadRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double-loading in development strict mode
+    if (initialLoadRef.current) return;
+    initialLoadRef.current = true;
+
     // Initialize filters from URL parameters
     const initialFilters = {};
     if (searchParams.get("search"))
@@ -38,11 +43,17 @@ function ProductsContent() {
       initialFilters.sort_by = searchParams.get("sort");
 
     setFilters(initialFilters);
-    loadProducts(initialFilters);
+    setCurrentPage(1); // Reset to page 1 when URL changes
+    loadProducts(initialFilters, 1);
     loadCategories();
+
+    // Cleanup function to reset on unmount
+    return () => {
+      initialLoadRef.current = false;
+    };
   }, [searchParams]);
 
-  const loadProducts = async (filterParams = {}, pageNum = null) => {
+  const loadProducts = async (filterParams = {}, pageNum = 1) => {
     try {
       setLoading(true);
       
@@ -96,7 +107,7 @@ function ProductsContent() {
       }
       
       const params = {
-        page: pageNum !== null ? pageNum : currentPage,
+        page: pageNum,
         page_size: productsPerPage,
         ...mappedFilters,
       };
