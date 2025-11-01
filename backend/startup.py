@@ -144,9 +144,9 @@ def seed_database():
                 "Spreadsheets": ProductCategory.TEMPLATES,
             }
             
-            # Use Picsum Photos with string-based seed for stable images
-            # Use product category and index to create unique seeds
-            seed_name = f"{product_data['category'].lower()}{idx}"
+            # Use Picsum Photos with specific image IDs (100-149) that are known to work
+            # This avoids the random/seed endpoints that can return 400 errors
+            picsum_id = 100 + (idx % 50)  # Cycle through IDs 100-149
             product = Product(
                 creator_id=creator.id,
                 creator_name=creator.display_name,
@@ -154,7 +154,7 @@ def seed_database():
                 description=product_data["description"],
                 price=product_data["price"],
                 category=category_map.get(product_data["category"], ProductCategory.OTHER),
-                image_url=f"https://picsum.photos/seed/{seed_name}/800/600",
+                image_url=f"https://picsum.photos/id/{picsum_id}/800/600",
                 file_url=f"demo_files/{product_data['category'].lower()}/sample_{idx}.zip",
                 file_size=1024 * 1024 * 5,
                 file_type="zip",
