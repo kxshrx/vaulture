@@ -130,15 +130,31 @@ def seed_database():
         ]
         
         for idx, product_data in enumerate(products_data, 1):
+            # Map category string to ProductCategory enum
+            from backend.models.product import ProductCategory
+            
+            category_map = {
+                "Templates": ProductCategory.TEMPLATES,
+                "Courses": ProductCategory.COURSES,
+                "Graphics": ProductCategory.GRAPHICS,
+                "Design": ProductCategory.GRAPHICS,
+                "Photography": ProductCategory.PHOTOGRAPHY,
+                "Video": ProductCategory.VIDEO,
+                "Guides": ProductCategory.EBOOKS,
+                "Spreadsheets": ProductCategory.TEMPLATES,
+            }
+            
             product = Product(
                 creator_id=creator.id,
+                creator_name=creator.display_name,
                 title=product_data["title"],
                 description=product_data["description"],
                 price=product_data["price"],
-                category=product_data["category"],
-                preview_url=product_data["preview_url"],
-                file_path=f"demo_files/{product_data['category'].lower()}/sample_{idx}.zip",
+                category=category_map.get(product_data["category"], ProductCategory.OTHER),
+                image_url=product_data["preview_url"],
+                file_url=f"demo_files/{product_data['category'].lower()}/sample_{idx}.zip",
                 file_size=1024 * 1024 * 5,
+                file_type="zip",
                 is_active=True,
                 created_at=datetime.utcnow()
             )
