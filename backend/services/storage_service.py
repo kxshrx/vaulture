@@ -12,7 +12,7 @@ class StorageService:
         # Use local file storage
         self.local_storage_path = Path(settings.UPLOAD_FOLDER)
         self.local_storage_path.mkdir(parents=True, exist_ok=True)
-        print(f"✅ Using local file storage at: {self.local_storage_path.absolute()}")
+        print(f"Using local file storage at: {self.local_storage_path.absolute()}")
 
     def validate_file(self, file: UploadFile) -> None:
         """Flexible file validation - only checks size and basic security"""
@@ -64,7 +64,7 @@ class StorageService:
             with open(file_path, "wb") as buffer:
                 buffer.write(file_content)
 
-            print(f"✅ Upload successful: {unique_filename} ({file_size} bytes)")
+            print(f"Upload successful: {unique_filename} ({file_size} bytes)")
             return unique_filename, file_size, file_extension
 
         except Exception as e:
@@ -91,11 +91,11 @@ class StorageService:
 
             # Return URL that points to our secure endpoint (not static files)
             signed_url = f"{base_url}/files/{file_path}?token={token}&expires={expires_at}"
-            print(f"✅ Signed URL created for {file_path} (expires in {expires_in}s)")
+            print(f"Signed URL created for {file_path} (expires in {expires_in}s)")
             return signed_url
 
         except Exception as e:
-            print(f"❌ Signed URL creation failed: {e}")
+            print(f"Signed URL creation failed: {e}")
             raise HTTPException(
                 status_code=500, detail=f"Failed to generate download URL: {str(e)}"
             )

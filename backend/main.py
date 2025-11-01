@@ -21,11 +21,11 @@ Base.metadata.create_all(bind=engine)
 try:
     is_production = os.getenv("DATABASE_URL", "").startswith("postgresql")
     if is_production:
-        print("🚀 Running startup initialization...")
+        print("Running startup initialization...")
         from backend.startup import main as startup_main
         startup_main()
 except Exception as e:
-    print(f"⚠️  Startup script failed (this is okay if DB is already seeded): {e}")
+    print(f"Startup script failed (this is okay if DB is already seeded): {e}")
 
 app = FastAPI(
     title="Creators Platform API",

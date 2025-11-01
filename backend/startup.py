@@ -21,9 +21,9 @@ from datetime import datetime
 
 def create_tables():
     """Create all database tables"""
-    print("🔧 Creating database tables...")
+    print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
-    print("✅ Tables created successfully")
+    print("Tables created successfully")
 
 def seed_database():
     """Seed the database with initial data if empty"""
@@ -33,10 +33,10 @@ def seed_database():
         # Check if data already exists
         existing_products = db.query(Product).count()
         if existing_products > 0:
-            print(f"✅ Database already has {existing_products} products. Skipping seed.")
+            print(f"Database already has {existing_products} products. Skipping seed.")
             return
         
-        print("🌱 Seeding database with sample data...")
+        print("Seeding database with sample data...")
         
         # Create a sample creator user
         # Use a simple password to avoid bcrypt issues: "demo1234"
@@ -47,7 +47,7 @@ def seed_database():
             # Fallback: use a known bcrypt hash for "demo1234"
             # This is a valid bcrypt hash that will work
             hashed_password = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5lZdKZnqF7CmK"
-            print(f"⚠️  Using fallback password hash due to: {e}")
+            print(f"Using fallback password hash due to: {e}")
         
         creator = User(
             email="creator@vaulture.com",
@@ -60,7 +60,7 @@ def seed_database():
         db.add(creator)
         db.flush()
         
-        print(f"✅ Created demo creator (ID: {creator.id})")
+        print(f"Created demo creator (ID: {creator.id})")
         
         # Sample products (50 items for free tier)
         products_data = [
@@ -162,18 +162,18 @@ def seed_database():
             db.add(product)
             
             if idx % 10 == 0:
-                print(f"  ✓ Created {idx} products...")
+                print(f"  Created {idx} products...")
         
         db.commit()
-        print(f"✅ Successfully created {len(products_data)} products!")
-        print(f"\n🎉 Database seeded successfully!")
+        print(f"Successfully created {len(products_data)} products!")
+        print(f"\nDatabase seeded successfully!")
         print(f"\nDemo Account:")
         print(f"  Email: creator@vaulture.com")
         print(f"  Password: demo1234")
         
     except Exception as e:
         db.rollback()
-        print(f"❌ Error seeding database: {e}")
+        print(f"Error seeding database: {e}")
         raise
     finally:
         db.close()
@@ -186,20 +186,20 @@ def main():
         
         if is_production:
             print("=" * 60)
-            print("🚀 RENDER STARTUP: Initializing Database")
+            print("RENDER STARTUP: Initializing Database")
             print("=" * 60)
             
             create_tables()
             seed_database()
             
             print("\n" + "=" * 60)
-            print("✅ Startup completed successfully!")
+            print("Startup completed successfully!")
             print("=" * 60 + "\n")
         else:
-            print("ℹ️  Skipping auto-seed (local development mode)")
+            print("Skipping auto-seed (local development mode)")
             
     except Exception as e:
-        print(f"\n❌ Startup failed: {e}")
+        print(f"\nStartup failed: {e}")
         # Don't exit with error code - let the app start anyway
         # The database might already be set up
 
