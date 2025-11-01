@@ -15,7 +15,7 @@ from backend.db.base import engine, Base
 from backend.db.session import get_db
 from backend.models.user import User
 from backend.models.product import Product
-from backend.models.purchase import Purchase
+from backend.models.purchase import Purchase, PaymentStatus
 from backend.core.security import get_password_hash
 from datetime import datetime
 
@@ -168,6 +168,71 @@ def seed_database():
         
         db.commit()
         print(f"Successfully created {len(products_data)} products!")
+        
+        # Create synthetic buyer accounts and purchases for analytics
+        print("\nCreating synthetic transactions for demo analytics...")
+        
+        buyer_emails = [
+            "buyer1@example.com",
+            "buyer2@example.com", 
+            "buyer3@example.com",
+            "buyer4@example.com",
+            "buyer5@example.com"
+        ]
+        
+        buyers = []
+        for email in buyer_emails:
+            buyer = User(
+                email=email,
+                hashed_password=hashed_password,
+                display_name=f"Demo Buyer {len(buyers) + 1}",
+                bio="Demo buyer account",
+                is_creator=False,
+                created_at=datetime.utcnow()
+            )
+            db.add(buyer)
+            buyers.append(buyer)
+        
+        db.flush()
+        print(f"  Created {len(buyers)} demo buyers")
+        
+        # Create purchases - randomly assign to products
+        import random
+        from datetime import timedelta
+        
+        products = db.query(Product).filter(Product.creator_id == creator.id).all()
+        purchase_count = 0
+        
+        for product in products:
+            # Create 1-5 random purchases for each product
+            num_purchases = random.randint(1, 5)
+            
+            for _ in range(num_purchases):
+                buyer = random.choice(buyers)
+                # Random date within last 30 days
+                days_ago = random.randint(0, 30)
+                purchase_date = datetime.utcnow() - timedelta(days=days_ago)
+                
+                purchase = Purchase(
+                    user_id=buyer.id,
+                    product_id=product.id,
+                    amount_paid=product.price,
+                    stripe_payment_intent_id=f"pi_demo_{purchase_count}",
+                    payment_status=PaymentStatus.COMPLETED,
+                    created_at=purchase_date,
+                    completed_at=purchase_date
+                )
+                db.add(purchase)
+                purchase_count += 1
+                
+                # Update product purchase count
+                product.purchase_count = db.query(Purchase).filter(
+                    Purchase.product_id == product.id,
+                    Purchase.payment_status == PaymentStatus.COMPLETED
+                ).count()
+        
+        db.commit()
+        print(f"  Created {purchase_count} demo purchases")
         print(f"\nDatabase seeded successfully!")
         print(f"\nDemo Account:")
         print(f"  Email: creator@vaulture.com")
