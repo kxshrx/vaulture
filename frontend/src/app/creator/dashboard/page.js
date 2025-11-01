@@ -138,23 +138,23 @@ export default function CreatorDashboard() {
       <PageContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Dashboard Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl font-bold text-white mb-2">
                 Creator Dashboard
               </h1>
-              <p className="text-gray-600">
-                Welcome back, {user?.name || user?.display_name || "Creator"}!
+              <p className="text-gray-300 text-lg">
+                Welcome back, {user?.name || user?.display_name || "Demo Creator"}!
                 Here&apos;s your business overview.
               </p>
             </div>
             <Link href="/creator/upload">
               <Button
                 variant="primary"
-                className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl transition-all duration-200"
+                className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-3 whitespace-nowrap"
               >
                 <Plus className="w-5 h-5" />
-                <span>Upload Product</span>
+                <span className="font-semibold">Upload Product</span>
               </Button>
             </Link>
           </div>
@@ -190,16 +190,16 @@ export default function CreatorDashboard() {
             <Link href="/creator/upload">
               <Card
                 hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-lg border-2 hover:border-primary-200"
+                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-primary-500 bg-gradient-to-br from-gray-800 to-gray-900"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
-                    <Plus className="w-6 h-6 text-white" />
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                    <Plus className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-bold text-xl text-white mb-2">
                     Upload New Product
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-300">
                     Add a new digital product to sell
                   </p>
                 </CardContent>
@@ -209,16 +209,16 @@ export default function CreatorDashboard() {
             <Link href="/creator/products">
               <Card
                 hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-lg border-2 hover:border-green-200"
+                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-green-500 bg-gradient-to-br from-gray-800 to-gray-900"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
-                    <Package className="w-6 h-6 text-white" />
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                    <Package className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-bold text-xl text-white mb-2">
                     Manage Products
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-300">
                     Edit and organize your products
                   </p>
                 </CardContent>
@@ -228,16 +228,16 @@ export default function CreatorDashboard() {
             <Link href="/creator/analytics">
               <Card
                 hover
-                className="cursor-pointer group transition-all duration-200 hover:shadow-lg border-2 hover:border-purple-200"
+                className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-purple-500 bg-gradient-to-br from-gray-800 to-gray-900"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200">
-                    <TrendingUp className="w-6 h-6 text-white" />
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                    <TrendingUp className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-bold text-xl text-white mb-2">
                     View Analytics
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-300">
                     Detailed sales and revenue data
                   </p>
                 </CardContent>
@@ -280,14 +280,14 @@ export default function CreatorDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Recent Sales Overview */}
                 <div className="lg:col-span-2">
-                  <Card>
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-gray-900">
+                        <h2 className="text-2xl font-bold text-white">
                           Recent Sales
                         </h2>
                         <Link href="/creator/analytics">
-                          <Button variant="ghost" size="small">
+                          <Button variant="ghost" size="small" className="text-primary-400 hover:text-primary-300 hover:bg-gray-800">
                             View Full Analytics
                           </Button>
                         </Link>
@@ -295,31 +295,33 @@ export default function CreatorDashboard() {
                     </CardHeader>
                     <CardContent className="p-0">
                       {recentSales.length > 0 ? (
-                        <div className="space-y-4 p-6">
+                        <div className="space-y-2 p-6">
                           {recentSales.map((sale) => (
                             <div
                               key={sale.id}
-                              className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0"
+                              className="flex items-center justify-between py-4 px-4 border-2 border-gray-700 rounded-xl hover:border-primary-500 transition-all bg-gray-800/50"
                             >
                               <div>
-                                <div className="font-medium text-gray-900">
+                                <div className="font-semibold text-lg text-white">
                                   {sale.product}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-sm text-gray-400 mt-1">
                                   {sale.buyer} • {formatDate(sale.sale_date)}
                                 </div>
                               </div>
-                              <div className="font-semibold text-green-600">
+                              <div className="font-bold text-xl text-primary-400">
                                 {formatCurrency(sale.amount)}
                               </div>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="p-8 text-center text-gray-500">
-                          <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                          <p>No sales yet</p>
-                          <p className="text-sm mt-2">
+                        <div className="p-12 text-center">
+                          <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <TrendingUp className="w-10 h-10 text-gray-500" />
+                          </div>
+                          <p className="text-gray-300 font-semibold text-lg">No sales yet</p>
+                          <p className="text-sm mt-2 text-gray-400">
                             Your recent sales will appear here
                           </p>
                         </div>
@@ -331,39 +333,39 @@ export default function CreatorDashboard() {
                 {/* Quick Overview */}
                 <div className="space-y-6">
                   {/* Performance Summary */}
-                  <Card>
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
                     <CardHeader>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        This Month Summary
+                      <h3 className="text-xl font-bold text-white">
+                        Summary
                       </h3>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Revenue</span>
-                          <span className="font-semibold text-green-600">
+                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                          <span className="text-gray-300 font-medium">Revenue</span>
+                          <span className="font-bold text-xl text-primary-400">
                             {formatCurrency(stats.totalRevenue)}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Sales</span>
-                          <span className="font-semibold">
+                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                          <span className="text-gray-300 font-medium">Sales</span>
+                          <span className="font-bold text-xl text-white">
                             {stats.totalSales}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Products</span>
-                          <span className="font-semibold">
+                        <div className="flex items-center justify-between py-3 px-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                          <span className="text-gray-300 font-medium">Products</span>
+                          <span className="font-bold text-xl text-white">
                             {stats.totalProducts}
                           </span>
                         </div>
                       </div>
-                      <div className="mt-4 pt-4 border-t">
+                      <div className="mt-6">
                         <Link href="/creator/analytics">
                           <Button
-                            variant="secondary"
+                            variant="primary"
                             size="small"
-                            className="w-full"
+                            className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 font-semibold"
                           >
                             View Detailed Analytics
                           </Button>
@@ -375,14 +377,14 @@ export default function CreatorDashboard() {
               </div>
 
               {/* Recent Products */}
-              <Card>
+              <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-2xl font-bold text-white">
                       Recent Products
                     </h2>
                     <Link href="/creator/products">
-                      <Button variant="ghost" size="small">
+                      <Button variant="ghost" size="small" className="text-primary-400 hover:text-primary-300 hover:bg-gray-800">
                         View All Products
                       </Button>
                     </Link>
@@ -390,26 +392,26 @@ export default function CreatorDashboard() {
                 </CardHeader>
                 <CardContent>
                   {recentProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {recentProducts.map((product) => (
                         <Card
                           key={product.id}
                           hover
-                          className="cursor-pointer group transition-all duration-200 hover:shadow-lg border hover:border-primary-200"
+                          className="cursor-pointer group transition-all duration-200 hover:shadow-2xl border-2 border-gray-700 hover:border-primary-500 bg-gray-800/50"
                         >
                           <CardContent className="p-4">
-                            <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden border border-gray-200">
+                            <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-3 flex items-center justify-center overflow-hidden border-2 border-gray-600">
                               {product.image_url || product.image ? (
                                 <img
                                   src={product.image_url || product.image}
                                   alt={product.title}
-                                  className="w-full h-full object-cover rounded-xl transition-transform hover:scale-105"
+                                  className="w-full h-full object-cover rounded-xl transition-transform group-hover:scale-105"
                                   onError={(e) => {
                                     e.target.style.display = "none";
                                     e.target.parentNode.classList.add(
                                       "bg-gradient-to-br",
-                                      "from-primary-50",
-                                      "to-primary-100"
+                                      "from-gray-700",
+                                      "to-gray-800"
                                     );
                                     e.target.nextElementSibling.style.display =
                                       "flex";
@@ -426,13 +428,13 @@ export default function CreatorDashboard() {
                                 <Package className="w-10 h-10 text-primary-400" />
                               </div>
                             </div>
-                            <h4 className="font-semibold text-gray-900 truncate mb-1 group-hover:text-primary-600 transition-colors">
+                            <h4 className="font-semibold text-white text-lg truncate mb-2 group-hover:text-primary-400 transition-colors">
                               {product.title}
                             </h4>
-                            <p className="text-sm text-gray-600 mb-2 font-medium">
+                            <p className="text-base text-primary-400 mb-2 font-bold">
                               {formatCurrency(product.price)}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-sm text-gray-400">
                               {formatDate(product.created_at)}
                             </p>
                           </CardContent>
@@ -440,14 +442,14 @@ export default function CreatorDashboard() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300">
-                      <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <Package className="w-8 h-8 text-white" />
+                    <div className="text-center py-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl border-2 border-dashed border-gray-600">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Package className="w-10 h-10 text-gray-400" />
                       </div>
-                      <p className="text-gray-700 font-medium mb-2">
+                      <p className="text-white font-semibold text-lg mb-2">
                         No products yet
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-gray-400">
                         Upload your first product to get started
                       </p>
                     </div>
