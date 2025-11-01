@@ -53,28 +53,31 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/categories"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Categories
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/pricing"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Pricing
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/features"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Features
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -92,28 +95,31 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/creator/guide"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Creator Guide
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/creator/resources"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Resources
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/creator/support"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Creator Support
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -123,28 +129,31 @@ export function Footer() {
             <h3 className="font-semibold text-white mb-4">Support</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link
-                  href="/help"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Help Center
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Contact Us
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/security"
-                  className="text-gray-400 hover:text-neon-500 transition-colors"
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Security
-                </Link>
+                </a>
               </li>
               <li>
                 <Link
@@ -184,12 +193,13 @@ export function Footer() {
               >
                 Terms
               </Link>
-              <Link
-                href="/cookies"
-                className="text-gray-400 hover:text-neon-500 transition-colors"
+              <a
+                href="#"
+                className="text-gray-400 hover:text-neon-500 transition-colors cursor-not-allowed opacity-50"
+                onClick={(e) => e.preventDefault()}
               >
                 Cookies
-              </Link>
+              </a>
             </div>
           </div>
         </div>
