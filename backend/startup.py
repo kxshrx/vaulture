@@ -144,6 +144,7 @@ def seed_database():
                 "Spreadsheets": ProductCategory.TEMPLATES,
             }
             
+            # Use Picsum Photos with seed for consistent but varied images
             product = Product(
                 creator_id=creator.id,
                 creator_name=creator.display_name,
@@ -151,7 +152,7 @@ def seed_database():
                 description=product_data["description"],
                 price=product_data["price"],
                 category=category_map.get(product_data["category"], ProductCategory.OTHER),
-                image_url=product_data["preview_url"],
+                image_url=f"https://picsum.photos/seed/{idx}/800/600",
                 file_url=f"demo_files/{product_data['category'].lower()}/sample_{idx}.zip",
                 file_size=1024 * 1024 * 5,
                 file_type="zip",
