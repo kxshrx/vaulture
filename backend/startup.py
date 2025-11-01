@@ -144,9 +144,9 @@ def seed_database():
                 "Spreadsheets": ProductCategory.TEMPLATES,
             }
             
-            # Use Picsum Photos with specific image IDs (100-149) that are known to work
-            # This avoids the random/seed endpoints that can return 400 errors
-            picsum_id = 100 + (idx % 50)  # Cycle through IDs 100-149
+            # Use Picsum Photos with specific image IDs that are known to work
+            # Using IDs 10-59 which are more reliable than higher numbers
+            picsum_id = 10 + (idx % 50)  # Cycle through IDs 10-59
             product = Product(
                 creator_id=creator.id,
                 creator_name=creator.display_name,
