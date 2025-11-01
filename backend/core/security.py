@@ -14,10 +14,24 @@ security = HTTPBearer()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        # Truncate password to 72 bytes for bcrypt compatibility
+        if isinstance(plain_password, str):
+            plain_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+        return pwd_context.verify(plain_password, hashed_password)
+    except ValueError as e:
+        # Handle bcrypt errors gracefully
+        if "password cannot be longer than 72 bytes" in str(e):
+            # Try with truncated password
+            truncated = plain_password[:72]
+            return pwd_context.verify(truncated, hashed_password)
+        raise
 
 
 def get_password_hash(password: str) -> str:
+    # Truncate password to 72 bytes for bcrypt compatibility
+    if isinstance(password, str):
+        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
     return pwd_context.hash(password)
 
 
