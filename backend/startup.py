@@ -38,16 +38,8 @@ def seed_database():
         
         print("Seeding database with sample data...")
         
-        # Create a sample creator user
-        # Use a simple password to avoid bcrypt issues: "demo1234"
-        # Pre-hashed version of "demo1234" to avoid bcrypt compatibility issues
-        try:
-            hashed_password = get_password_hash("demo1234")
-        except Exception as e:
-            # Fallback: use a known bcrypt hash for "demo1234"
-            # This is a valid bcrypt hash that will work
-            hashed_password = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5lZdKZnqF7CmK"
-            print(f"Using fallback password hash due to: {e}")
+        # Create a sample creator user with password "demo1234"
+        hashed_password = get_password_hash("demo1234")
         
         creator = User(
             email="creator@vaulture.com",
