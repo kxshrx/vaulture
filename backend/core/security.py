@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -9,30 +9,41 @@ from backend.core.config import settings
 from backend.db.session import get_db
 from backend.models.user import User
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a password against a bcrypt hash"""
     try:
-        # Truncate password to 72 bytes for bcrypt compatibility
+        # Convert to bytes if needed
         if isinstance(plain_password, str):
-            plain_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-        return pwd_context.verify(plain_password, hashed_password)
-    except ValueError as e:
-        # Handle bcrypt errors gracefully
-        if "password cannot be longer than 72 bytes" in str(e):
-            # Try with truncated password
-            truncated = plain_password[:72]
-            return pwd_context.verify(truncated, hashed_password)
-        raise
+            plain_password = plain_password.encode('utf-8')
+        if isinstance(hashed_password, str):
+            hashed_password = hashed_password.encode('utf-8')
+        
+        # bcrypt handles truncation automatically
+        return bcrypt.checkpw(plain_password, hashed_password)
+    except Exception as e:
+        print(f"Password verification error: {e}")
+        return False
 
 
 def get_password_hash(password: str) -> str:
-    # Truncate password to 72 bytes for bcrypt compatibility
-    if isinstance(password, str):
-        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-    return pwd_context.hash(password)
+    """Hash a password using bcrypt"""
+    try:
+        # Convert to bytes if needed
+        if isinstance(password, str):
+            password = password.encode('utf-8')
+        
+        # Generate salt and hash
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password, salt)
+        
+        # Return as string
+        return hashed.decode('utf-8')
+    except Exception as e:
+        print(f"Password hashing error: {e}")
+        raise
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
