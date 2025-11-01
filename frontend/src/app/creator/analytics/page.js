@@ -186,7 +186,7 @@ export default function CreatorAnalytics() {
       <PageContainer>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Analytics Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Analytics & Insights
@@ -197,14 +197,14 @@ export default function CreatorAnalytics() {
             </div>
 
             {/* Time Range Selector */}
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">
+            <div className="flex items-center space-x-3 bg-white px-4 py-2 rounded-xl border-2 border-gray-200 shadow-sm">
+              <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
                 Time Range:
               </span>
               <select
                 value={selectedTimeRange}
                 onChange={(e) => setSelectedTimeRange(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="px-4 py-2 border-0 bg-gray-50 text-gray-900 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer hover:bg-gray-100 transition-colors"
               >
                 {timeRangeOptions.map((option) => (
                   <option key={option.value} value={option.value}>

@@ -255,38 +255,45 @@ export default function ProductUpload() {
             </Card>
 
             {/* File Upload */}
-            <Card>
+            <Card className="border-2 hover:border-primary-200 transition-colors">
               <CardHeader>
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <Upload className="w-5 h-5 mr-2" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mr-3">
+                    <Upload className="w-5 h-5 text-white" />
+                  </div>
                   Product File
                 </h2>
+                <p className="text-sm text-gray-600 mt-2">
+                  Upload the main digital product file that buyers will download
+                </p>
               </CardHeader>
               <CardContent>
                 <div
                   className={`
-                  border-2 border-dashed rounded-xl p-8 text-center transition-colors
+                  border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-200
                   ${
                     dragActive
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300"
+                      ? "border-primary-500 bg-primary-50 scale-[1.02]"
+                      : "border-gray-300 hover:border-primary-300 hover:bg-gray-50"
                   }
-                  ${errors.productFile ? "border-red-500" : ""}
+                  ${errors.productFile ? "border-red-500 bg-red-50" : ""}
                 `}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                 >
                   {formData.productFile ? (
-                    <div className="flex items-center justify-center space-x-4">
-                      <FileText className="w-8 h-8 text-blue-600" />
-                      <div>
-                        <p className="font-medium text-gray-900">
+                    <div className="flex items-center justify-center space-x-6 bg-white rounded-xl p-6 shadow-sm">
+                      <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="font-semibold text-gray-900 text-lg">
                           {formData.productFile.name}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-gray-600 mt-1">
                           {(formData.productFile.size / 1024 / 1024).toFixed(2)}{" "}
-                          MB
+                          MB • Ready to upload
                         </p>
                       </div>
                       <button
@@ -297,19 +304,21 @@ export default function ProductUpload() {
                             productFile: null,
                           }))
                         }
-                        className="text-red-600 hover:text-red-700"
+                        className="w-10 h-10 bg-red-100 hover:bg-red-200 rounded-xl flex items-center justify-center text-red-600 hover:text-red-700 transition-colors flex-shrink-0"
                       >
                         <X className="w-5 h-5" />
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-lg font-medium text-gray-900 mb-2">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <Upload className="w-10 h-10 text-gray-500" />
+                      </div>
+                      <p className="text-xl font-semibold text-gray-900 mb-2">
                         Drop your product file here
                       </p>
-                      <p className="text-gray-600 mb-4">
-                        or click to browse files
+                      <p className="text-gray-600 mb-6">
+                        or click the button below to browse
                       </p>
                       <input
                         type="file"
@@ -319,7 +328,12 @@ export default function ProductUpload() {
                         accept=".zip,.rar,.pdf,.psd,.ai,.sketch,.fig,.mp4,.mp3,.wav,.jpg,.png,.svg"
                       />
                       <label htmlFor="product-file">
-                        <Button type="button" variant="secondary">
+                        <Button 
+                          type="button" 
+                          variant="primary"
+                          className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl"
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
                           Choose File
                         </Button>
                       </label>
@@ -327,41 +341,62 @@ export default function ProductUpload() {
                   )}
                 </div>
                 {errors.productFile && (
-                  <p className="mt-2 text-sm text-red-600">
+                  <p className="mt-3 text-sm text-red-600 font-medium flex items-center">
+                    <span className="w-2 h-2 bg-red-600 rounded-full mr-2"></span>
                     {errors.productFile}
                   </p>
                 )}
-                <p className="mt-2 text-sm text-gray-600">
-                  Supported formats: ZIP, RAR, PDF, PSD, AI, Sketch, Figma, MP4,
-                  MP3, WAV, JPG, PNG, SVG
-                </p>
+                <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <p className="text-sm text-gray-700 font-medium mb-2">
+                    Supported formats:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['ZIP', 'RAR', 'PDF', 'PSD', 'AI', 'Sketch', 'Figma', 'MP4', 'MP3', 'WAV', 'JPG', 'PNG', 'SVG'].map(format => (
+                      <span key={format} className="px-3 py-1 bg-white text-gray-700 text-xs font-medium rounded-lg border border-gray-200">
+                        {format}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
             {/* Product Images */}
-            <Card>
+            <Card className="border-2 hover:border-purple-200 transition-colors">
               <CardHeader>
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <ImageIcon className="w-5 h-5 mr-2" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
+                    <ImageIcon className="w-5 h-5 text-white" />
+                  </div>
                   Product Images (Optional)
                 </h2>
+                <p className="text-sm text-gray-600 mt-2">
+                  Add preview images to showcase your product
+                </p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-4">
                   {formData.images.map((image, index) => (
-                    <div key={index} className="relative">
+                    <div key={index} className="relative group">
                       <img
                         src={URL.createObjectURL(image)}
                         alt={`Product image ${index + 1}`}
-                        className="w-full h-24 object-cover rounded-lg"
+                        className="w-full h-32 object-cover rounded-xl border-2 border-gray-200 group-hover:border-primary-300 transition-colors"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all rounded-xl flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="opacity-0 group-hover:opacity-100 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg transition-all transform scale-90 group-hover:scale-100"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                      {index === 0 && (
+                        <span className="absolute top-2 left-2 bg-primary-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                          Main
+                        </span>
+                      )}
                     </div>
                   ))}
 
@@ -379,71 +414,111 @@ export default function ProductUpload() {
                       />
                       <label
                         htmlFor="product-images"
-                        className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all group"
                       >
-                        <Plus className="w-6 h-6 text-gray-400" />
+                        <div className="w-12 h-12 bg-gray-100 group-hover:bg-primary-100 rounded-xl flex items-center justify-center mb-2 transition-colors">
+                          <Plus className="w-6 h-6 text-gray-400 group-hover:text-primary-600 transition-colors" />
+                        </div>
+                        <span className="text-xs text-gray-500 group-hover:text-primary-600 font-medium transition-colors">
+                          Add Image
+                        </span>
                       </label>
                     </div>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">
-                  Add up to 5 images to showcase your product. First image will
-                  be the main thumbnail.
-                </p>
+                <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
+                  <p className="text-sm text-purple-900 font-medium mb-1">
+                    📸 Image Guidelines
+                  </p>
+                  <p className="text-sm text-purple-800">
+                    Add up to 5 images. The first image will be used as your main thumbnail. Use high-quality images (at least 800x600px) for best results.
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
             {/* Pricing */}
-            <Card>
+            <Card className="border-2 hover:border-green-200 transition-colors">
               <CardHeader>
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <DollarSign className="w-5 h-5 mr-2" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-3">
+                    <DollarSign className="w-5 h-5 text-white" />
+                  </div>
                   Pricing
                 </h2>
+                <p className="text-sm text-gray-600 mt-2">
+                  Set a fair price for your digital product
+                </p>
               </CardHeader>
               <CardContent>
-                <div className="max-w-md">
-                  <Input
-                    label="Price (₹ INR - approx. $0.012 USD per rupee)"
-                    name="price"
-                    type="number"
-                    min="83"
-                    step="1"
-                    value={formData.price ? Math.round(formData.price * 83) : ''}
-                    onChange={(e) => {
-                      const inrValue = parseFloat(e.target.value) || 0;
-                      const usdValue = (inrValue / 83).toFixed(2);
-                      handleInputChange({
-                        target: { name: 'price', value: usdValue }
-                      });
-                    }}
-                    error={errors.price}
-                    placeholder="2490 (≈ $30 USD)"
-                    required
-                  />
-                  <p className="mt-2 text-sm text-gray-600">
-                    Minimum price is ₹83 ($0.99 USD). Platform fee: 5% + payment processing fees.
-                    {formData.price && ` Current price: ₹${Math.round(formData.price * 83)} (≈ $${formData.price} USD)`}
-                  </p>
+                <div className="max-w-2xl">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200">
+                    <Input
+                      label="Price (₹ INR)"
+                      name="price"
+                      type="number"
+                      min="83"
+                      step="1"
+                      value={formData.price ? Math.round(formData.price * 83) : ''}
+                      onChange={(e) => {
+                        const inrValue = parseFloat(e.target.value) || 0;
+                        const usdValue = (inrValue / 83).toFixed(2);
+                        handleInputChange({
+                          target: { name: 'price', value: usdValue }
+                        });
+                      }}
+                      error={errors.price}
+                      placeholder="2490"
+                      required
+                    />
+                    
+                    {formData.price && (
+                      <div className="mt-4 space-y-3 bg-white rounded-xl p-4 border border-green-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600">USD Equivalent</span>
+                          <span className="text-lg font-bold text-gray-900">${formData.price}</span>
+                        </div>
+                        <div className="flex justify-between items-center border-t border-gray-200 pt-3">
+                          <span className="text-sm text-gray-600">Your Earnings (after fees)</span>
+                          <span className="text-lg font-bold text-green-600">${(formData.price * 0.95).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <p className="text-sm text-blue-900 font-medium mb-2">💡 Pricing Tips</p>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• Minimum price: ₹83 ($0.99 USD)</li>
+                      <li>• Platform fee: 5% + payment processing fees</li>
+                      <li>• Research similar products for competitive pricing</li>
+                    </ul>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Upload Progress */}
             {loading && (
-              <Card>
-                <CardContent className="p-6">
+              <Card className="border-2 border-primary-300 bg-gradient-to-br from-primary-50 to-white">
+                <CardContent className="p-8">
                   <div className="text-center">
-                    <p className="text-lg font-medium text-gray-900 mb-4">
-                      Uploading Product...
-                    </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
+                      <Upload className="w-8 h-8 text-white" />
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xl font-bold text-gray-900 mb-2">
+                      Uploading Your Product...
+                    </p>
+                    <p className="text-gray-600 mb-6">Please wait while we process your files</p>
+                    <div className="w-full bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-300 relative overflow-hidden"
+                        style={{ width: `${uploadProgress}%` }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-shimmer"></div>
+                      </div>
+                    </div>
+                    <p className="text-sm font-semibold text-primary-600">
                       {uploadProgress}% complete
                     </p>
                   </div>
@@ -452,16 +527,24 @@ export default function ProductUpload() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-end">
+            <div className="flex flex-col sm:flex-row gap-4 justify-end pt-4 border-t-2 border-gray-200">
               <Button
                 type="button"
                 variant="secondary"
                 onClick={(e) => handleSubmit(e, true)}
                 disabled={loading}
+                className="border-2 hover:border-gray-400 hover:bg-gray-100"
               >
+                <FileText className="w-4 h-4 mr-2" />
                 Save as Draft
               </Button>
-              <Button type="submit" variant="pink" disabled={loading}>
+              <Button 
+                type="submit" 
+                variant="primary" 
+                disabled={loading}
+                className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                <Upload className="w-4 h-4 mr-2" />
                 Publish Product
               </Button>
             </div>
