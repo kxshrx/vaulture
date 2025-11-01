@@ -86,8 +86,8 @@ class StorageService:
             token_data = f"{file_path}:{expires_at}:{settings.JWT_SECRET}"
             token = hashlib.md5(token_data.encode()).hexdigest()
 
-            # Get base URL from settings or environment
-            base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
+            # Get base URL from environment or use backend URL
+            base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
 
             # Return URL that points to our secure endpoint (not static files)
             signed_url = f"{base_url}/files/{file_path}?token={token}&expires={expires_at}"

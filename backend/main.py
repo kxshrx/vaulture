@@ -11,6 +11,7 @@ from backend.api import (
     platform,
     profile,
     file_access,
+    secure_files,
 )
 from backend.db.base import engine, Base
 
@@ -55,6 +56,7 @@ app.include_router(purchase.router, prefix="/purchase", tags=["Purchase"])
 app.include_router(download.router, prefix="/download", tags=["Download"])
 app.include_router(platform.router, prefix="/platform", tags=["Platform"])
 app.include_router(file_access.router, prefix="/api", tags=["File Access"])
+app.include_router(secure_files.router, tags=["Secure File Delivery"])
 
 
 @app.get("/")
