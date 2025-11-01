@@ -18,7 +18,7 @@ Vaulture has been migrated from Supabase to a simpler, free-tier friendly stack:
 ## 🎯 Benefits
 
 1. **✅ Zero Setup for Local Development**
-   - Just run `uvicorn main:app --reload`
+   - Just run  `uvicorn main:app --reload`
    - SQLite database auto-creates
    - No external services needed
 
